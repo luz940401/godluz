@@ -80,7 +80,16 @@
       "description": "666",
       "icon": "🏰",
       "badge": "images/1776686265553.png",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "穗道忠武",
+          "role": "團長",
+          "class": "武僧",
+          "description": "錢好像很多",
+          "image": "images/1776686458353.png"
+        }
+      ]
     }
   ],
   "clues": [
