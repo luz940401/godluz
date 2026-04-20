@@ -57,6 +57,17 @@
       "description": "瘋狗",
       "icon": "⚔️",
       "image": "images/1776685705657.jpg"
+    },
+    {
+      "id": 6,
+      "name": "伊利昂",
+      "title": "魔導帝",
+      "class": "魔導師",
+      "race": "人類",
+      "summary": "",
+      "description": "",
+      "icon": "⚔️",
+      "image": "images/1776686191793.webp"
     }
   ],
   "knightOrders": [
@@ -66,9 +77,9 @@
       "name": "神之領域騎士團",
       "founding": "格蘭曆139年",
       "motto": "殺爛 看到就打",
-      "description": "",
+      "description": "666",
       "icon": "🏰",
-      "badge": "images/1776686058908.png",
+      "badge": "images/1776686122734.png",
       "members": []
     }
   ],
