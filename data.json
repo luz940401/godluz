@@ -62,12 +62,14 @@
   "knightOrders": [
     {
       "id": 1,
+      "rank": 16,
       "name": "神之領域騎士團",
       "founding": "格蘭曆139年",
       "motto": "殺爛 看到就打",
       "description": "",
-      "memberCount": 6,
-      "icon": "🏰"
+      "icon": "🏰",
+      "badge": "images/1776686058908.png",
+      "members": []
     }
   ],
   "clues": [
