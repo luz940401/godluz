@@ -179,6 +179,24 @@ function renderClues(list) {
   }).join('');
 }
 
+/* ── Role Color ── */
+function roleClass(r) {
+  if (!r) return 'role-member';
+  if (/長$|長官|指揮|首領|領袖|隊長/.test(r)) return 'role-leader';
+  if (/^副/.test(r)) return 'role-deputy';
+  if (/核心|精英|菁英|特級|王牌/.test(r)) return 'role-core';
+  return 'role-member';
+}
+
+/* ── Drag Scroll ── */
+function initDragScroll(el) {
+  let down = false, startX, scrollLeft;
+  el.addEventListener('mousedown', e => { down=true; el.classList.add('dragging'); startX=e.pageX-el.offsetLeft; scrollLeft=el.scrollLeft; });
+  el.addEventListener('mouseleave', () => { down=false; el.classList.remove('dragging'); });
+  el.addEventListener('mouseup',    () => { down=false; el.classList.remove('dragging'); });
+  el.addEventListener('mousemove',  e => { if(!down) return; e.preventDefault(); el.scrollLeft = scrollLeft-(e.pageX-el.offsetLeft-startX)*1.4; });
+}
+
 /* ── Detail Panel ── */
 function openDetail(type, id, extra={}) {
   detailStack = [{type, id, extra}];
@@ -245,11 +263,9 @@ function renderDetail() {
       const mems = (o.members||[]).map(m=>`
         <div class="member-card" onclick="event.stopPropagation();pushDetail('member',${m.id},{orderId:${o.id}})">
           ${m.image?`<img src="${m.image}" class="member-avatar" alt="${m.name}">`:`<div class="member-avatar-placeholder">${m.name.charAt(0)}</div>`}
-          <div class="member-info">
-            <div class="member-name">${m.name}</div>
-            <div class="member-role">${[m.role,m.class].filter(Boolean).join(' · ')}</div>
-          </div>
-          <span class="member-arrow">→</span>
+          <div class="member-name">${m.name}</div>
+          <div class="member-role-badge ${roleClass(m.role)}">${m.role||'成員'}</div>
+          ${m.class?`<div class="member-class-tag">${m.class}</div>`:''}
         </div>`).join('');
       html = `
         <div class="detail-order-header">
@@ -266,7 +282,7 @@ function renderDetail() {
           <div class="detail-article">${(o.description||'').replace(/\n/g,'<br>')}</div>
           <div class="detail-divider"></div>
           <h2 class="detail-section-title">成員名單 (${(o.members||[]).length})</h2>
-          <div class="members-list">${mems||'<p style="color:var(--stone);font-size:0.9rem">尚無成員資料</p>'}</div>
+          <div class="members-scroll" id="ms-${o.id}">${mems||'<p style="color:var(--stone);font-size:0.9rem">尚無成員資料</p>'}</div>
         </div>`;
     }
   } else if (type === 'member') {
@@ -304,6 +320,8 @@ function renderDetail() {
       <button class="detail-close-btn" onclick="closeDetail()">✕</button>
     </div>
     ${html}`;
+  const ms = document.querySelector('.members-scroll');
+  if (ms) initDragScroll(ms);
 }
 
 /* ── Map Lightbox ── */
