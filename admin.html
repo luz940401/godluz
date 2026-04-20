@@ -121,6 +121,7 @@
     <div class="field"><label>GitHub 帳號名稱</label><input type="text" id="cfg-owner" placeholder="luz940401" autocomplete="off"></div>
     <div class="field"><label>Repository 名稱</label><input type="text" id="cfg-repo" placeholder="godluz" autocomplete="off"></div>
     <div class="field"><label>分支名稱</label><input type="text" id="cfg-branch" value="main" autocomplete="off"></div>
+    <div class="field"><label>Google Sheet 備份 URL <span style="font-weight:400;color:var(--muted)">（選填）</span></label><input type="text" id="cfg-sheet" placeholder="https://script.google.com/macros/s/..." autocomplete="off"><small>設定後每次儲存到 GitHub 時自動備份至 Google Sheet</small></div>
     <button class="btn btn-primary btn-full" onclick="doSetup()">連線並開始使用</button>
   </div>
 </div>
@@ -206,6 +207,56 @@
         <div class="field"><label>頁尾標語</label><input id="s-tagline"></div>
         <div class="field"><label>年份</label><input type="number" id="s-year"></div>
         <button class="btn btn-primary" onclick="saveSite()">套用設定</button>
+        <hr>
+        <div style="margin-top:1.2rem">
+          <div style="font-size:.78rem;font-weight:700;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem">Google Sheet 備份</div>
+          <div class="field">
+            <label>Web App URL</label>
+            <input id="s-sheet-url" placeholder="https://script.google.com/macros/s/...">
+            <small>儲存到 GitHub 時自動同步備份至此 Sheet</small>
+          </div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem">
+            <button class="btn btn-outline" onclick="saveSheetUrl()">儲存 URL</button>
+            <button class="btn btn-outline" onclick="backupToSheet()">立即備份</button>
+            <button class="btn btn-outline" onclick="restoreFromSheet()">從 Sheet 還原</button>
+          </div>
+          <details>
+            <summary style="cursor:pointer;font-size:.82rem;color:var(--muted);user-select:none">▶ 如何設定 Google Apps Script（點此展開）</summary>
+            <div style="margin-top:.8rem;font-size:.8rem;color:var(--muted);line-height:1.8">
+              <p>1. 開啟 Google 試算表，點選「擴充功能」→「Apps Script」</p>
+              <p>2. 清除原有程式碼，貼入下方內容後儲存</p>
+              <p>3. 點「部署」→「新增部署項目」→ 類型選「網頁應用程式」</p>
+              <p>4. 執行身分：<strong>我</strong>，存取權：<strong>所有人</strong> → 部署</p>
+              <p>5. 複製「網頁應用程式網址」貼到上方欄位</p>
+              <textarea readonly onclick="this.select()" style="width:100%;margin-top:.8rem;background:var(--sf2);border:1px solid var(--bd);color:#a0c0a0;padding:.75rem;border-radius:4px;font-family:monospace;font-size:.72rem;line-height:1.6;min-height:260px;resize:vertical;cursor:text">const SHEET='DND備份';
+function doPost(e){
+  try{
+    const ss=SpreadsheetApp.getActiveSpreadsheet();
+    let sh=ss.getSheetByName(SHEET)||ss.insertSheet(SHEET);
+    sh.clearContents();
+    sh.getRange('A1').setValue('備份時間');
+    sh.getRange('B1').setValue(new Date().toLocaleString('zh-TW'));
+    sh.getRange('A2').setValue('資料JSON');
+    sh.getRange('B2').setValue(e.postData.contents);
+    return ContentService.createTextOutput('ok');
+  }catch(err){
+    return ContentService.createTextOutput('error:'+err.message);
+  }
+}
+function doGet(){
+  try{
+    const ss=SpreadsheetApp.getActiveSpreadsheet();
+    const sh=ss.getSheetByName(SHEET);
+    if(!sh)return ContentService.createTextOutput('{}');
+    return ContentService.createTextOutput(sh.getRange('B2').getValue()||'{}')
+      .setMimeType(ContentService.MimeType.JSON);
+  }catch(err){
+    return ContentService.createTextOutput('{}');
+  }
+}</textarea>
+            </div>
+          </details>
+        </div>
       </div>
     </div>
 
@@ -243,9 +294,10 @@ let D=null, sha=null, moCb=null, imgFile=null, mapFile=null, curOrdId=null;
 const cfg=()=>JSON.parse(localStorage.getItem('dnd-cfg')||'null');
 function doSetup(){
   const t=id('cfg-token').value.trim(), o=id('cfg-owner').value.trim(),
-        r=id('cfg-repo').value.trim(), b=id('cfg-branch').value.trim()||'main';
+        r=id('cfg-repo').value.trim(), b=id('cfg-branch').value.trim()||'main',
+        s=(id('cfg-sheet')||{}).value||'';
   if(!t||!o||!r){alert('請填寫所有欄位');return}
-  localStorage.setItem('dnd-cfg',JSON.stringify({token:t,owner:o,repo:r,branch:b}));
+  localStorage.setItem('dnd-cfg',JSON.stringify({token:t,owner:o,repo:r,branch:b,sheetUrl:s.trim()}));
   id('setup').style.display='none'; id('main').style.display='block'; loadData();
 }
 function resetCfg(){if(!confirm('確定重設？'))return; localStorage.removeItem('dnd-cfg'); location.reload();}
@@ -261,12 +313,21 @@ async function loadData(){
   setS('loading','讀取中...');
   try{
     const r=await gh('data.json');
-    if(r.status===404){D=defD();sha=null;setS('ok','新檔案');rAll();return}
+    if(r.status===404){
+      const bk=loadLocal();
+      if(bk){D=bk;sha=null;setS('ok','本機備份');rAll();toast('GitHub 無資料，已還原本機備份','ok');}
+      else{D=defD();sha=null;setS('ok','新檔案');rAll();}
+      return;
+    }
     if(!r.ok) throw new Error(`HTTP ${r.status}`);
     const f=await r.json(); sha=f.sha;
     D=JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\n/g,'')))));
     setS('ok','已載入'); rAll(); toast('資料已載入','ok');
-  }catch(e){setS('error','讀取失敗');toast('讀取失敗：'+e.message,'err');}
+  }catch(e){
+    const bk=loadLocal();
+    if(bk){D=bk;setS('ok','本機備份');rAll();toast('GitHub 失敗，已還原本機備份','ok');}
+    else{setS('error','讀取失敗');toast('讀取失敗：'+e.message,'err');}
+  }
 }
 async function saveData(){
   if(!D){toast('請先讀取','err');return}
@@ -279,6 +340,7 @@ async function saveData(){
     if(!r.ok){const e=await r.json();throw new Error(e.message||`HTTP ${r.status}`);}
     const res=await r.json(); sha=res.content.sha;
     setS('ok','已儲存'); toast('✓ 已儲存，網站約 1 分鐘後更新','ok');
+    backupToSheet();
   }catch(e){setS('error','儲存失敗');toast('儲存失敗：'+e.message,'err');}
   finally{id('btn-save').disabled=false;}
 }
@@ -321,8 +383,37 @@ function prevImg(input,previewId){
 }
 function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMap:{image:'',caption:'格蘭大陸全圖'},patchNotes:[],announcements:[],characters:[],knightOrders:[],clues:[]};}
 
+// ── Google Sheet ──
+function sheetUrl(){const c=cfg();return c&&c.sheetUrl||'';}
+async function backupToSheet(){
+  const url=sheetUrl();if(!url)return;
+  try{await fetch(url,{method:'POST',mode:'no-cors',body:JSON.stringify(D)});
+  toast('✓ 已備份至 Google Sheet','ok');}catch(e){console.warn('Sheet備份:',e);}
+}
+async function restoreFromSheet(){
+  const url=sheetUrl();if(!url){toast('請先設定 Sheet URL','err');return;}
+  if(!confirm('從 Google Sheet 還原？現有資料將被覆蓋。'))return;
+  setS('loading','還原中...');
+  try{
+    const r=await fetch(url,{mode:'cors'});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const data=await r.json();
+    if(!data||typeof data!=='object')throw new Error('資料格式錯誤');
+    D=data;setS('ok','已還原');rAll();toast('✓ 已從 Google Sheet 還原','ok');
+  }catch(e){setS('error','失敗');toast('還原失敗：'+e.message,'err');}
+}
+function saveSheetUrl(){
+  const url=(id('s-sheet-url')||{}).value||'';
+  const c=cfg()||{};c.sheetUrl=url.trim();
+  localStorage.setItem('dnd-cfg',JSON.stringify(c));toast('Sheet URL 已儲存');
+}
+
+// ── Local Backup ──
+function saveLocal(){try{if(D)localStorage.setItem('dnd-local-bk',JSON.stringify(D));}catch(e){}}
+function loadLocal(){try{const s=localStorage.getItem('dnd-local-bk');return s?JSON.parse(s):null;}catch(e){return null;}}
+
 // ── Render All ──
-function rAll(){if(!D) return; rAnn();rMap();rPatch();rChr();rOrd();rClue();rSite();}
+function rAll(){if(!D) return; rAnn();rMap();rPatch();rChr();rOrd();rClue();rSite();saveLocal();}
 
 // ── Announcements ──
 function rAnn(){
@@ -539,7 +630,7 @@ function oClue(id_){
 function dClue(i){if(!confirm('刪除？'))return;D.clues=D.clues.filter(x=>x.id!==i);rClue();toast('已刪除');}
 
 // ── Site Settings ──
-function rSite(){const s=D.site||{};['title','subtitle','desc','tagline','year'].forEach(k=>{const el=id('s-'+k);if(el)el.value=s[k==='desc'?'description':k]??'';});}
+function rSite(){const s=D.site||{};['title','subtitle','desc','tagline','year'].forEach(k=>{const el=id('s-'+k);if(el)el.value=s[k==='desc'?'description':k]??'';});const su=id('s-sheet-url');if(su)su.value=sheetUrl();}
 function saveSite(){if(!D) return;D.site={title:id('s-title').value,subtitle:id('s-subtitle').value,description:id('s-desc').value,tagline:id('s-tagline').value,year:parseInt(id('s-year').value)||new Date().getFullYear()};toast('設定已套用');}
 
 // ── Modal ──
