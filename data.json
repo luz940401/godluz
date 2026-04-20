@@ -88,6 +88,14 @@
           "class": "武僧",
           "description": "錢好像很多",
           "image": "images/1776686458353.png"
+        },
+        {
+          "id": 2,
+          "name": "黑皮諾",
+          "role": "副團長",
+          "class": "牧師",
+          "description": "起來",
+          "image": "images/1776686750845.png"
         }
       ]
     }
