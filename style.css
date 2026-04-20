@@ -389,10 +389,16 @@ body::before {
 .order-arrow-col { display: flex; align-items: center; justify-content: center; color: var(--gold-dim); font-size: 1rem; transition: transform 0.3s, color 0.3s; }
 .order-ranked-card:hover .order-arrow-col { transform: translateX(4px); color: var(--gold); }
 @media (max-width: 640px) {
-  .order-ranked-card { grid-template-columns: 60px 80px 1fr 30px; }
-  .order-rank-col { padding: 1rem 0; }
-  .rank-num { font-size: 1.5rem; }
-  .order-info-col { padding: 1rem; }
+  .order-ranked-card { grid-template-columns: 52px 68px 1fr 28px; }
+  .order-rank-col { padding: 0.75rem 0; }
+  .rank-num { font-size: 1.3rem; }
+  .order-badge-col { padding: 0.5rem; }
+  .order-badge-img { width: 48px; height: 48px; }
+  .order-badge-emoji { font-size: 2rem; }
+  .order-info-col { padding: 0.85rem 0.75rem; }
+  .order-ranked-name { font-size: 1rem; }
+  .order-ranked-motto { font-size: 0.78rem; }
+  .order-arrow-col { font-size: 0.8rem; }
 }
 
 /* =============================================
