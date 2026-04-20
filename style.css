@@ -346,7 +346,7 @@ body::before {
    ============================================= */
 .orders-ranked { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
 .order-ranked-card {
-  display: grid; grid-template-columns: 80px 120px 1fr 44px;
+  display: grid; grid-template-columns: 80px 160px 1fr 44px;
   background: linear-gradient(135deg, #141228, #0f0e1e);
   border: 1px solid var(--border); overflow: hidden; cursor: pointer;
   transition: border-color 0.35s, box-shadow 0.35s, transform 0.35s;
@@ -367,11 +367,20 @@ body::before {
 .rank-other .rank-num { color: var(--stone); }
 .order-badge-col {
   display: flex; align-items: center; justify-content: center;
-  padding: 1rem; border-right: 1px solid var(--border);
-  background: linear-gradient(145deg, #1a1635, #0d0c1b);
+  padding: 0.75rem; border-right: 1px solid var(--border);
+  background: linear-gradient(145deg, #1e1a38, #0d0c1b);
+  position: relative; overflow: hidden;
 }
-.order-badge-img { width: 72px; height: 72px; object-fit: contain; }
-.order-badge-emoji { font-size: 3rem; filter: drop-shadow(0 0 10px rgba(201,168,76,0.2)); }
+.order-badge-col::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at center, rgba(201,168,76,0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+.order-badge-img {
+  width: 128px; height: 128px; object-fit: contain; position: relative; z-index: 1;
+  filter: drop-shadow(0 2px 10px rgba(0,0,0,0.7)) drop-shadow(0 0 22px rgba(201,168,76,0.22));
+}
+.order-badge-emoji { font-size: 4.5rem; filter: drop-shadow(0 0 16px rgba(201,168,76,0.35)); position: relative; z-index: 1; }
 .order-info-col { padding: 1.5rem 2rem; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
 .order-ranked-name { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--gold); margin-bottom: 0.25rem; }
 .order-ranked-motto { font-style: italic; font-size: 0.85rem; color: var(--stone); margin-bottom: 0.5rem; }
@@ -459,8 +468,8 @@ body::before {
 .detail-close-btn:hover { color: var(--parchment); }
 
 /* Detail content types */
-.detail-hero-img { width: 100%; max-height: 380px; overflow: hidden; position: relative; }
-.detail-hero-img img { width: 100%; height: 380px; object-fit: cover; object-position: top; display: block; }
+.detail-hero-img { width: 100%; max-height: 520px; overflow: hidden; position: relative; }
+.detail-hero-img img { width: 100%; height: 520px; object-fit: cover; object-position: center 20%; display: block; }
 .detail-hero-img::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to bottom, transparent, #0a091c); }
 .detail-portrait-placeholder {
   width: 100%; height: 300px;

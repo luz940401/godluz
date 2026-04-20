@@ -313,10 +313,10 @@ function x(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').repl
 function nextId(arr){return arr&&arr.length?Math.max(...arr.map(a=>a.id))+1:1;}
 function prevImg(input,previewId){
   const f=input.files[0]; if(!f) return;
-  if(previewId==='img-preview') imgFile=f;
+  if(previewId==='img-preview'||previewId==='mem-img-preview') imgFile=f;
   if(previewId==='map-prev') mapFile=f;
   const rd=new FileReader();
-  rd.onload=e=>{const b=id(previewId);if(b)b.innerHTML=`<img src="${e.target.result}">`};
+  rd.onload=e=>{const b=id(previewId);if(b)b.innerHTML=`<img src="${e.target.result}" style="max-width:100%;max-height:160px;object-fit:contain;border-radius:4px">`};
   rd.readAsDataURL(f);
 }
 function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMap:{image:'',caption:'格蘭大陸全圖'},patchNotes:[],announcements:[],characters:[],knightOrders:[],clues:[]};}
@@ -469,9 +469,9 @@ function memForm(m={}){
   <div class="field"><label>職業</label><input id="m-class" value="${x(m.class||'')}"></div>
   <div class="field"><label>介紹</label><textarea id="m-desc">${x(m.description||'')}</textarea></div>
   <div class="field"><label>成員圖片</label>
-    <div class="upzone" onclick="document.getElementById('mem-img-file').click()"><p>點此選擇圖片</p><input type="file" id="mem-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'img-preview')"></div>
+    <div class="upzone" onclick="document.getElementById('mem-img-file').click()"><p>點此選擇圖片</p><input type="file" id="mem-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'mem-img-preview')"></div>
     ${m.image?`<p class="cur-img">目前：${m.image}</p>`:''}
-    <div id="img-preview"></div>
+    <div id="mem-img-preview"></div>
   </div>`;
 }
 function oMem(mid){
