@@ -1,108 +1,86 @@
 // app.js — 渲染邏輯，不需要修改此檔案
 
 /* =============================================
-   Particle System (floating embers)
+   Particle System
    ============================================= */
 function initParticles() {
   const canvas = document.getElementById('particles-canvas');
   const ctx = canvas.getContext('2d');
-
-  function resize() {
-    canvas.width  = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-  }
+  function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
   resize();
   window.addEventListener('resize', resize);
 
   class Particle {
     constructor(initial) { this.init(initial); }
     init(initial = false) {
-      this.x      = Math.random() * canvas.width;
-      this.y      = initial ? Math.random() * canvas.height : canvas.height + 6;
-      this.r      = Math.random() * 1.8 + 0.3;
-      this.vx     = (Math.random() - 0.5) * 0.25;
-      this.vy     = -(Math.random() * 0.55 + 0.18);
-      this.alpha  = Math.random() * 0.5 + 0.12;
-      this.life   = 0;
-      this.maxL   = Math.random() * 220 + 80;
-      this.gold   = Math.random() > 0.28;
+      this.x = Math.random() * canvas.width;
+      this.y = initial ? Math.random() * canvas.height : canvas.height + 6;
+      this.r = Math.random() * 1.8 + 0.3;
+      this.vx = (Math.random() - 0.5) * 0.25;
+      this.vy = -(Math.random() * 0.55 + 0.18);
+      this.alpha = Math.random() * 0.5 + 0.12;
+      this.life = 0;
+      this.maxL = Math.random() * 220 + 80;
+      this.gold = Math.random() > 0.28;
     }
-    update() {
-      this.x += this.vx; this.y += this.vy; this.life++;
-      if (this.y < -8 || this.life > this.maxL) this.init();
-    }
+    update() { this.x += this.vx; this.y += this.vy; this.life++; if (this.y < -8 || this.life > this.maxL) this.init(); }
     draw() {
       const t = this.life / this.maxL;
       const fade = t < 0.12 ? t / 0.12 : t > 0.75 ? (1 - t) / 0.25 : 1;
       ctx.save();
       ctx.globalAlpha = this.alpha * fade;
-      ctx.fillStyle   = this.gold ? `hsl(42,65%,62%)` : `hsl(0,75%,58%)`;
-      ctx.shadowBlur  = this.r * 5;
+      ctx.fillStyle = this.gold ? `hsl(42,65%,62%)` : `hsl(0,75%,58%)`;
+      ctx.shadowBlur = this.r * 5;
       ctx.shadowColor = this.gold ? `hsl(42,70%,50%)` : `hsl(0,80%,45%)`;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
     }
   }
 
   const particles = Array.from({ length: 70 }, (_, i) => new Particle(i < 50));
-
-  (function loop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => { p.update(); p.draw(); });
-    requestAnimationFrame(loop);
-  })();
+  (function loop() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(loop); })();
 }
 
 /* =============================================
-   Navbar scroll effect
+   Navbar
    ============================================= */
 function initNavbar() {
   const nav = document.getElementById('navbar');
-  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 50);
-  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50), { passive: true });
 }
 
 /* =============================================
-   Scroll-reveal via IntersectionObserver
+   Scroll Reveal
    ============================================= */
 function initScrollReveal() {
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
-      const delay = parseInt(entry.target.dataset.delay || '0', 10);
-      setTimeout(() => entry.target.classList.add('visible'), delay);
+      setTimeout(() => entry.target.classList.add('visible'), parseInt(entry.target.dataset.delay || '0', 10));
       observer.unobserve(entry.target);
     });
   }, { threshold: 0.08 });
-
-  document.querySelectorAll('.announcement-card, .character-card, .order-card')
-    .forEach((el, i) => {
-      el.dataset.delay = (i % 5) * 90;
-      observer.observe(el);
-    });
-}
-
-/* =============================================
-   Category helper
-   ============================================= */
-function categoryClass(cat) {
-  if (cat === '重大公告') return 'cat-major';
-  if (cat === '活動')     return 'cat-event';
-  return 'cat-general';
+  document.querySelectorAll('.announcement-card, .character-card, .order-card').forEach((el, i) => {
+    el.dataset.delay = (i % 5) * 90;
+    observer.observe(el);
+  });
 }
 
 /* =============================================
    Render: Announcements
    ============================================= */
-function renderAnnouncements() {
-  const grid   = document.getElementById('announcements-grid');
-  const sorted = [...SITE_DATA.announcements].sort((a, b) => {
+function categoryClass(cat) {
+  if (cat === '重大公告') return 'cat-major';
+  if (cat === '活動') return 'cat-event';
+  return 'cat-general';
+}
+
+function renderAnnouncements(announcements) {
+  const grid = document.getElementById('announcements-grid');
+  const sorted = [...announcements].sort((a, b) => {
     if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
     return new Date(b.date) - new Date(a.date);
   });
-
   grid.innerHTML = sorted.map(a => `
     <article class="announcement-card${a.pinned ? ' pinned' : ''}">
       <div class="card-corner tl"></div><div class="card-corner tr"></div>
@@ -122,14 +100,12 @@ function renderAnnouncements() {
 /* =============================================
    Render: Characters
    ============================================= */
-function renderCharacters() {
+function renderCharacters(characters) {
   const grid = document.getElementById('characters-grid');
-
-  grid.innerHTML = SITE_DATA.characters.map(c => {
+  grid.innerHTML = characters.map(c => {
     const portrait = c.image
       ? `<img src="${c.image}" alt="${c.name}">`
       : `<div class="character-portrait-placeholder"><span class="char-icon">${c.icon || '⚔️'}</span></div>`;
-
     return `
       <article class="character-card">
         <div class="character-portrait">${portrait}</div>
@@ -150,10 +126,9 @@ function renderCharacters() {
 /* =============================================
    Render: Knight Orders
    ============================================= */
-function renderOrders() {
+function renderOrders(knightOrders) {
   const list = document.getElementById('orders-list');
-
-  list.innerHTML = SITE_DATA.knightOrders.map(o => `
+  list.innerHTML = knightOrders.map(o => `
     <article class="order-card">
       <div class="order-emblem"><span class="order-icon">${o.icon || '⚔️'}</span></div>
       <div class="order-info">
@@ -172,26 +147,33 @@ function renderOrders() {
 }
 
 /* =============================================
-   Fill static text from data.js
+   Fill Static Texts
    ============================================= */
-function fillStaticTexts() {
-  const d = SITE_DATA.site;
+function fillStaticTexts(site) {
   const get = id => document.getElementById(id);
-  if (get('hero-subtitle'))  get('hero-subtitle').textContent  = d.description;
-  if (get('footer-tagline')) get('footer-tagline').textContent = d.tagline;
-  if (get('footer-copy'))    get('footer-copy').textContent    = `© ${d.year} ${d.title} 官方公告`;
-  document.title = `${d.title} — ${d.subtitle}`;
+  if (get('hero-subtitle'))  get('hero-subtitle').textContent  = site.description;
+  if (get('footer-tagline')) get('footer-tagline').textContent = site.tagline;
+  if (get('footer-copy'))    get('footer-copy').textContent    = `© ${site.year} ${site.title} 官方公告`;
+  document.title = `${site.title} — ${site.subtitle}`;
 }
 
 /* =============================================
    Boot
    ============================================= */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initParticles();
   initNavbar();
-  fillStaticTexts();
-  renderAnnouncements();
-  renderCharacters();
-  renderOrders();
-  setTimeout(initScrollReveal, 120);
+
+  try {
+    const res = await fetch('data.json');
+    if (!res.ok) throw new Error('無法載入 data.json');
+    const data = await res.json();
+    fillStaticTexts(data.site);
+    renderAnnouncements(data.announcements);
+    renderCharacters(data.characters);
+    renderOrders(data.knightOrders);
+    setTimeout(initScrollReveal, 120);
+  } catch (err) {
+    console.error('載入資料失敗:', err);
+  }
 });

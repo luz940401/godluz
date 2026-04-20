@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理後台 — D&D 官方公告</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #0f0f18;
+      --surface:  #181824;
+      --surface2: #22223a;
+      --border:   #2e2e4a;
+      --gold:     #c9a84c;
+      --gold-dim: #8b6914;
+      --danger:   #e05050;
+      --success:  #50c878;
+      --warning:  #f0a030;
+      --text:     #e0e0f0;
+      --muted:    #9090b0;
+      --r:        6px;
+    }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.6; }
+
+    /* ── Setup ── */
+    #setup-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; }
+    .setup-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 2.5rem; width: 100%; max-width: 480px; }
+    .setup-logo { font-size: 2rem; margin-bottom: 0.5rem; }
+    .setup-box h1 { font-size: 1.3rem; color: var(--gold); margin-bottom: 0.3rem; }
+    .setup-box > p { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+
+    /* ── Form ── */
+    .field { margin-bottom: 1.25rem; }
+    .field label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+    .field input, .field textarea, .field select { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 0.6rem 0.8rem; border-radius: var(--r); font-size: 0.95rem; font-family: inherit; outline: none; transition: border-color 0.2s; }
+    .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--gold-dim); }
+    .field textarea { min-height: 85px; resize: vertical; }
+    .field small { display: block; margin-top: 0.3rem; font-size: 0.78rem; color: var(--muted); }
+    .field small a { color: var(--gold-dim); }
+    .checkbox-label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; }
+    .checkbox-label input { width: auto; }
+
+    /* ── Buttons ── */
+    .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.2rem; border: none; border-radius: var(--r); font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s, transform 0.1s; font-family: inherit; white-space: nowrap; }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary { background: var(--gold); color: #000; }
+    .btn-primary:hover:not(:disabled) { opacity: 0.85; }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover:not(:disabled) { border-color: var(--gold-dim); color: var(--gold); }
+    .btn-danger { background: transparent; color: var(--danger); border: 1px solid rgba(224,80,80,0.3); }
+    .btn-danger:hover:not(:disabled) { background: rgba(224,80,80,0.1); }
+    .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.78rem; }
+    .btn-full { width: 100%; justify-content: center; }
+
+    /* ── Header ── */
+    #admin-main { min-height: 100vh; }
+    .admin-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 58px; position: sticky; top: 0; z-index: 10; }
+    .admin-header-left { display: flex; align-items: center; gap: 0.7rem; }
+    .admin-header h1 { font-size: 1rem; font-weight: 700; color: var(--gold); }
+    .admin-header-right { display: flex; align-items: center; gap: 0.6rem; }
+    #status-bar { font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; }
+    #status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+    #status-dot.loading { background: var(--warning); animation: pulse 1s infinite; }
+    #status-dot.error { background: var(--danger); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    #btn-reset { background: none; border: none; color: var(--muted); font-size: 0.78rem; cursor: pointer; padding: 0.3rem; font-family: inherit; }
+    #btn-reset:hover { color: var(--danger); }
+
+    /* ── Tabs ── */
+    .tabs-bar { background: var(--surface); border-bottom: 1px solid var(--border); display: flex; padding: 0 1.5rem; }
+    .tab-btn { background: none; border: none; border-bottom: 2px solid transparent; padding: 0.9rem 1.1rem; color: var(--muted); font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: color 0.2s, border-color 0.2s; white-space: nowrap; }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    /* ── Content ── */
+    .admin-content { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .panel-header h2 { font-size: 1.1rem; font-weight: 700; }
+
+    /* ── Item List ── */
+    .item-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .item-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 0.9rem 1.1rem; display: flex; align-items: center; gap: 0.9rem; }
+    .item-card-body { flex: 1; min-width: 0; }
+    .item-card-title { font-weight: 600; font-size: 0.92rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.15rem; }
+    .item-card-meta { font-size: 0.78rem; color: var(--muted); }
+    .item-card-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+    .badge { font-size: 0.65rem; padding: 0.12rem 0.45rem; border-radius: 3px; font-weight: 700; }
+    .badge-major   { background: rgba(224,80,80,0.15); color: #e07070; }
+    .badge-event   { background: rgba(201,168,76,0.15); color: var(--gold); }
+    .badge-general { background: rgba(144,144,176,0.12); color: var(--muted); }
+    .badge-pinned  { background: rgba(201,168,76,0.2); color: var(--gold); }
+    .thumb { width: 46px; height: 46px; border-radius: 4px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; overflow: hidden; }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ── Image upload ── */
+    .upload-zone { border: 2px dashed var(--border); border-radius: var(--r); padding: 1.2rem; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+    .upload-zone:hover { border-color: var(--gold-dim); }
+    .upload-zone p { font-size: 0.85rem; color: var(--muted); }
+    .upload-zone small { font-size: 0.75rem; }
+    #img-preview { margin-top: 0.6rem; max-height: 160px; overflow: hidden; border-radius: 4px; display: flex; justify-content: center; }
+    #img-preview img { max-height: 160px; max-width: 100%; object-fit: contain; }
+    .current-img { font-size: 0.75rem; color: var(--muted); margin-top: 0.4rem; }
+
+    /* ── Modal ── */
+    #modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; overflow-y: auto; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    #modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; width: 100%; max-width: 500px; padding: 1.75rem; transform: translateY(-10px); transition: transform 0.2s; }
+    #modal-overlay.open .modal-box { transform: translateY(0); }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.4rem; }
+    .modal-head h3 { font-size: 1rem; font-weight: 700; color: var(--gold); }
+    .modal-close { background: none; border: none; color: var(--muted); font-size: 1.2rem; cursor: pointer; line-height: 1; }
+    .modal-foot { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.4rem; padding-top: 1.1rem; border-top: 1px solid var(--border); }
+
+    /* ── Settings ── */
+    .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 1.5rem; }
+
+    /* ── Empty ── */
+    .empty { text-align: center; padding: 3.5rem 1rem; color: var(--muted); }
+    .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+    /* ── Toast ── */
+    #toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(14px); background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 0.6rem 1.3rem; border-radius: 100px; font-size: 0.85rem; font-weight: 600; opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s; z-index: 200; white-space: nowrap; }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.ok  { color: var(--success); border-color: rgba(80,200,120,0.35); }
+    #toast.err { color: var(--danger);  border-color: rgba(224,80,80,0.35); }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ Setup Screen ═══════════════ -->
+<div id="setup-screen">
+  <div class="setup-box">
+    <div class="setup-logo">⚔️</div>
+    <h1>D&D 後台管理設定</h1>
+    <p>第一次使用需要設定 GitHub 連線，之後不需要再設定。</p>
+
+    <div class="field">
+      <label>GitHub Personal Access Token</label>
+      <input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+      <small>
+        至 <a href="https://github.com/settings/tokens/new?scopes=repo&description=DND+Admin" target="_blank">GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)</a>
+        建立，勾選 <strong>repo</strong> 權限後複製貼上
+      </small>
+    </div>
+    <div class="field">
+      <label>你的 GitHub 帳號名稱</label>
+      <input type="text" id="cfg-owner" placeholder="例: johndoe" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Repository 名稱</label>
+      <input type="text" id="cfg-repo" placeholder="例: dnd-website" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>分支名稱</label>
+      <input type="text" id="cfg-branch" value="main" autocomplete="off">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="doSetup()">連線並開始使用</button>
+  </div>
+</div>
+
+<!-- ═══════════════ Main Admin ═══════════════ -->
+<div id="admin-main" style="display:none">
+
+  <header class="admin-header">
+    <div class="admin-header-left">
+      <span>⚔️</span>
+      <h1>D&D 後台管理</h1>
+    </div>
+    <div class="admin-header-right">
+      <div id="status-bar"><div id="status-dot"></div><span id="status-text">就緒</span></div>
+      <button class="btn btn-outline" onclick="loadData()">↓ 讀取</button>
+      <button class="btn btn-primary" id="btn-save" onclick="saveData()">↑ 儲存到 GitHub</button>
+      <button id="btn-reset" onclick="resetCfg()" title="重設連線">⚙ 設定</button>
+    </div>
+  </header>
+
+  <nav class="tabs-bar">
+    <button class="tab-btn active" onclick="switchTab('ann',this)">📢 公告</button>
+    <button class="tab-btn"        onclick="switchTab('chr',this)">⚔️ 人物</button>
+    <button class="tab-btn"        onclick="switchTab('ord',this)">🏰 騎士團</button>
+    <button class="tab-btn"        onclick="switchTab('cfg',this)">⚙️ 網站設定</button>
+  </nav>
+
+  <div class="admin-content">
+
+    <!-- 公告 -->
+    <div id="tab-ann" class="tab-panel active">
+      <div class="panel-header">
+        <h2>公告管理</h2>
+        <button class="btn btn-primary" onclick="openAnn()">＋ 新增公告</button>
+      </div>
+      <div id="ann-list" class="item-list">
+        <div class="empty"><div class="empty-icon">📢</div><p>請先點「↓ 讀取」載入資料</p></div>
+      </div>
+    </div>
+
+    <!-- 人物 -->
+    <div id="tab-chr" class="tab-panel">
+      <div class="panel-header">
+        <h2>人物管理</h2>
+        <button class="btn btn-primary" onclick="openChr()">＋ 新增人物</button>
+      </div>
+      <div id="chr-list" class="item-list">
+        <div class="empty"><div class="empty-icon">⚔️</div><p>請先點「↓ 讀取」載入資料</p></div>
+      </div>
+    </div>
+
+    <!-- 騎士團 -->
+    <div id="tab-ord" class="tab-panel">
+      <div class="panel-header">
+        <h2>騎士團管理</h2>
+        <button class="btn btn-primary" onclick="openOrd()">＋ 新增騎士團</button>
+      </div>
+      <div id="ord-list" class="item-list">
+        <div class="empty"><div class="empty-icon">🏰</div><p>請先點「↓ 讀取」載入資料</p></div>
+      </div>
+    </div>
+
+    <!-- 網站設定 -->
+    <div id="tab-cfg" class="tab-panel">
+      <div class="panel-header"><h2>網站基本設定</h2></div>
+      <div class="settings-card">
+        <div class="field"><label>網站標題</label><input id="s-title"></div>
+        <div class="field"><label>副標題</label><input id="s-subtitle"></div>
+        <div class="field"><label>首頁描述文字</label><input id="s-desc"></div>
+        <div class="field"><label>頁尾標語</label><input id="s-tagline"></div>
+        <div class="field"><label>年份</label><input type="number" id="s-year"></div>
+        <button class="btn btn-primary" onclick="saveSiteSettings()">套用設定</button>
+        <small style="margin-top:0.75rem;display:block;color:var(--muted)">套用後記得點右上角「↑ 儲存到 GitHub」才會生效</small>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ Modal ═══════════════ -->
+<div id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modal-title"></h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="confirmModal()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ Toast ═══════════════ -->
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+//  State
+// ══════════════════════════════════════
+let D = null;           // full site data
+let sha = null;         // data.json SHA on GitHub
+let modalCb = null;     // modal save callback
+let imgFile = null;     // pending image upload
+
+// ══════════════════════════════════════
+//  Config (localStorage)
+// ══════════════════════════════════════
+const cfg = () => JSON.parse(localStorage.getItem('dnd-cfg') || 'null');
+
+function doSetup() {
+  const token  = document.getElementById('cfg-token').value.trim();
+  const owner  = document.getElementById('cfg-owner').value.trim();
+  const repo   = document.getElementById('cfg-repo').value.trim();
+  const branch = document.getElementById('cfg-branch').value.trim() || 'main';
+  if (!token || !owner || !repo) { alert('請填寫所有欄位'); return; }
+  localStorage.setItem('dnd-cfg', JSON.stringify({ token, owner, repo, branch }));
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('admin-main').style.display = 'block';
+  loadData();
+}
+
+function resetCfg() {
+  if (!confirm('確定要重設連線設定嗎？')) return;
+  localStorage.removeItem('dnd-cfg');
+  location.reload();
+}
+
+// ══════════════════════════════════════
+//  GitHub API
+// ══════════════════════════════════════
+async function ghFetch(path, opts = {}) {
+  const c = cfg();
+  return fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/${path}`, {
+    ...opts,
+    headers: { 'Authorization': `Bearer ${c.token}`, 'Accept': 'application/vnd.github+json', ...(opts.headers||{}) }
+  });
+}
+
+async function loadData() {
+  setStatus('loading', '讀取中...');
+  try {
+    const res = await ghFetch('data.json');
+    if (res.status === 404) { D = emptyData(); sha = null; setStatus('ok', '新檔案'); renderAll(); return; }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const file = await res.json();
+    sha = file.sha;
+    D = JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\n/g,'')))));
+    setStatus('ok', '已載入');
+    renderAll();
+    toast('資料已載入', 'ok');
+  } catch(e) {
+    setStatus('error', '讀取失敗');
+    toast('讀取失敗：' + e.message, 'err');
+  }
+}
+
+async function saveData() {
+  if (!D) { toast('請先讀取資料', 'err'); return; }
+  setStatus('loading', '儲存中...');
+  document.getElementById('btn-save').disabled = true;
+  try {
+    const c = cfg();
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(D, null, 2))));
+    const body = { message: `更新內容 [${new Date().toLocaleString('zh-TW')}]`, content, branch: c.branch };
+    if (sha) body.sha = sha;
+    const res = await ghFetch('data.json', { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.message || `HTTP ${res.status}`); }
+    const result = await res.json();
+    sha = result.content.sha;
+    setStatus('ok', '已儲存');
+    toast('✓ 已儲存，網站約 1 分鐘後更新', 'ok');
+  } catch(e) {
+    setStatus('error', '儲存失敗');
+    toast('儲存失敗：' + e.message, 'err');
+  } finally {
+    document.getElementById('btn-save').disabled = false;
+  }
+}
+
+async function uploadImg(file) {
+  const c = cfg();
+  const ext = file.name.split('.').pop().toLowerCase();
+  const path = `images/${Date.now()}.${ext}`;
+  return new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onload = async e => {
+      try {
+        const r = await ghFetch(path, { method:'PUT', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ message:`上傳圖片`, content: e.target.result.split(',')[1], branch: c.branch }) });
+        if (!r.ok) throw new Error('上傳失敗');
+        res(path);
+      } catch(err) { rej(err); }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ══════════════════════════════════════
+//  Status & Toast
+// ══════════════════════════════════════
+function setStatus(type, text) {
+  document.getElementById('status-dot').className = type === 'loading' ? 'loading' : type === 'error' ? 'error' : '';
+  document.getElementById('status-text').textContent = text;
+}
+let toastT;
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'show ' + type;
+  clearTimeout(toastT); toastT = setTimeout(() => el.className = '', 3500);
+}
+
+// ══════════════════════════════════════
+//  Tabs
+// ══════════════════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ══════════════════════════════════════
+//  Render All
+// ══════════════════════════════════════
+function renderAll() {
+  if (!D) return;
+  renderAnn(); renderChr(); renderOrd(); renderSiteSettings();
+}
+
+// ══════════════════════════════════════
+//  公告
+// ══════════════════════════════════════
+function renderAnn() {
+  const list = document.getElementById('ann-list');
+  const items = [...(D.announcements||[])].sort((a,b) => {
+    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+    return new Date(b.date) - new Date(a.date);
+  });
+  if (!items.length) { list.innerHTML = '<div class="empty"><div class="empty-icon">📢</div><p>尚無公告</p></div>'; return; }
+  const cls = c => c==='重大公告'?'badge-major':c==='活動'?'badge-event':'badge-general';
+  list.innerHTML = items.map(a => `
+    <div class="item-card">
+      <div class="item-card-body">
+        <div class="item-card-title">
+          ${a.pinned ? '<span class="badge badge-pinned">置頂</span>' : ''}
+          <span class="badge ${cls(a.category)}">${a.category}</span>
+          ${a.title}
+        </div>
+        <div class="item-card-meta">${a.date}</div>
+      </div>
+      <div class="item-card-actions">
+        <button class="btn btn-outline btn-sm" onclick="openAnn(${a.id})">編輯</button>
+        <button class="btn btn-danger btn-sm"  onclick="delAnn(${a.id})">刪除</button>
+      </div>
+    </div>`).join('');
+}
+
+function annForm(a={}) {
+  const today = new Date().toISOString().split('T')[0];
+  const sel = v => v === (a.category||'一般') ? 'selected' : '';
+  return `
+    <div class="field"><label>標題 *</label><input id="f-title" value="${x(a.title||'')}"></div>
+    <div class="field"><label>分類</label>
+      <select id="f-cat">
+        <option ${sel('重大公告')}>重大公告</option>
+        <option ${sel('活動')}>活動</option>
+        <option ${sel('一般')}>一般</option>
+      </select></div>
+    <div class="field"><label>日期</label><input type="date" id="f-date" value="${a.date||today}"></div>
+    <div class="field"><label>內容</label><textarea id="f-content">${x(a.content||'')}</textarea></div>
+    <label class="checkbox-label"><input type="checkbox" id="f-pin" ${a.pinned?'checked':''}><span>置頂顯示</span></label>`;
+}
+function readAnn(id) {
+  const t = document.getElementById('f-title').value.trim();
+  if (!t) { toast('請填寫標題','err'); return null; }
+  return { id, title:t, category:document.getElementById('f-cat').value,
+    date:document.getElementById('f-date').value, content:document.getElementById('f-content').value.trim(),
+    pinned:document.getElementById('f-pin').checked };
+}
+function openAnn(id) {
+  const a = id ? D.announcements.find(x=>x.id===id) : {};
+  openModal(id ? '編輯公告' : '新增公告', annForm(a||{}), () => {
+    const newId = id || Math.max(0,...(D.announcements||[]).map(x=>x.id))+1;
+    const item = readAnn(newId); if (!item) return false;
+    if (id) D.announcements = D.announcements.map(x=>x.id===id?item:x);
+    else D.announcements = [...(D.announcements||[]), item];
+    renderAnn();
+  });
+}
+function delAnn(id) {
+  if (!confirm('確定刪除？')) return;
+  D.announcements = D.announcements.filter(x=>x.id!==id);
+  renderAnn(); toast('已刪除');
+}
+
+// ══════════════════════════════════════
+//  人物
+// ══════════════════════════════════════
+function renderChr() {
+  const list = document.getElementById('chr-list');
+  const items = D.characters||[];
+  if (!items.length) { list.innerHTML = '<div class="empty"><div class="empty-icon">⚔️</div><p>尚無人物</p></div>'; return; }
+  const c = cfg();
+  list.innerHTML = items.map(ch => {
+    const imgSrc = ch.image ? `https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${ch.image}` : '';
+    const thumb = imgSrc
+      ? `<div class="thumb"><img src="${imgSrc}" onerror="this.parentNode.innerHTML='${ch.icon||'⚔️'}'"></div>`
+      : `<div class="thumb">${ch.icon||'⚔️'}</div>`;
+    return `<div class="item-card">
+      ${thumb}
+      <div class="item-card-body">
+        <div class="item-card-title">${ch.name}</div>
+        <div class="item-card-meta">${[ch.title,ch.class,ch.race].filter(Boolean).join(' · ')}</div>
+      </div>
+      <div class="item-card-actions">
+        <button class="btn btn-outline btn-sm" onclick="openChr(${ch.id})">編輯</button>
+        <button class="btn btn-danger btn-sm"  onclick="delChr(${ch.id})">刪除</button>
+      </div></div>`;
+  }).join('');
+}
+
+function chrForm(c={}) {
+  return `
+    <div class="field"><label>名字 *</label><input id="f-cname" value="${x(c.name||'')}"></div>
+    <div class="field"><label>稱號</label><input id="f-ctitle" value="${x(c.title||'')}"></div>
+    <div class="field"><label>職業</label><input id="f-cclass" value="${x(c.class||'')}"></div>
+    <div class="field"><label>種族</label><input id="f-crace" value="${x(c.race||'')}"></div>
+    <div class="field"><label>描述</label><textarea id="f-cdesc">${x(c.description||'')}</textarea></div>
+    <div class="field"><label>圖示 Emoji（沒有圖片時顯示）</label><input id="f-cicon" value="${x(c.icon||'⚔️')}"></div>
+    <div class="field">
+      <label>人物圖片</label>
+      <div class="upload-zone" onclick="document.getElementById('f-img').click()">
+        <p>點此選擇圖片</p><small>支援 JPG、PNG、WebP</small>
+        <input type="file" id="f-img" accept="image/*" style="display:none" onchange="previewImg(this)">
+      </div>
+      ${c.image ? `<p class="current-img">目前圖片：${c.image}</p>` : ''}
+      <div id="img-preview"></div>
+    </div>`;
+}
+
+function previewImg(input) {
+  imgFile = input.files[0];
+  if (!imgFile) return;
+  const reader = new FileReader();
+  reader.onload = e => { const b = document.getElementById('img-preview'); if(b) b.innerHTML = `<img src="${e.target.result}">`; };
+  reader.readAsDataURL(imgFile);
+}
+
+function openChr(id) {
+  imgFile = null;
+  const c = id ? D.characters.find(x=>x.id===id) : {};
+  openModal(id ? '編輯人物' : '新增人物', chrForm(c||{}), async () => {
+    const name = document.getElementById('f-cname').value.trim();
+    if (!name) { toast('請填寫名字','err'); return false; }
+    let image = (c||{}).image || '';
+    if (imgFile) {
+      setStatus('loading','上傳圖片中...');
+      try { image = await uploadImg(imgFile); } catch(e) { toast('圖片上傳失敗','err'); setStatus('error','失敗'); return false; }
+    }
+    const newId = id || Math.max(0,...(D.characters||[]).map(x=>x.id))+1;
+    const item = { id:newId, name, title:document.getElementById('f-ctitle').value.trim(),
+      class:document.getElementById('f-cclass').value.trim(), race:document.getElementById('f-crace').value.trim(),
+      description:document.getElementById('f-cdesc').value.trim(),
+      icon:document.getElementById('f-cicon').value.trim()||'⚔️', image };
+    if (id) D.characters = D.characters.map(x=>x.id===id?item:x);
+    else D.characters = [...(D.characters||[]), item];
+    renderChr(); imgFile = null;
+  });
+}
+function delChr(id) {
+  if (!confirm('確定刪除？')) return;
+  D.characters = D.characters.filter(x=>x.id!==id);
+  renderChr(); toast('已刪除');
+}
+
+// ══════════════════════════════════════
+//  騎士團
+// ══════════════════════════════════════
+function renderOrd() {
+  const list = document.getElementById('ord-list');
+  const items = D.knightOrders||[];
+  if (!items.length) { list.innerHTML = '<div class="empty"><div class="empty-icon">🏰</div><p>尚無騎士團</p></div>'; return; }
+  list.innerHTML = items.map(o => `
+    <div class="item-card">
+      <div class="thumb">${o.icon||'🏰'}</div>
+      <div class="item-card-body">
+        <div class="item-card-title">${o.name}</div>
+        <div class="item-card-meta">${o.founding} · 成員 ${o.memberCount} 人</div>
+      </div>
+      <div class="item-card-actions">
+        <button class="btn btn-outline btn-sm" onclick="openOrd(${o.id})">編輯</button>
+        <button class="btn btn-danger btn-sm"  onclick="delOrd(${o.id})">刪除</button>
+      </div></div>`).join('');
+}
+
+function ordForm(o={}) {
+  return `
+    <div class="field"><label>名稱 *</label><input id="f-oname" value="${x(o.name||'')}"></div>
+    <div class="field"><label>成立年份</label><input id="f-ofound" value="${x(o.founding||'')}" placeholder="成立於第X紀元 XXX 年"></div>
+    <div class="field"><label>座右銘</label><input id="f-omotto" value="${x(o.motto||'')}"></div>
+    <div class="field"><label>描述</label><textarea id="f-odesc">${x(o.description||'')}</textarea></div>
+    <div class="field"><label>成員人數</label><input type="number" id="f-omem" value="${o.memberCount||0}"></div>
+    <div class="field"><label>圖示 Emoji</label><input id="f-oicon" value="${x(o.icon||'🏰')}"></div>`;
+}
+function readOrd(id) {
+  const name = document.getElementById('f-oname').value.trim();
+  if (!name) { toast('請填寫名稱','err'); return null; }
+  return { id, name, founding:document.getElementById('f-ofound').value.trim(),
+    motto:document.getElementById('f-omotto').value.trim(), description:document.getElementById('f-odesc').value.trim(),
+    memberCount:parseInt(document.getElementById('f-omem').value)||0,
+    icon:document.getElementById('f-oicon').value.trim()||'🏰' };
+}
+function openOrd(id) {
+  const o = id ? D.knightOrders.find(x=>x.id===id) : {};
+  openModal(id ? '編輯騎士團' : '新增騎士團', ordForm(o||{}), () => {
+    const newId = id || Math.max(0,...(D.knightOrders||[]).map(x=>x.id))+1;
+    const item = readOrd(newId); if (!item) return false;
+    if (id) D.knightOrders = D.knightOrders.map(x=>x.id===id?item:x);
+    else D.knightOrders = [...(D.knightOrders||[]), item];
+    renderOrd();
+  });
+}
+function delOrd(id) {
+  if (!confirm('確定刪除？')) return;
+  D.knightOrders = D.knightOrders.filter(x=>x.id!==id);
+  renderOrd(); toast('已刪除');
+}
+
+// ══════════════════════════════════════
+//  網站設定
+// ══════════════════════════════════════
+function renderSiteSettings() {
+  const s = D.site||{};
+  ['title','subtitle','desc','tagline','year'].forEach(k => {
+    const el = document.getElementById('s-'+k);
+    if (el) el.value = s[k==='desc'?'description':k] ?? '';
+  });
+}
+function saveSiteSettings() {
+  if (!D) return;
+  D.site = { title:document.getElementById('s-title').value, subtitle:document.getElementById('s-subtitle').value,
+    description:document.getElementById('s-desc').value, tagline:document.getElementById('s-tagline').value,
+    year:parseInt(document.getElementById('s-year').value)||new Date().getFullYear() };
+  toast('設定已套用（記得點「儲存到 GitHub」）');
+}
+
+// ══════════════════════════════════════
+//  Modal
+// ══════════════════════════════════════
+function openModal(title, body, cb) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal-overlay').classList.add('open');
+  modalCb = cb;
+}
+async function confirmModal() {
+  if (!modalCb) return;
+  const r = await modalCb();
+  if (r === false) return;
+  closeModal();
+  setStatus('ok','已修改（未儲存）');
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); modalCb = null; imgFile = null; }
+function handleOverlayClick(e) { if (e.target.id==='modal-overlay') closeModal(); }
+
+// ══════════════════════════════════════
+//  Utils
+// ══════════════════════════════════════
+function x(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function emptyData() { return { site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026}, announcements:[], characters:[], knightOrders:[] }; }
+
+// ══════════════════════════════════════
+//  Init
+// ══════════════════════════════════════
+if (cfg()) {
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('admin-main').style.display = 'block';
+  loadData();
+}
+</script>
+</body>
+</html>
