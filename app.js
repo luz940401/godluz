@@ -189,6 +189,22 @@ function roleClass(r) {
 }
 
 /* ── Drag Scroll ── */
+function initMemberSwipe(orderId, memberId) {
+  const panel = document.querySelector('.detail-panel');
+  if (!panel) return;
+  let tx = 0;
+  panel.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true, once:true});
+  panel.addEventListener('touchend', e => {
+    const dx = tx - e.changedTouches[0].clientX;
+    if (Math.abs(dx) < 50) return;
+    const o = siteData.knightOrders.find(x=>x.id===orderId);
+    if (!o?.members) return;
+    const idx = o.members.findIndex(x=>x.id===memberId);
+    if (dx > 0 && idx < o.members.length-1) replaceDetail('member', o.members[idx+1].id, {orderId});
+    else if (dx < 0 && idx > 0) replaceDetail('member', o.members[idx-1].id, {orderId});
+  }, {once:true});
+}
+
 function initDragScroll(el) {
   let down = false, startX, scrollLeft;
   el.addEventListener('mousedown', e => { down=true; el.classList.add('dragging'); startX=e.pageX-el.offsetLeft; scrollLeft=el.scrollLeft; });
@@ -212,6 +228,10 @@ function popDetail() {
   detailStack.pop();
   if (detailStack.length===0) closeDetail(); else renderDetail();
 }
+function replaceDetail(type, id, extra={}) {
+  detailStack[detailStack.length-1] = {type, id, extra};
+  renderDetail();
+}
 function closeDetail() {
   detailStack = [];
   document.getElementById('detail-overlay').classList.remove('open');
@@ -222,7 +242,7 @@ function handleDetailOverlayClick(e) { if(e.target.id==='detail-overlay') closeD
 function renderDetail() {
   const {type, id, extra} = detailStack[detailStack.length-1];
   const hasBack = detailStack.length > 1;
-  let html = '';
+  let html = ''; let midNav = '';
 
   if (type === 'character') {
     const c = siteData.characters.find(x=>x.id===id);
@@ -288,14 +308,22 @@ function renderDetail() {
   } else if (type === 'member') {
     const o = siteData.knightOrders.find(x=>x.id===extra.orderId);
     const m = o?.members?.find(x=>x.id===id);
-    if (m) {
+    if (m && o?.members) {
+      const idx = o.members.findIndex(x=>x.id===id);
+      const prev = idx > 0 ? o.members[idx-1] : null;
+      const next = idx < o.members.length-1 ? o.members[idx+1] : null;
+      midNav = `<div class="member-swipe-nav">
+        <button class="member-nav-btn${prev?'':' disabled'}" ${prev?`onclick="replaceDetail('member',${prev.id},{orderId:${o.id}})"`:''}>‹</button>
+        <span class="member-nav-pos">${idx+1} / ${o.members.length}</span>
+        <button class="member-nav-btn${next?'':' disabled'}" ${next?`onclick="replaceDetail('member',${next.id},{orderId:${o.id}})"`:''}>›</button>
+      </div>`;
       const portrait = m.image
         ? `<div class="detail-hero-img"><img src="${m.image}" alt="${m.name}"></div>`
         : `<div class="detail-portrait-placeholder">${m.name.charAt(0)||'?'}</div>`;
       html = `${portrait}<div class="detail-body">
         <div class="detail-badges">
           ${o?`<span class="character-badge">${o.name}</span>`:''}
-          ${m.role?`<span class="character-badge">${m.role}</span>`:''}
+          ${m.role?`<span class="member-role-badge ${roleClass(m.role)}">${m.role}</span>`:''}
           ${m.class?`<span class="character-badge">${m.class}</span>`:''}
         </div>
         <h1 class="detail-name">${m.name}</h1>
@@ -317,11 +345,13 @@ function renderDetail() {
   document.getElementById('detail-content').innerHTML = `
     <div class="detail-nav-bar">
       ${hasBack?`<button class="detail-back-btn" onclick="popDetail()">← 返回</button>`:'<div></div>'}
+      ${midNav}
       <button class="detail-close-btn" onclick="closeDetail()">✕</button>
     </div>
     ${html}`;
   const ms = document.querySelector('.members-scroll');
   if (ms) initDragScroll(ms);
+  if (type === 'member') initMemberSwipe(extra.orderId, id);
 }
 
 /* ── Map Lightbox ── */
