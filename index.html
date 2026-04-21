@@ -21,8 +21,8 @@
         <li><a href="#announcements" onclick="closeNav()">公告</a></li>
         <li><a href="#worldmap" onclick="closeNav()">世界地圖</a></li>
         <li><a href="#patchnotes" onclick="closeNav()">改版資訊</a></li>
-        <li><a href="#characters" onclick="closeNav()">英雄名錄</a></li>
-        <li><a href="#orders" onclick="closeNav()">騎士團</a></li>
+        <li><a href="#characters" onclick="closeNav()">已解鎖地區</a></li>
+        <li><a href="#orders" onclick="closeNav()">已遭遇組織</a></li>
         <li><a href="#clues" onclick="closeNav()">線索清單</a></li>
       </ul>
       <button class="nav-hamburger" id="hamburger" onclick="toggleNav()" aria-label="選單">
@@ -97,24 +97,24 @@
       <div class="patchnotes-list" id="patchnotes-list"></div>
     </section>
 
-    <!-- 英雄名錄 -->
+    <!-- 已解鎖地區 -->
     <section id="characters" class="section section-alt">
       <div class="section-header">
         <div class="section-divider"></div>
-        <h2 class="section-title">英雄名錄</h2>
+        <h2 class="section-title">已解鎖地區</h2>
         <div class="section-divider right"></div>
       </div>
-      <div class="characters-grid" id="characters-grid"></div>
+      <div id="characters-grid"></div>
     </section>
 
-    <!-- 騎士團 -->
+    <!-- 已遭遇組織 -->
     <section id="orders" class="section">
       <div class="section-header">
         <div class="section-divider"></div>
-        <h2 class="section-title">騎士團</h2>
+        <h2 class="section-title">已遭遇組織</h2>
         <div class="section-divider right"></div>
       </div>
-      <div class="orders-ranked" id="orders-list"></div>
+      <div id="orders-list"></div>
     </section>
 
     <!-- 線索清單 -->

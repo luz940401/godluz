@@ -240,30 +240,83 @@ body::before {
 .card-link:hover::after { transform: translateX(3px); }
 
 /* =============================================
-   World Map
+   World Maps
    ============================================= */
 #map-container { max-width: 1280px; margin: 0 auto; position: relative; }
-.map-wrap {
-  border: 1px solid var(--border); overflow: hidden; position: relative; cursor: zoom-in;
-  background: var(--deep);
-}
-.map-wrap::before {
-  content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
-  box-shadow: inset 0 0 60px rgba(201,168,76,0.06), inset 0 0 120px rgba(0,0,0,0.4);
-}
-.map-img { width: 100%; height: auto; display: block; transition: transform 0.6s ease; }
-.map-wrap:hover .map-img { transform: scale(1.015); }
-.map-caption {
-  font-family: var(--font-heading); font-size: 0.75rem; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--stone); text-align: center;
-  padding: 1rem; border-top: 1px solid var(--border);
-}
+.maps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1.5rem; }
+.map-card { cursor: zoom-in; overflow: hidden; border: 1px solid var(--border); transition: border-color 0.3s, transform 0.35s; }
+.map-card:hover { border-color: rgba(201,168,76,0.35); transform: translateY(-3px); }
+.map-card-wrap { position: relative; aspect-ratio: 16/9; overflow: hidden; background: var(--deep); }
+.map-card-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.55s; }
+.map-card:hover .map-card-img { transform: scale(1.04); }
+.map-card-dimmer { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.38)); pointer-events: none; }
+.map-card-foot { padding: 0.8rem 1.2rem; background: var(--surface); border-top: 1px solid var(--border); display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.map-card-name { font-family: var(--font-heading); font-size: 0.92rem; font-weight: 600; color: var(--gold); letter-spacing: 0.1em; }
+.map-card-caption { font-size: 0.78rem; color: var(--stone); font-style: italic; }
 .map-placeholder {
   width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, #151228, #0d0c1b);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
   font-family: var(--font-heading); font-size: 0.85rem; letter-spacing: 0.15em;
   color: var(--stone); text-transform: uppercase; border: 1px solid var(--border);
 }
+
+/* =============================================
+   Region Accordion (Characters & Organizations)
+   ============================================= */
+.region-accordion { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.6rem; }
+.region-accordion-item {
+  border: 1px solid var(--border);
+  background: linear-gradient(145deg, #16132a, #0e0d1e);
+  overflow: hidden;
+  opacity: 0; transform: translateY(20px);
+  transition: border-color 0.3s;
+}
+.region-accordion-item.visible { animation: cardReveal 0.55s cubic-bezier(0.16,1,0.3,1) forwards; }
+.region-accordion-item.open { border-color: rgba(201,168,76,0.35); }
+
+/* Header */
+.region-acc-header {
+  position: relative; min-height: 76px; display: flex; align-items: center;
+  cursor: pointer; user-select: none;
+  transition: background 0.25s;
+}
+.region-acc-header:hover { background: rgba(201,168,76,0.04); }
+.region-acc-banner { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.region-acc-banner img { width: 100%; height: 100%; object-fit: cover; opacity: 0.22; display: block; transition: opacity 0.3s; }
+.region-acc-header:hover .region-acc-banner img { opacity: 0.32; }
+.region-acc-dimmer { position: absolute; inset: 0; background: linear-gradient(to right, rgba(14,13,30,0.6) 0%, rgba(14,13,30,0.1) 100%); }
+.region-acc-info { position: relative; z-index: 1; flex: 1; display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.5rem; }
+.region-acc-icon { font-size: 2rem; flex-shrink: 0; filter: drop-shadow(0 0 8px rgba(201,168,76,0.4)); }
+.region-acc-name { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; color: var(--gold); letter-spacing: 0.05em; }
+.region-acc-sub { font-size: 0.78rem; color: var(--stone); margin-top: 0.2rem; max-width: 480px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.region-acc-count { font-family: var(--font-heading); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--stone); background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 0.2rem 0.6rem; white-space: nowrap; flex-shrink: 0; }
+.region-acc-arrow { position: relative; z-index: 1; padding: 0 1.5rem; color: var(--gold); opacity: 0.55; font-size: 0.85rem; flex-shrink: 0; transition: transform 0.35s cubic-bezier(0.16,1,0.3,1); }
+.region-accordion-item.open .region-acc-arrow { transform: rotate(180deg); opacity: 0.9; }
+
+/* Body (grid-rows trick for smooth expand) */
+.region-acc-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s cubic-bezier(0.16,1,0.3,1); }
+.region-acc-body > div { overflow: hidden; min-height: 0; }
+.region-accordion-item.open .region-acc-body { grid-template-rows: 1fr; }
+.acc-chars { padding: 1.5rem; border-top: 1px solid var(--border); }
+.acc-empty { color: var(--stone); font-size: 0.88rem; text-align: center; padding: 2rem 1rem; letter-spacing: 0.1em; font-family: var(--font-heading); }
+
+/* Organization cards inside accordion */
+.org-inner-list { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--border); }
+.org-inner-card { display: grid; grid-template-columns: 72px 1fr 32px; align-items: center; gap: 1rem; padding: 1rem 1.5rem; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; }
+.org-inner-card:hover { background: rgba(201,168,76,0.06); }
+.org-inner-card:last-child { border-bottom: none; }
+.org-inner-badge { text-align: center; }
+.org-inner-badge-img { width: 52px; height: 52px; object-fit: contain; }
+.org-inner-badge-emoji { font-size: 2rem; display: block; }
+.org-inner-name { font-family: var(--font-heading); font-size: 0.98rem; font-weight: 700; color: var(--cream); margin-bottom: 0.2rem; }
+.org-inner-motto { font-size: 0.76rem; color: var(--gold); opacity: 0.85; font-style: italic; margin-bottom: 0.2rem; }
+.org-inner-desc { font-size: 0.8rem; color: var(--stone); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 480px; }
+.org-inner-members { font-size: 0.72rem; color: var(--stone); margin-top: 0.3rem; letter-spacing: 0.08em; }
+.org-inner-arrow { color: var(--gold); opacity: 0.5; font-size: 1.2rem; text-align: right; }
+.org-inner-card:hover .org-inner-arrow { opacity: 1; }
+
+/* Legacy: keep .region-chars-grid for detail panel use */
+.region-chars-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1rem; }
 
 /* =============================================
    Patch Notes

@@ -52,7 +52,7 @@ function initScrollReveal() {
       obs.unobserve(e.target);
     });
   },{threshold:0.08});
-  document.querySelectorAll('.announcement-card,.character-card,.order-ranked-card,.clue-card,.patchnote-card,.region-card')
+  document.querySelectorAll('.announcement-card,.character-card,.order-ranked-card,.clue-card,.patchnote-card,.region-accordion-item')
     .forEach((el,i)=>{ el.dataset.delay=(i%5)*90; obs.observe(el); });
 }
 
@@ -137,21 +137,30 @@ function renderCharacters(list, regions) {
   const el = document.getElementById('characters-grid');
   if (!el) return;
   if (regions && regions.length) {
-    el.className = 'regions-grid';
+    el.className = 'region-accordion';
     const regionMap = {};
     regions.forEach(r => { regionMap[r.id] = []; });
     list.forEach(c => { if (c.regionId && regionMap[c.regionId]) regionMap[c.regionId].push(c); });
     el.innerHTML = regions.map(r => {
       const rc = regionMap[r.id]||[];
+      const inner = rc.length
+        ? `<div class="characters-grid acc-chars">${rc.map(c=>charCardHtml(c)).join('')}</div>`
+        : `<p class="acc-empty">此地區尚無角色</p>`;
       return `
-        <div class="region-card" onclick="openDetail('region',${r.id})">
-          ${r.image?`<div class="region-card-banner"><img src="${r.image}" alt="${r.name}"><div class="region-card-dimmer"></div></div>`:''}
-          <div class="region-card-body">
-            <div class="region-card-icon">${r.icon||'🏘️'}</div>
-            <div class="region-card-name">${r.name}</div>
-            <div class="region-card-count">${rc.length} 名角色</div>
-            <div class="region-card-previews">${rc.slice(0,5).map(c=>`<span title="${c.name}">${c.icon||'⚔️'}</span>`).join('')}</div>
+        <div class="region-accordion-item" id="racc-${r.id}">
+          <div class="region-acc-header" onclick="toggleRegion(${r.id})">
+            ${r.image?`<div class="region-acc-banner"><img src="${r.image}" alt="${r.name}"><div class="region-acc-dimmer"></div></div>`:''}
+            <div class="region-acc-info">
+              <span class="region-acc-icon">${r.icon||'🏘️'}</span>
+              <div>
+                <div class="region-acc-name">${r.name}</div>
+                ${r.description?`<div class="region-acc-sub">${r.description}</div>`:''}
+              </div>
+              <span class="region-acc-count">${rc.length} 名角色</span>
+            </div>
+            <div class="region-acc-arrow">▼</div>
           </div>
+          <div class="region-acc-body"><div>${inner}</div></div>
         </div>`;
     }).join('');
   } else {
@@ -159,30 +168,108 @@ function renderCharacters(list, regions) {
     el.innerHTML = list.map(c => charCardHtml(c)).join('');
   }
 }
+function toggleRegion(id) {
+  const item = document.getElementById('racc-'+id);
+  if (!item) return;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.region-accordion-item.open').forEach(el=>el.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
 
 /* ── Knight Orders ── */
-function renderOrders(list) {
+function orgCardHtml(o) {
+  const badge = o.badge
+    ? `<img src="${o.badge}" class="org-inner-badge-img" alt="${o.name}">`
+    : `<span class="org-inner-badge-emoji">${o.icon||'🏰'}</span>`;
+  return `
+    <div class="org-inner-card" onclick="openDetail('order',${o.id})">
+      <div class="org-inner-badge">${badge}</div>
+      <div class="org-inner-info">
+        <div class="org-inner-name">${o.name}</div>
+        ${o.motto?`<div class="org-inner-motto">${o.motto}</div>`:''}
+        <div class="org-inner-desc">${(o.description||'').split('\n')[0]}</div>
+        <div class="org-inner-members">⚔ ${(o.members||[]).length} 名成員</div>
+      </div>
+      <div class="org-inner-arrow">›</div>
+    </div>`;
+}
+function renderOrders(list, regions) {
   const el = document.getElementById('orders-list');
   if (!el) return;
-  const sorted = [...list].sort((a,b)=>a.rank-b.rank);
-  el.innerHTML = sorted.map(o=>{
-    const rc = o.rank<=3?`rank-${o.rank}`:'rank-other';
-    const badge = o.badge
-      ? `<img src="${o.badge}" class="order-badge-img" alt="${o.name}">`
-      : `<span class="order-badge-emoji">${o.icon||'🏰'}</span>`;
-    return `
-      <div class="order-ranked-card ${rc}" onclick="openDetail('order',${o.id})">
-        <div class="order-rank-col"><div class="rank-num">${o.rank}</div></div>
-        <div class="order-badge-col">${badge}</div>
-        <div class="order-info-col">
-          <div class="order-ranked-name">${o.name}</div>
-          <div class="order-ranked-motto">${o.motto}</div>
-          <div class="order-ranked-desc">${o.description.split('\n')[0]}</div>
-          <div class="order-member-count">⚔ ${(o.members||[]).length} 名成員</div>
-        </div>
-        <div class="order-arrow-col">→</div>
-      </div>`;
-  }).join('');
+  if (regions && regions.length) {
+    el.className = 'region-accordion';
+    const regionMap = {};
+    regions.forEach(r => { regionMap[r.id] = []; });
+    const noRegion = [];
+    list.forEach(o => {
+      if (o.regionId && regionMap[o.regionId]) regionMap[o.regionId].push(o);
+      else noRegion.push(o);
+    });
+    let html = regions.map(r => {
+      const orgs = regionMap[r.id]||[];
+      const inner = orgs.length
+        ? `<div class="org-inner-list">${orgs.map(o=>orgCardHtml(o)).join('')}</div>`
+        : `<p class="acc-empty">此地區尚無組織</p>`;
+      return `
+        <div class="region-accordion-item" id="oacc-${r.id}">
+          <div class="region-acc-header" onclick="toggleOrgRegion(${r.id})">
+            ${r.image?`<div class="region-acc-banner"><img src="${r.image}" alt="${r.name}"><div class="region-acc-dimmer"></div></div>`:''}
+            <div class="region-acc-info">
+              <span class="region-acc-icon">${r.icon||'🏘️'}</span>
+              <div>
+                <div class="region-acc-name">${r.name}</div>
+                ${r.description?`<div class="region-acc-sub">${r.description}</div>`:''}
+              </div>
+              <span class="region-acc-count">${orgs.length} 個組織</span>
+            </div>
+            <div class="region-acc-arrow">▼</div>
+          </div>
+          <div class="region-acc-body"><div>${inner}</div></div>
+        </div>`;
+    }).join('');
+    if (noRegion.length) {
+      html += `
+        <div class="region-accordion-item" id="oacc-0">
+          <div class="region-acc-header" onclick="toggleOrgRegion(0)">
+            <div class="region-acc-info">
+              <span class="region-acc-icon">🏰</span>
+              <div><div class="region-acc-name">未分類組織</div></div>
+              <span class="region-acc-count">${noRegion.length} 個組織</span>
+            </div>
+            <div class="region-acc-arrow">▼</div>
+          </div>
+          <div class="region-acc-body"><div><div class="org-inner-list">${noRegion.map(o=>orgCardHtml(o)).join('')}</div></div></div>
+        </div>`;
+    }
+    el.innerHTML = html;
+  } else {
+    el.className = 'orders-ranked';
+    el.innerHTML = [...list].sort((a,b)=>a.rank-b.rank).map(o=>{
+      const rc = o.rank<=3?`rank-${o.rank}`:'rank-other';
+      const badge = o.badge
+        ? `<img src="${o.badge}" class="order-badge-img" alt="${o.name}">`
+        : `<span class="order-badge-emoji">${o.icon||'🏰'}</span>`;
+      return `
+        <div class="order-ranked-card ${rc}" onclick="openDetail('order',${o.id})">
+          <div class="order-rank-col"><div class="rank-num">${o.rank}</div></div>
+          <div class="order-badge-col">${badge}</div>
+          <div class="order-info-col">
+            <div class="order-ranked-name">${o.name}</div>
+            <div class="order-ranked-motto">${o.motto}</div>
+            <div class="order-ranked-desc">${o.description.split('\n')[0]}</div>
+            <div class="order-member-count">⚔ ${(o.members||[]).length} 名成員</div>
+          </div>
+          <div class="order-arrow-col">→</div>
+        </div>`;
+    }).join('');
+  }
+}
+function toggleOrgRegion(id) {
+  const item = document.getElementById('oacc-'+id);
+  if (!item) return;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('[id^="oacc-"].open').forEach(el=>el.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
 }
 
 /* ── Clues ── */
@@ -438,7 +525,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderPatchNotes(siteData.patchNotes || []);
     renderAnnouncements(siteData.announcements || []);
     renderCharacters(siteData.characters || [], siteData.regions || []);
-    renderOrders(siteData.knightOrders || []);
+    renderOrders(siteData.knightOrders || [], siteData.regions || []);
     renderClues(siteData.clues || []);
     setTimeout(initScrollReveal, 120);
   } catch(err) {

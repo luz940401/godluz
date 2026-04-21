@@ -381,7 +381,7 @@ function x(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').repl
 function nextId(arr){return arr&&arr.length?Math.max(...arr.map(a=>a.id))+1:1;}
 function prevImg(input,previewId){
   const f=input.files[0]; if(!f) return;
-  if(previewId==='img-preview'||previewId==='mem-img-preview'||previewId==='reg-img-preview') imgFile=f;
+  if(previewId==='img-preview'||previewId==='mem-img-preview'||previewId==='reg-img-preview'||previewId==='ord-img-preview') imgFile=f;
   if(previewId==='map-prev') mapFile=f;
   const rd=new FileReader();
   rd.onload=e=>{const b=id(previewId);if(b)b.innerHTML=`<img src="${e.target.result}" style="max-width:100%;max-height:160px;object-fit:contain;border-radius:4px">`};
@@ -566,16 +566,19 @@ function rOrd(){
   el.innerHTML=items.map(o=>`<div class="icard"><div class="thumb">${o.icon||'🏰'}</div><div class="ibody"><div class="ititle"><span class="badge b-event">第${o.rank}位</span>${x(o.name)}</div><div class="imeta">${o.founding} · 成員 ${(o.members||[]).length} 人</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oOrd(${o.id})">編輯</button><button class="btn btn-outline btn-sm" onclick="openMembers(${o.id})">成員</button><button class="btn btn-danger btn-sm" onclick="dOrd(${o.id})">刪除</button></div></div>`).join('');
 }
 function ordForm(o={}){
+  const regs=D.regions||[];
+  const regOpts=`<option value="">（無）</option>`+regs.map(r=>`<option value="${r.id}"${o.regionId===r.id?' selected':''}>${x(r.name)}</option>`).join('');
   return `<div class="field"><label>名稱 *</label><input id="f-oname" value="${x(o.name||'')}"></div>
+  <div class="field"><label>所屬地區</label><select id="f-oregion">${regOpts}</select></div>
   <div class="field"><label>排名（數字，1=最高）</label><input type="number" id="f-rank" value="${o.rank||1}" min="1"></div>
   <div class="field"><label>成立年份</label><input id="f-found" value="${x(o.founding||'')}" placeholder="成立於第X紀元 XXX 年"></div>
   <div class="field"><label>座右銘</label><input id="f-motto" value="${x(o.motto||'')}"></div>
   <div class="field"><label>描述（可換行）</label><textarea id="f-odesc">${x(o.description||'')}</textarea></div>
   <div class="field"><label>圖示 Emoji</label><input id="f-oicon" value="${x(o.icon||'🏰')}"></div>
-  <div class="field"><label>騎士團徽章圖片</label>
-    <div class="upzone" onclick="document.getElementById('ord-badge-file').click()"><p>點此上傳徽章</p><small>建議使用正方形圖片</small><input type="file" id="ord-badge-file" accept="image/*" style="display:none" onchange="prevImg(this,'img-preview')"></div>
+  <div class="field"><label>組織徽章圖片</label>
+    <div class="upzone" onclick="document.getElementById('ord-badge-file').click()"><p>點此上傳徽章</p><small>建議使用正方形圖片</small><input type="file" id="ord-badge-file" accept="image/*" style="display:none" onchange="prevImg(this,'ord-img-preview')"></div>
     ${o.badge?`<p class="cur-img">目前：${o.badge}</p>`:''}
-    <div id="img-preview"></div>
+    <div id="ord-img-preview"></div>
   </div>`;
 }
 function oOrd(id_){
@@ -586,7 +589,8 @@ function oOrd(id_){
     let badge=(o||{}).badge||'';
     if(imgFile){setS('loading','上傳徽章...');try{badge=await upImg(imgFile,'images');}catch(e){toast('徽章上傳失敗','err');setS('error','失敗');return false}finally{imgFile=null;}}
     const nid=id_||nextId(D.knightOrders);
-    const item={id:nid,rank:parseInt(id('f-rank').value)||1,name,founding:id('f-found').value.trim(),motto:id('f-motto').value.trim(),description:id('f-odesc').value.trim(),icon:id('f-oicon').value.trim()||'🏰',badge,members:(id_?(D.knightOrders.find(x=>x.id===id_)||{}).members:[])||[]};
+    const regVal=id('f-oregion')&&id('f-oregion').value;const regionId=regVal?parseInt(regVal):null;
+    const item={id:nid,rank:parseInt(id('f-rank').value)||1,name,regionId,founding:id('f-found').value.trim(),motto:id('f-motto').value.trim(),description:id('f-odesc').value.trim(),icon:id('f-oicon').value.trim()||'🏰',badge,members:(id_?(D.knightOrders.find(x=>x.id===id_)||{}).members:[])||[]};
     if(id_)D.knightOrders=D.knightOrders.map(x=>x.id===id_?item:x);else D.knightOrders=[...(D.knightOrders||[]),item];
     rOrd();imgFile=null;
   });
