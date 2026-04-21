@@ -45,6 +45,7 @@
       "title": "狂帝",
       "class": "魔導師",
       "race": "半精靈",
+      "regionId": 1,
       "summary": "好奇嗎?",
       "description": "想看什麼",
       "icon": "⚔️",
@@ -56,6 +57,7 @@
       "title": "魔導帝",
       "class": "魔導師",
       "race": "人類",
+      "regionId": 1,
       "summary": "怎麼 ?",
       "description": "找我 ?",
       "icon": "⚔️",
@@ -151,6 +153,13 @@
       "icon": "🏘️",
       "description": "123",
       "image": "images/1776754512182.jpg"
+    },
+    {
+      "id": 2,
+      "name": "火剪城",
+      "icon": "火",
+      "description": "",
+      "image": "images/1776755347356.jpg"
     }
   ]
 }
