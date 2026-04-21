@@ -203,7 +203,15 @@
       "image": "images/1776755527305.jpg"
     }
   ],
-  "compendium": [],
+  "compendium": [
+    {
+      "id": 1,
+      "name": "傲慢",
+      "category": "七宗罪",
+      "description": "",
+      "image": ""
+    }
+  ],
   "worldReports": [
     {
       "id": 1,
