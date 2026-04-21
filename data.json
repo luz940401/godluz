@@ -189,6 +189,13 @@
       "category": "七宗罪",
       "description": "",
       "image": "images/1776779973464.png"
+    },
+    {
+      "id": 3,
+      "name": "貪婪",
+      "category": "七宗罪",
+      "description": "",
+      "image": "images/1776779986509.png"
     }
   ],
   "worldReports": [],
