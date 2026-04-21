@@ -206,7 +206,7 @@ function renderOrders(list, regions) {
       else noRegion.push(o);
     });
     let html = regions.map(r => {
-      const orgs = regionMap[r.id]||[];
+      const orgs = (regionMap[r.id]||[]).filter(o=>!o.parentId);
       const inner = orgs.length
         ? `<div class="org-inner-list">${orgs.map(o=>orgCardHtml(o)).join('')}</div>`
         : `<p class="acc-empty">此地區尚無組織</p>`;
@@ -400,19 +400,34 @@ function renderDetail() {
           <div class="member-role-badge ${roleClass(m.role)}">${m.role||'成員'}</div>
           ${m.class?`<div class="member-class-tag">${m.class}</div>`:''}
         </div>`).join('');
+      const subOrgs = (siteData.knightOrders||[]).filter(s=>s.parentId===o.id);
+      const subOrgsHtml = subOrgs.length ? `
+        <div class="detail-divider"></div>
+        <h2 class="detail-section-title">下屬組織 (${subOrgs.length})</h2>
+        <div class="suborgs-list">${subOrgs.map(s=>`
+          <div class="suborg-card" onclick="pushDetail('order',${s.id})">
+            <span class="suborg-icon">${s.icon||'🏰'}</span>
+            <div class="suborg-info">
+              <div class="suborg-name">${s.name}</div>
+              <div class="suborg-meta">${(s.members||[]).length} 名成員${s.motto?' · '+s.motto:''}</div>
+            </div>
+            <span class="suborg-arrow">›</span>
+          </div>`).join('')}
+        </div>` : '';
       html = `
         <div class="detail-order-header">
           ${badge}
           <div>
-            <div class="order-rank-display" style="color:${rc}">騎士團排名 第 ${o.rank} 位</div>
+            <div class="order-rank-display" style="color:${rc}">組織排名 第 ${o.rank} 位</div>
             <h1 class="detail-name">${o.name}</h1>
-            <p class="detail-title-tag">${o.founding}</p>
+            <p class="detail-title-tag">${o.founding||''}</p>
           </div>
         </div>
         <div class="detail-body">
-          <p class="order-motto-display">${o.motto}</p>
+          ${o.motto?`<p class="order-motto-display">${o.motto}</p>`:''}
           <div class="detail-divider"></div>
           <div class="detail-article">${(o.description||'').replace(/\n/g,'<br>')}</div>
+          ${subOrgsHtml}
           <div class="detail-divider"></div>
           <h2 class="detail-section-title">成員名單 (${(o.members||[]).length})</h2>
           <div class="members-scroll" id="ms-${o.id}">${mems||'<p style="color:var(--stone);font-size:0.9rem">尚無成員資料</p>'}</div>

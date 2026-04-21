@@ -593,12 +593,16 @@ function rOrd(){
   el.innerHTML=items.map(o=>{const reg=regs.find(r=>r.id===o.regionId);return`<div class="icard"><div class="thumb">${o.icon||'🏰'}</div><div class="ibody"><div class="ititle">${x(o.name)}${reg?`<span class="badge b-gen">${x(reg.name)}</span>`:''}</div><div class="imeta">${o.founding||'—'} · 成員 ${(o.members||[]).length} 人</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oOrd(${o.id})">編輯</button><button class="btn btn-outline btn-sm" onclick="openMembers(${o.id})">成員</button><button class="btn btn-danger btn-sm" onclick="dOrd(${o.id})">刪除</button></div></div>`;}).join('');
   rWorld();
 }
-function ordForm(o={},preRegionId){
+function ordForm(o={},preRegionId,preParentId){
   const regs=D.regions||[];
   const selId=o.regionId||preRegionId||null;
   const regOpts=`<option value="">（無）</option>`+regs.map(r=>`<option value="${r.id}"${selId===r.id?' selected':''}>${x(r.name)}</option>`).join('');
+  const allOrgs=(D.knightOrders||[]).filter(oo=>!o.id||oo.id!==o.id);
+  const selPar=o.parentId||preParentId||null;
+  const parOpts=`<option value="">（頂層，無上層組織）</option>`+allOrgs.map(oo=>`<option value="${oo.id}"${selPar===oo.id?' selected':''}>${x(oo.name)}</option>`).join('');
   return `<div class="field"><label>名稱 *</label><input id="f-oname" value="${x(o.name||'')}"></div>
   <div class="field"><label>所屬地區</label><select id="f-oregion">${regOpts}</select></div>
+  <div class="field"><label>上層組織（選填）</label><select id="f-parent">${parOpts}</select><small>設定後此組織將成為所選組織的下屬</small></div>
   <div class="field"><label>排名（數字，1=最高）</label><input type="number" id="f-rank" value="${o.rank||1}" min="1"></div>
   <div class="field"><label>成立年份</label><input id="f-found" value="${x(o.founding||'')}" placeholder="成立於第X紀元 XXX 年"></div>
   <div class="field"><label>座右銘</label><input id="f-motto" value="${x(o.motto||'')}"></div>
@@ -610,16 +614,17 @@ function ordForm(o={},preRegionId){
     <div id="ord-img-preview"></div>
   </div>`;
 }
-function oOrd(id_,preRegionId){
+function oOrd(id_,preRegionId,preParentId){
   imgFile=null;
   const o=id_?D.knightOrders.find(x=>x.id===id_):{};
-  openMo(id_?'編輯組織':'新增組織',ordForm(o||{},preRegionId),async()=>{
+  openMo(id_?'編輯組織':'新增組織',ordForm(o||{},preRegionId,preParentId),async()=>{
     const name=id('f-oname').value.trim();if(!name){toast('請填名稱','err');return false}
     let badge=(o||{}).badge||'';
     if(imgFile){setS('loading','上傳徽章...');try{badge=await upImg(imgFile,'images');}catch(e){toast('徽章上傳失敗','err');setS('error','失敗');return false}finally{imgFile=null;}}
     const nid=id_||nextId(D.knightOrders);
     const regVal=id('f-oregion')&&id('f-oregion').value;const regionId=regVal?parseInt(regVal):null;
-    const item={id:nid,rank:parseInt(id('f-rank').value)||1,name,regionId,founding:id('f-found').value.trim(),motto:id('f-motto').value.trim(),description:id('f-odesc').value.trim(),icon:id('f-oicon').value.trim()||'🏰',badge,members:(id_?(D.knightOrders.find(x=>x.id===id_)||{}).members:[])||[]};
+    const parVal=id('f-parent')&&id('f-parent').value;const parentId=parVal?parseInt(parVal):null;
+    const item={id:nid,rank:parseInt(id('f-rank').value)||1,name,regionId,parentId,founding:id('f-found').value.trim(),motto:id('f-motto').value.trim(),description:id('f-odesc').value.trim(),icon:id('f-oicon').value.trim()||'🏰',badge,members:(id_?(D.knightOrders.find(x=>x.id===id_)||{}).members:[])||[]};
     if(id_)D.knightOrders=D.knightOrders.map(x=>x.id===id_?item:x);else D.knightOrders=[...(D.knightOrders||[]),item];
     rOrd();imgFile=null;
   });
@@ -628,24 +633,35 @@ function dOrd(i){if(!confirm('刪除？'))return;D.knightOrders=D.knightOrders.f
 
 // ── World Overview ──
 let _dragChrId=null;
+function orgTreeHtml(orgs,regionId,parentId,depth){
+  const items=orgs.filter(o=>o.regionId===regionId&&(o.parentId||null)===(parentId||null));
+  if(!items.length){
+    if(depth===0)return`<div style="color:var(--muted);font-size:.82rem;padding:.35rem 0">尚無組織，點右上「＋ 組織」新增</div>`;
+    return'';
+  }
+  const wrap=depth>0?`style="margin-left:1.1rem;padding-left:.8rem;border-left:2px solid rgba(201,168,76,.25);margin-top:.35rem"`:'' ;
+  return`<div ${wrap}>${items.map(o=>{
+    const children=orgTreeHtml(orgs,regionId,o.id,depth+1);
+    const prefix=depth>0?'└ ':'';
+    return`<div class="org-mini-card"><span style="font-size:1.3rem">${o.icon||'🏰'}</span><div style="flex:1;min-width:0"><div class="org-mini-name">${prefix}${x(o.name)}</div><div class="org-mini-meta">${(o.members||[]).length} 名成員${o.motto?' · '+x(o.motto):''}</div></div><div style="display:flex;gap:.3rem;flex-shrink:0;flex-wrap:wrap"><button class="btn btn-outline btn-sm" onclick="oOrd(${o.id})">編輯</button><button class="btn btn-outline btn-sm" onclick="openMembers(${o.id})">成員</button><button class="btn btn-outline btn-sm" onclick="oOrd(null,${regionId},${o.id})" title="新增子組織">＋子組</button><button class="btn btn-danger btn-sm" onclick="dOrd(${o.id})">刪除</button></div></div>${children}`;
+  }).join('')}</div>`;
+}
 function rWorld(){
   const el=id('world-body');if(!el)return;
   if(!D){el.innerHTML='<div class="empty"><p>請先讀取資料</p></div>';return;}
   const regions=D.regions||[],chars=D.characters||[],orders=D.knightOrders||[];
-  const c=cfg();
-  const chrByReg={},orgByReg={};
-  regions.forEach(r=>{chrByReg[r.id]=[];orgByReg[r.id]=[];});
+  const chrByReg={};
+  regions.forEach(r=>{chrByReg[r.id]=[];});
   const unassigned=[];
   chars.forEach(ch=>{if(ch.regionId&&chrByReg[ch.regionId])chrByReg[ch.regionId].push(ch);else unassigned.push(ch);});
-  orders.forEach(o=>{if(o.regionId&&orgByReg[o.regionId])orgByReg[o.regionId].push(o);});
   function chip(ch){return`<div class="chr-chip" draggable="true" ondragstart="dragStartChr(event,${ch.id})" ondragend="this.classList.remove('dragging')"><span>${ch.icon||'⚔️'}</span><span>${x(ch.name)}</span><span class="chip-edit" onclick="event.stopPropagation();oChr(${ch.id})" title="編輯">✏</span></div>`;}
   function zone(rid,items){return`<div class="chr-chips" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropChr(event,${rid===null?'null':rid})">${items.map(ch=>chip(ch)).join('')}${!items.length?'<span class="drop-hint">拖曳人物至此</span>':''}</div>`;}
   let html=`<div class="world-section"><div class="world-section-head"><span>📦</span><span class="world-section-title">未分配人物</span><button class="btn btn-outline btn-sm" onclick="oChr()">＋ 新增人物</button></div><div style="padding:.8rem 1.1rem">${zone(null,unassigned)}</div></div>`;
   if(!regions.length){html+=`<div class="empty"><div class="empty-icon">🏘️</div><p>尚無地區，點上方「＋ 新增地區」開始建立</p></div>`;}
   regions.forEach(r=>{
-    const rc=chrByReg[r.id]||[],ro=orgByReg[r.id]||[];
-    const orgsHtml=ro.length?ro.map(o=>`<div class="org-mini-card"><span style="font-size:1.3rem">${o.icon||'🏰'}</span><div style="flex:1;min-width:0"><div class="org-mini-name">${x(o.name)}</div><div class="org-mini-meta">${(o.members||[]).length} 名成員${o.motto?' · '+x(o.motto):''}</div></div><div style="display:flex;gap:.4rem;flex-shrink:0"><button class="btn btn-outline btn-sm" onclick="oOrd(${o.id})">編輯</button><button class="btn btn-outline btn-sm" onclick="openMembers(${o.id})">成員</button><button class="btn btn-danger btn-sm" onclick="dOrd(${o.id})">刪除</button></div></div>`).join(''):`<div style="color:var(--muted);font-size:.82rem;padding:.35rem 0">尚無組織</div>`;
-    html+=`<div class="world-section"><div class="world-section-head"><span>${r.icon||'🏘️'}</span><span class="world-section-title">${x(r.name)}</span>${r.description?`<span style="font-size:.78rem;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px">${x(r.description).substring(0,35)}…</span>`:''}<div style="display:flex;gap:.4rem;flex-shrink:0"><button class="btn btn-outline btn-sm" onclick="oReg(${r.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dReg(${r.id})">刪除</button><button class="btn btn-primary btn-sm" onclick="oOrd(null,${r.id})">＋ 組織</button></div></div><div style="padding:.85rem 1.1rem"><div class="world-row-label">人物（拖曳分配）</div>${zone(r.id,rc)}<div class="world-row-label" style="margin-top:1rem">組織</div><div class="org-mini-list">${orgsHtml}</div></div></div>`;
+    const rc=chrByReg[r.id]||[];
+    const orgsHtml=orgTreeHtml(orders,r.id,null,0);
+    html+=`<div class="world-section"><div class="world-section-head"><span>${r.icon||'🏘️'}</span><span class="world-section-title">${x(r.name)}</span>${r.description?`<span style="font-size:.78rem;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px">${x(r.description).substring(0,35)}…</span>`:''}<div style="display:flex;gap:.4rem;flex-shrink:0"><button class="btn btn-outline btn-sm" onclick="oReg(${r.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dReg(${r.id})">刪除</button><button class="btn btn-primary btn-sm" onclick="oOrd(null,${r.id})">＋ 組織</button></div></div><div style="padding:.85rem 1.1rem"><div class="world-row-label">人物（拖曳分配）</div>${zone(r.id,rc)}<div class="world-row-label" style="margin-top:1rem">組織架構</div><div class="org-mini-list">${orgsHtml}</div></div></div>`;
   });
   el.innerHTML=html;
 }

@@ -315,6 +315,17 @@ body::before {
 .org-inner-arrow { color: var(--gold); opacity: 0.5; font-size: 1.2rem; text-align: right; }
 .org-inner-card:hover .org-inner-arrow { opacity: 1; }
 
+/* Sub-organizations in order detail panel */
+.suborgs-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.suborg-card { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; border: 1px solid var(--border); cursor: pointer; transition: background 0.2s, border-color 0.2s; }
+.suborg-card:hover { background: rgba(201,168,76,0.06); border-color: rgba(201,168,76,0.25); }
+.suborg-icon { font-size: 1.6rem; flex-shrink: 0; }
+.suborg-info { flex: 1; min-width: 0; }
+.suborg-name { font-family: var(--font-heading); font-size: 0.95rem; font-weight: 700; color: var(--cream); }
+.suborg-meta { font-size: 0.78rem; color: var(--stone); margin-top: 0.15rem; }
+.suborg-arrow { color: var(--gold); opacity: 0.5; font-size: 1.3rem; flex-shrink: 0; transition: opacity 0.2s; }
+.suborg-card:hover .suborg-arrow { opacity: 1; }
+
 /* Legacy: keep .region-chars-grid for detail panel use */
 .region-chars-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1rem; }
 
