@@ -369,7 +369,7 @@ function x(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').repl
 function nextId(arr){return arr&&arr.length?Math.max(...arr.map(a=>a.id))+1:1;}
 function prevImg(input,previewId){
   const f=input.files[0]; if(!f) return;
-  if(previewId==='img-preview'||previewId==='mem-img-preview') imgFile=f;
+  if(previewId==='img-preview'||previewId==='mem-img-preview'||previewId==='reg-img-preview') imgFile=f;
   if(previewId==='map-prev') mapFile=f;
   const rd=new FileReader();
   rd.onload=e=>{const b=id(previewId);if(b)b.innerHTML=`<img src="${e.target.result}" style="max-width:100%;max-height:160px;object-fit:contain;border-radius:4px">`};
@@ -470,9 +470,9 @@ function regForm(r={}){
   <div class="field"><label>圖示 Emoji</label><input id="f-ricon" value="${x(r.icon||'🏘️')}"></div>
   <div class="field"><label>地區描述</label><textarea id="f-rdesc">${x(r.description||'')}</textarea></div>
   <div class="field"><label>地區橫幅圖片（選填）</label>
-    <div class="upzone" onclick="document.getElementById('reg-img-file').click()"><p>點此選擇圖片</p><input type="file" id="reg-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'img-preview')"></div>
+    <div class="upzone" onclick="document.getElementById('reg-img-file').click()"><p>點此選擇圖片</p><input type="file" id="reg-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'reg-img-preview')"></div>
     ${r.image?`<p class="cur-img">目前：${r.image}</p>`:''}
-    <div id="img-preview"></div>
+    <div id="reg-img-preview"></div>
   </div>`;
 }
 function oReg(id_){
