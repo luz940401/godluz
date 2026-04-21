@@ -151,7 +151,7 @@ function renderCharacters(list, regions) {
           <div class="region-acc-header" onclick="toggleRegion(${r.id})">
             ${r.image?`<div class="region-acc-banner"><img src="${r.image}" alt="${r.name}"><div class="region-acc-dimmer"></div></div>`:''}
             <div class="region-acc-info">
-              <span class="region-acc-icon">${r.icon||'🏘️'}</span>
+              ${r.image?`<img src="${r.image}" class="reg-acc-circ" alt="${r.name}">`:`<div class="reg-acc-circ ph">${r.name.charAt(0)}</div>`}
               <div>
                 <div class="region-acc-name">${r.name}</div>
                 ${r.description?`<div class="region-acc-sub">${r.description}</div>`:''}
@@ -177,20 +177,41 @@ function toggleRegion(id) {
 }
 
 /* ── Knight Orders ── */
-function orgCardHtml(o) {
-  const badge = o.badge
-    ? `<img src="${o.badge}" class="org-inner-badge-img" alt="${o.name}">`
-    : `<span class="org-inner-badge-emoji">${o.icon||'🏰'}</span>`;
-  return `
-    <div class="org-inner-card" onclick="openDetail('order',${o.id})">
-      <div class="org-inner-badge">${badge}</div>
-      <div class="org-inner-info">
-        <div class="org-inner-name">${o.name}</div>
-        ${o.motto?`<div class="org-inner-motto">${o.motto}</div>`:''}
-        <div class="org-inner-desc">${(o.description||'').split('\n')[0]}</div>
-        <div class="org-inner-members">⚔ ${(o.members||[]).length} 名成員</div>
+function circ(src, name, cls) {
+  return src
+    ? `<img src="${src}" class="${cls}" alt="${name}">`
+    : `<div class="${cls} ph">${name.charAt(0)}</div>`;
+}
+function orgCatHtml(o, allOrgs) {
+  const children = [...allOrgs].filter(s=>s.parentId===o.id).sort((a,b)=>a.rank-b.rank);
+  const hasKids = children.length > 0;
+  const icon = circ(o.badge, o.name, 'org-circ');
+  const subHtml = hasKids ? `
+    <div class="org-cat-body"><div>
+      <div class="sub-org-list">${children.map(s=>`
+        <div class="sub-org-item" onclick="openDetail('order',${s.id})">
+          <div class="sub-rank">${s.rank}</div>
+          ${circ(s.badge, s.name, 'sub-circ')}
+          <div class="sub-org-info">
+            <div class="sub-org-name">${s.name}</div>
+            ${s.motto?`<div class="sub-org-motto">${s.motto}</div>`:''}
+            <div class="sub-org-meta">⚔ ${(s.members||[]).length} 名成員</div>
+          </div>
+          <div class="sub-org-arrow">›</div>
+        </div>`).join('')}
       </div>
-      <div class="org-inner-arrow">›</div>
+    </div></div>` : '';
+  return `
+    <div class="org-cat-item${hasKids?' has-kids':''}" id="orgcat-${o.id}">
+      <div class="org-cat-header" onclick="${hasKids?`toggleOrgCat(${o.id})`:`openDetail('order',${o.id})`}">
+        ${icon}
+        <div class="org-cat-info">
+          <div class="org-cat-name">${o.name}</div>
+          ${o.motto?`<div class="org-cat-motto">${o.motto}</div>`:''}
+        </div>
+        <div class="org-cat-arr">${hasKids?'▼':'›'}</div>
+      </div>
+      ${subHtml}
     </div>`;
 }
 function renderOrders(list, regions) {
@@ -203,65 +224,36 @@ function renderOrders(list, regions) {
     const noRegion = [];
     list.forEach(o => {
       if (o.regionId && regionMap[o.regionId]) regionMap[o.regionId].push(o);
-      else noRegion.push(o);
+      else if (!o.parentId) noRegion.push(o);
     });
-    let html = regions.map(r => {
-      const orgs = (regionMap[r.id]||[]).filter(o=>!o.parentId);
-      const inner = orgs.length
-        ? `<div class="org-inner-list">${orgs.map(o=>orgCardHtml(o)).join('')}</div>`
+    function regionBlock(r, topOrgs, idSuffix) {
+      const inner = topOrgs.length
+        ? `<div class="org-cat-list">${topOrgs.map(o=>orgCatHtml(o,list)).join('')}</div>`
         : `<p class="acc-empty">此地區尚無組織</p>`;
+      const rIcon = circ(r.image, r.name, 'reg-acc-circ');
       return `
-        <div class="region-accordion-item" id="oacc-${r.id}">
-          <div class="region-acc-header" onclick="toggleOrgRegion(${r.id})">
+        <div class="region-accordion-item" id="oacc-${idSuffix}">
+          <div class="region-acc-header" onclick="toggleOrgRegion(${idSuffix})">
             ${r.image?`<div class="region-acc-banner"><img src="${r.image}" alt="${r.name}"><div class="region-acc-dimmer"></div></div>`:''}
             <div class="region-acc-info">
-              <span class="region-acc-icon">${r.icon||'🏘️'}</span>
+              ${rIcon}
               <div>
                 <div class="region-acc-name">${r.name}</div>
                 ${r.description?`<div class="region-acc-sub">${r.description}</div>`:''}
               </div>
-              <span class="region-acc-count">${orgs.length} 個組織</span>
+              <span class="region-acc-count">${topOrgs.length} 個組織</span>
             </div>
             <div class="region-acc-arrow">▼</div>
           </div>
           <div class="region-acc-body"><div>${inner}</div></div>
         </div>`;
-    }).join('');
-    if (noRegion.length) {
-      html += `
-        <div class="region-accordion-item" id="oacc-0">
-          <div class="region-acc-header" onclick="toggleOrgRegion(0)">
-            <div class="region-acc-info">
-              <span class="region-acc-icon">🏰</span>
-              <div><div class="region-acc-name">未分類組織</div></div>
-              <span class="region-acc-count">${noRegion.length} 個組織</span>
-            </div>
-            <div class="region-acc-arrow">▼</div>
-          </div>
-          <div class="region-acc-body"><div><div class="org-inner-list">${noRegion.map(o=>orgCardHtml(o)).join('')}</div></div></div>
-        </div>`;
     }
+    let html = regions.map(r => regionBlock(r, (regionMap[r.id]||[]).filter(o=>!o.parentId), r.id)).join('');
+    if (noRegion.length) html += regionBlock({name:'未分類組織',image:''}, noRegion, 0);
     el.innerHTML = html;
   } else {
-    el.className = 'orders-ranked';
-    el.innerHTML = [...list].sort((a,b)=>a.rank-b.rank).map(o=>{
-      const rc = o.rank<=3?`rank-${o.rank}`:'rank-other';
-      const badge = o.badge
-        ? `<img src="${o.badge}" class="order-badge-img" alt="${o.name}">`
-        : `<span class="order-badge-emoji">${o.icon||'🏰'}</span>`;
-      return `
-        <div class="order-ranked-card ${rc}" onclick="openDetail('order',${o.id})">
-          <div class="order-rank-col"><div class="rank-num">${o.rank}</div></div>
-          <div class="order-badge-col">${badge}</div>
-          <div class="order-info-col">
-            <div class="order-ranked-name">${o.name}</div>
-            <div class="order-ranked-motto">${o.motto}</div>
-            <div class="order-ranked-desc">${o.description.split('\n')[0]}</div>
-            <div class="order-member-count">⚔ ${(o.members||[]).length} 名成員</div>
-          </div>
-          <div class="order-arrow-col">→</div>
-        </div>`;
-    }).join('');
+    el.className = 'org-cat-list';
+    el.innerHTML = [...list].filter(o=>!o.parentId).sort((a,b)=>a.rank-b.rank).map(o=>orgCatHtml(o,list)).join('');
   }
 }
 function toggleOrgRegion(id) {
@@ -270,6 +262,11 @@ function toggleOrgRegion(id) {
   const wasOpen = item.classList.contains('open');
   document.querySelectorAll('[id^="oacc-"].open').forEach(el=>el.classList.remove('open'));
   if (!wasOpen) item.classList.add('open');
+}
+function toggleOrgCat(id) {
+  const item = document.getElementById('orgcat-'+id);
+  if (!item) return;
+  item.classList.toggle('open');
 }
 
 /* ── Clues ── */
@@ -418,9 +415,9 @@ function renderDetail() {
         <div class="detail-order-header">
           ${badge}
           <div>
-            <div class="order-rank-display" style="color:${rc}">組織排名 第 ${o.rank} 位</div>
+            ${!o.parentId?`<div class="order-rank-display" style="color:${rc}">排名 第 ${o.rank} 位</div>`:''}
             <h1 class="detail-name">${o.name}</h1>
-            <p class="detail-title-tag">${o.founding||''}</p>
+            ${o.founding?`<p class="detail-title-tag">創立 ${o.founding}</p>`:''}
           </div>
         </div>
         <div class="detail-body">

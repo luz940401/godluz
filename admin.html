@@ -500,14 +500,13 @@ function dMap(i){if(!confirm('刪除？'))return;D.worldMaps=(D.worldMaps||[]).f
 function rReg(){
   const el=id('reg-list'),items=D.regions||[];
   if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏘️</div><p>尚無地區</p></div>';return}
-  el.innerHTML=items.map(r=>`<div class="icard"><div class="thumb">${r.icon||'🏘️'}</div><div class="ibody"><div class="ititle">${x(r.name)}</div><div class="imeta">${(D.characters||[]).filter(c=>c.regionId===r.id).length} 名角色 · ${(D.knightOrders||[]).filter(o=>o.regionId===r.id).length} 個組織</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oReg(${r.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dReg(${r.id})">刪除</button></div></div>`).join('');
+  el.innerHTML=items.map(r=>{const c=cfg();const s=r.image?`https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${r.image}`:'';const th=s?`<div class="thumb" style="border-radius:50%;overflow:hidden"><img src="${s}" style="width:100%;height:100%;object-fit:cover"></div>`:`<div class="thumb" style="border-radius:50%;background:rgba(201,168,76,.15);font-weight:700;color:var(--gold)">${r.name.charAt(0)}</div>`;return`<div class="icard">${th}<div class="ibody"><div class="ititle">${x(r.name)}</div><div class="imeta">${(D.characters||[]).filter(c=>c.regionId===r.id).length} 名角色 · ${(D.knightOrders||[]).filter(o=>o.regionId===r.id).length} 個組織</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oReg(${r.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dReg(${r.id})">刪除</button></div></div>`;}).join('');
   rWorld();
 }
 function regForm(r={}){
   return `<div class="field"><label>地區名稱 *</label><input id="f-rname" value="${x(r.name||'')}"></div>
-  <div class="field"><label>圖示 Emoji</label><input id="f-ricon" value="${x(r.icon||'🏘️')}"></div>
   <div class="field"><label>地區描述</label><textarea id="f-rdesc">${x(r.description||'')}</textarea></div>
-  <div class="field"><label>地區橫幅圖片（選填）</label>
+  <div class="field"><label>地區圖片（同時作為橫幅與圓形圖示）</label>
     <div class="upzone" onclick="document.getElementById('reg-img-file').click()"><p>點此選擇圖片</p><input type="file" id="reg-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'reg-img-preview')"></div>
     ${r.image?`<p class="cur-img">目前：${r.image}</p>`:''}
     <div id="reg-img-preview"></div>
@@ -520,7 +519,7 @@ function oReg(id_){
     let image=(r||{}).image||'';
     if(imgFile){setS('loading','上傳中...');try{image=await upImg(imgFile,'images');}catch(e){toast('上傳失敗','err');setS('error','失敗');return false}finally{imgFile=null;}}
     const nid=id_||nextId(D.regions||[]);
-    const item={id:nid,name,icon:id('f-ricon').value.trim()||'🏘️',description:id('f-rdesc').value.trim(),image};
+    const item={id:nid,name,description:id('f-rdesc').value.trim(),image};
     if(!D.regions)D.regions=[];
     if(id_)D.regions=D.regions.map(x=>x.id===id_?item:x);else D.regions=[...D.regions,item];
     rReg();imgFile=null;
@@ -550,7 +549,7 @@ function rChr(){
   const el=id('chr-list'),items=D.characters||[];
   if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">⚔️</div><p>尚無人物</p></div>';return}
   const c=cfg();
-  el.innerHTML=items.map(ch=>{const s=ch.image?`https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${ch.image}`:'';const th=s?`<div class="thumb"><img src="${s}" onerror="this.parentNode.innerHTML='${ch.icon||'⚔️'}'"></div>`:`<div class="thumb">${ch.icon||'⚔️'}</div>`;return `<div class="icard">${th}<div class="ibody"><div class="ititle">${x(ch.name)}</div><div class="imeta">${[ch.title,ch.class,ch.race].filter(Boolean).join(' · ')}</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oChr(${ch.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dChr(${ch.id})">刪除</button></div></div>`;}).join('');
+  el.innerHTML=items.map(ch=>{const s=ch.image?`https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${ch.image}`:'';const th=s?`<div class="thumb" style="border-radius:50%;overflow:hidden"><img src="${s}" style="width:100%;height:100%;object-fit:cover"></div>`:`<div class="thumb" style="border-radius:50%;background:rgba(201,168,76,.15);font-weight:700;color:var(--gold);font-size:1.1rem">${ch.name.charAt(0)}</div>`;return `<div class="icard">${th}<div class="ibody"><div class="ititle">${x(ch.name)}</div><div class="imeta">${[ch.title,ch.class,ch.race].filter(Boolean).join(' · ')}</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oChr(${ch.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dChr(${ch.id})">刪除</button></div></div>`;}).join('');
 }
 function chrForm(c={}){
   const regs=D.regions||[];
@@ -562,8 +561,7 @@ function chrForm(c={}){
   <div class="field"><label>所屬地區</label><select id="f-region">${regOpts}</select></div>
   <div class="field"><label>簡介（顯示在卡片）</label><textarea id="f-summary">${x(c.summary||'')}</textarea></div>
   <div class="field"><label>詳細介紹（點開後顯示，可換行）</label><textarea id="f-desc" style="min-height:120px">${x(c.description||'')}</textarea></div>
-  <div class="field"><label>圖示 Emoji</label><input id="f-icon" value="${x(c.icon||'⚔️')}"></div>
-  <div class="field"><label>人物圖片</label>
+  <div class="field"><label>人物圖片（圓形頭像）</label>
     <div class="upzone" onclick="document.getElementById('chr-img-file').click()"><p>點此選擇圖片</p><small>JPG、PNG、WebP</small><input type="file" id="chr-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'img-preview')"></div>
     ${c.image?`<p class="cur-img">目前：${c.image}</p>`:''}
     <div id="img-preview"></div>
@@ -590,7 +588,8 @@ function rOrd(){
   const el=id('ord-list'),items=[...(D.knightOrders||[])].sort((a,b)=>a.rank-b.rank);
   if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏰</div><p>尚無組織</p></div>';return}
   const regs=D.regions||[];
-  el.innerHTML=items.map(o=>{const reg=regs.find(r=>r.id===o.regionId);return`<div class="icard"><div class="thumb">${o.icon||'🏰'}</div><div class="ibody"><div class="ititle">${x(o.name)}${reg?`<span class="badge b-gen">${x(reg.name)}</span>`:''}</div><div class="imeta">${o.founding||'—'} · 成員 ${(o.members||[]).length} 人</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oOrd(${o.id})">編輯</button><button class="btn btn-outline btn-sm" onclick="openMembers(${o.id})">成員</button><button class="btn btn-danger btn-sm" onclick="dOrd(${o.id})">刪除</button></div></div>`;}).join('');
+  const c2=cfg();
+  el.innerHTML=items.map(o=>{const reg=regs.find(r=>r.id===o.regionId);const s=o.badge?`https://raw.githubusercontent.com/${c2.owner}/${c2.repo}/main/${o.badge}`:'';const th=s?`<div class="thumb" style="border-radius:50%;overflow:hidden"><img src="${s}" style="width:100%;height:100%;object-fit:cover"></div>`:`<div class="thumb" style="border-radius:50%;background:rgba(201,168,76,.15);font-weight:700;color:var(--gold)">${o.name.charAt(0)}</div>`;return`<div class="icard">${th}<div class="ibody"><div class="ititle">${x(o.name)}${reg?`<span class="badge b-gen">${x(reg.name)}</span>`:''}</div><div class="imeta">創立 ${o.founding||'—'} · 成員 ${(o.members||[]).length} 人</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oOrd(${o.id})">編輯</button><button class="btn btn-outline btn-sm" onclick="openMembers(${o.id})">成員</button><button class="btn btn-danger btn-sm" onclick="dOrd(${o.id})">刪除</button></div></div>`;}).join('');
   rWorld();
 }
 function ordForm(o={},preRegionId,preParentId){
@@ -604,11 +603,10 @@ function ordForm(o={},preRegionId,preParentId){
   <div class="field"><label>所屬地區</label><select id="f-oregion">${regOpts}</select></div>
   <div class="field"><label>上層組織（選填）</label><select id="f-parent">${parOpts}</select><small>設定後此組織將成為所選組織的下屬</small></div>
   <div class="field"><label>排名（數字，1=最高）</label><input type="number" id="f-rank" value="${o.rank||1}" min="1"></div>
-  <div class="field"><label>成立年份</label><input id="f-found" value="${x(o.founding||'')}" placeholder="成立於第X紀元 XXX 年"></div>
+  <div class="field"><label>創立年份</label><input id="f-found" value="${x(o.founding||'')}" placeholder="格蘭曆 XXX 年"></div>
   <div class="field"><label>座右銘</label><input id="f-motto" value="${x(o.motto||'')}"></div>
   <div class="field"><label>描述（可換行）</label><textarea id="f-odesc">${x(o.description||'')}</textarea></div>
-  <div class="field"><label>圖示 Emoji</label><input id="f-oicon" value="${x(o.icon||'🏰')}"></div>
-  <div class="field"><label>組織徽章圖片</label>
+  <div class="field"><label>組織圖示（圓形顯示）</label>
     <div class="upzone" onclick="document.getElementById('ord-badge-file').click()"><p>點此上傳徽章</p><small>建議使用正方形圖片</small><input type="file" id="ord-badge-file" accept="image/*" style="display:none" onchange="prevImg(this,'ord-img-preview')"></div>
     ${o.badge?`<p class="cur-img">目前：${o.badge}</p>`:''}
     <div id="ord-img-preview"></div>
@@ -624,7 +622,7 @@ function oOrd(id_,preRegionId,preParentId){
     const nid=id_||nextId(D.knightOrders);
     const regVal=id('f-oregion')&&id('f-oregion').value;const regionId=regVal?parseInt(regVal):null;
     const parVal=id('f-parent')&&id('f-parent').value;const parentId=parVal?parseInt(parVal):null;
-    const item={id:nid,rank:parseInt(id('f-rank').value)||1,name,regionId,parentId,founding:id('f-found').value.trim(),motto:id('f-motto').value.trim(),description:id('f-odesc').value.trim(),icon:id('f-oicon').value.trim()||'🏰',badge,members:(id_?(D.knightOrders.find(x=>x.id===id_)||{}).members:[])||[]};
+    const item={id:nid,rank:parseInt(id('f-rank').value)||1,name,regionId,parentId,founding:id('f-found').value.trim(),motto:id('f-motto').value.trim(),description:id('f-odesc').value.trim(),badge,members:(id_?(D.knightOrders.find(x=>x.id===id_)||{}).members:[])||[]};
     if(id_)D.knightOrders=D.knightOrders.map(x=>x.id===id_?item:x);else D.knightOrders=[...(D.knightOrders||[]),item];
     rOrd();imgFile=null;
   });
@@ -643,7 +641,9 @@ function orgTreeHtml(orgs,regionId,parentId,depth){
   return`<div ${wrap}>${items.map(o=>{
     const children=orgTreeHtml(orgs,regionId,o.id,depth+1);
     const prefix=depth>0?'└ ':'';
-    return`<div class="org-mini-card"><span style="font-size:1.3rem">${o.icon||'🏰'}</span><div style="flex:1;min-width:0"><div class="org-mini-name">${prefix}${x(o.name)}</div><div class="org-mini-meta">${(o.members||[]).length} 名成員${o.motto?' · '+x(o.motto):''}</div></div><div style="display:flex;gap:.3rem;flex-shrink:0;flex-wrap:wrap"><button class="btn btn-outline btn-sm" onclick="oOrd(${o.id})">編輯</button><button class="btn btn-outline btn-sm" onclick="openMembers(${o.id})">成員</button><button class="btn btn-outline btn-sm" onclick="oOrd(null,${regionId},${o.id})" title="新增子組織">＋子組</button><button class="btn btn-danger btn-sm" onclick="dOrd(${o.id})">刪除</button></div></div>${children}`;
+    const cf=cfg();const bs=o.badge?`https://raw.githubusercontent.com/${cf.owner}/${cf.repo}/main/${o.badge}`:'';
+    const bth=bs?`<div style="width:34px;height:34px;border-radius:50%;overflow:hidden;flex-shrink:0;border:1px solid rgba(201,168,76,.3)"><img src="${bs}" style="width:100%;height:100%;object-fit:cover"></div>`:`<div style="width:34px;height:34px;border-radius:50%;background:rgba(201,168,76,.15);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--gold);font-size:.85rem;flex-shrink:0">${o.name.charAt(0)}</div>`;
+    return`<div class="org-mini-card">${bth}<div style="flex:1;min-width:0"><div class="org-mini-name">${prefix}${x(o.name)}</div><div class="org-mini-meta">${(o.members||[]).length} 名成員${o.motto?' · '+x(o.motto):''}</div></div><div style="display:flex;gap:.3rem;flex-shrink:0;flex-wrap:wrap"><button class="btn btn-outline btn-sm" onclick="oOrd(${o.id})">編輯</button><button class="btn btn-outline btn-sm" onclick="openMembers(${o.id})">成員</button><button class="btn btn-outline btn-sm" onclick="oOrd(null,${regionId},${o.id})" title="新增子組織">＋子組</button><button class="btn btn-danger btn-sm" onclick="dOrd(${o.id})">刪除</button></div></div>${children}`;
   }).join('')}</div>`;
 }
 function rWorld(){
