@@ -328,9 +328,21 @@ async function saveData(){
   setS('loading','儲存中...'); id('btn-save').disabled=true;
   try{
     const c=cfg(), content=btoa(unescape(encodeURIComponent(JSON.stringify(D,null,2))));
+    // 若 sha 不正確，先重新抓取最新 sha 再重試
+    if(!sha){
+      const chk=await gh('data.json');
+      if(chk.ok){const f=await chk.json();sha=f.sha;}
+    }
     const body={message:`更新內容 [${new Date().toLocaleString('zh-TW')}]`,content,branch:c.branch};
     if(sha) body.sha=sha;
-    const r=await gh('data.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    let r=await gh('data.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(r.status===409){
+      // sha 衝突，重新取得最新 sha 再重試一次
+      const chk=await gh('data.json');
+      if(chk.ok){const f=await chk.json();sha=f.sha;}
+      body.sha=sha;
+      r=await gh('data.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    }
     if(!r.ok){const e=await r.json();throw new Error(e.message||`HTTP ${r.status}`);}
     const res=await r.json(); sha=res.content.sha;
     setS('ok','已儲存'); toast('✓ 已儲存，網站約 1 分鐘後更新','ok');
@@ -681,7 +693,7 @@ function saveSite(){if(!D) return;D.site={title:id('s-title').value,subtitle:id(
 
 // ── Modal ──
 function openMo(title,body,cb){id('mo-title').textContent=title;id('mo-body').innerHTML=body;id('mo').classList.add('open');moCb=cb;}
-async function confMo(){if(!moCb) return;const r=await moCb();if(r===false) return;cMo();setS('ok','已修改（未儲存）');}
+async function confMo(){if(!moCb) return;const r=await moCb();if(r===false) return;cMo();saveData();}
 function cMo(){id('mo').classList.remove('open');moCb=null;imgFile=null;}
 function moOvClick(e){if(e.target.id==='mo') cMo();}
 
