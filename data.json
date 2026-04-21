@@ -125,6 +125,19 @@
           "image": "images/1776688827280.png"
         }
       ]
+    },
+    {
+      "id": 5,
+      "rank": 1,
+      "name": "圓桌騎士",
+      "regionId": 1,
+      "parentId": null,
+      "founding": "格蘭曆2年",
+      "motto": "",
+      "description": "",
+      "icon": "🏰",
+      "badge": "",
+      "members": []
     }
   ],
   "clues": [
