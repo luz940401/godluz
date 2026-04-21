@@ -182,6 +182,13 @@
       "category": "七宗罪",
       "description": "",
       "image": "images/1776779955867.png"
+    },
+    {
+      "id": 2,
+      "name": "暴食",
+      "category": "七宗罪",
+      "description": "",
+      "image": "images/1776779973464.png"
     }
   ],
   "worldReports": [],
