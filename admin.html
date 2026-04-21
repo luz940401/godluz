@@ -142,6 +142,7 @@
     <button class="tab" onclick="sw('map',this)">🗺️ 世界地圖</button>
     <button class="tab" onclick="sw('patch',this)">📋 改版資訊</button>
     <button class="tab" onclick="sw('chr',this)">⚔️ 人物</button>
+    <button class="tab" onclick="sw('reg',this)">🏘️ 地區</button>
     <button class="tab" onclick="sw('ord',this)">🏰 騎士團</button>
     <button class="tab" onclick="sw('clue',this)">🔍 線索</button>
     <button class="tab" onclick="sw('site',this)">⚙️ 網站設定</button>
@@ -156,21 +157,8 @@
 
     <!-- 世界地圖 -->
     <div id="tab-map" class="panel">
-      <div class="ph"><h2>世界地圖</h2></div>
-      <div class="scard">
-        <div class="field">
-          <label>地圖圖片</label>
-          <div class="upzone" onclick="document.getElementById('map-file').click()">
-            <p>點此選擇地圖圖片</p><small>支援 JPG、PNG、WebP（建議寬圖）</small>
-            <input type="file" id="map-file" accept="image/*" style="display:none" onchange="prevImg(this,'map-prev')">
-          </div>
-          <div id="map-cur" class="cur-img"></div>
-          <div id="map-prev" style="margin-top:.6rem;max-height:200px;overflow:hidden;border-radius:4px;display:flex;justify-content:center"></div>
-        </div>
-        <div class="field"><label>地圖說明文字</label><input type="text" id="map-caption"></div>
-        <button class="btn btn-primary" onclick="saveMap()">套用地圖設定</button>
-        <small style="display:block;margin-top:.75rem;color:var(--muted)">套用後記得點右上角「↑ 儲存到 GitHub」</small>
-      </div>
+      <div class="ph"><h2>世界地圖</h2><button class="btn btn-primary" onclick="oMap()">＋ 新增地圖</button></div>
+      <div id="map-list" class="ilist"><div class="empty"><div class="empty-icon">🗺️</div><p>請先點「↓ 讀取」</p></div></div>
     </div>
 
     <!-- 改版資訊 -->
@@ -183,6 +171,12 @@
     <div id="tab-chr" class="panel">
       <div class="ph"><h2>人物管理</h2><button class="btn btn-primary" onclick="oChr()">＋ 新增人物</button></div>
       <div id="chr-list" class="ilist"><div class="empty"><div class="empty-icon">⚔️</div><p>請先點「↓ 讀取」</p></div></div>
+    </div>
+
+    <!-- 地區 -->
+    <div id="tab-reg" class="panel">
+      <div class="ph"><h2>地區管理</h2><button class="btn btn-primary" onclick="oReg()">＋ 新增地區</button></div>
+      <div id="reg-list" class="ilist"><div class="empty"><div class="empty-icon">🏘️</div><p>請先點「↓ 讀取」</p></div></div>
     </div>
 
     <!-- 騎士團 -->
@@ -381,7 +375,7 @@ function prevImg(input,previewId){
   rd.onload=e=>{const b=id(previewId);if(b)b.innerHTML=`<img src="${e.target.result}" style="max-width:100%;max-height:160px;object-fit:contain;border-radius:4px">`};
   rd.readAsDataURL(f);
 }
-function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMap:{image:'',caption:'格蘭大陸全圖'},patchNotes:[],announcements:[],characters:[],knightOrders:[],clues:[]};}
+function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMaps:[],patchNotes:[],announcements:[],regions:[],characters:[],knightOrders:[],clues:[]};}
 
 // ── Google Sheet ──
 function sheetUrl(){const c=cfg();return c&&c.sheetUrl||'';}
@@ -413,7 +407,7 @@ function saveLocal(){try{if(D)localStorage.setItem('dnd-local-bk',JSON.stringify
 function loadLocal(){try{const s=localStorage.getItem('dnd-local-bk');return s?JSON.parse(s):null;}catch(e){return null;}}
 
 // ── Render All ──
-function rAll(){if(!D) return; rAnn();rMap();rPatch();rChr();rOrd();rClue();rSite();saveLocal();}
+function rAll(){if(!D) return; rAnn();rMap();rPatch();rChr();rReg();rOrd();rClue();rSite();saveLocal();}
 
 // ── Announcements ──
 function rAnn(){
@@ -434,19 +428,67 @@ function annForm(a={}){
 function oAnn(id_){const a=id_?D.announcements.find(x=>x.id===id_):{};openMo(id_?'編輯公告':'新增公告',annForm(a||{}),()=>{const t=id('f-title').value.trim();if(!t){toast('請填標題','err');return false}const nid=id_||nextId(D.announcements);const item={id:nid,title:t,category:id('f-cat').value,date:id('f-date').value,content:id('f-content').value.trim(),pinned:id('f-pin').checked};if(id_)D.announcements=D.announcements.map(x=>x.id===id_?item:x);else D.announcements=[...(D.announcements||[]),item];rAnn();});}
 function dAnn(i){if(!confirm('刪除？'))return;D.announcements=D.announcements.filter(x=>x.id!==i);rAnn();toast('已刪除');}
 
-// ── World Map ──
+// ── World Maps ──
 function rMap(){
-  const m=D.worldMap||{};
-  const ci=id('map-cur'); if(ci) ci.textContent=m.image?`目前圖片：${m.image}`:'';
-  const cap=id('map-caption'); if(cap) cap.value=m.caption||'格蘭大陸全圖';
+  const el=id('map-list'),items=D.worldMaps||[];
+  if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">🗺️</div><p>尚無地圖</p></div>';return}
+  const c=cfg();
+  el.innerHTML=items.map(m=>{const s=m.image?`https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${m.image}`:'';const th=s?`<div class="thumb"><img src="${s}" onerror="this.parentNode.innerHTML='🗺️'"></div>`:`<div class="thumb">🗺️</div>`;return `<div class="icard">${th}<div class="ibody"><div class="ititle">${x(m.name)}</div><div class="imeta">${x(m.caption||'')}</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oMap(${m.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dMap(${m.id})">刪除</button></div></div>`;}).join('');
 }
-async function saveMap(){
-  if(!D){toast('請先讀取','err');return}
-  let img=(D.worldMap||{}).image||'';
-  if(mapFile){setS('loading','上傳中...');try{img=await upImg(mapFile,'images');}catch(e){toast('上傳失敗','err');setS('error','失敗');return}finally{mapFile=null;}}
-  D.worldMap={image:img,caption:id('map-caption').value.trim()||'格蘭大陸全圖'};
-  rMap(); toast('地圖設定已套用（記得儲存到 GitHub）');setS('ok','已修改');
+function mapForm(m={}){
+  return `<div class="field"><label>地圖名稱 *</label><input id="f-mname" value="${x(m.name||'')}"></div>
+  <div class="field"><label>說明文字</label><input id="f-mcap" value="${x(m.caption||'')}"></div>
+  <div class="field"><label>地圖圖片</label>
+    <div class="upzone" onclick="document.getElementById('map-img-file').click()"><p>點此選擇圖片</p><small>建議使用寬圖</small><input type="file" id="map-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'img-preview')"></div>
+    ${m.image?`<p class="cur-img">目前：${m.image}</p>`:''}
+    <div id="img-preview"></div>
+  </div>`;
 }
+function oMap(id_){
+  imgFile=null;const m=id_?(D.worldMaps||[]).find(x=>x.id===id_):{};
+  openMo(id_?'編輯地圖':'新增地圖',mapForm(m||{}),async()=>{
+    const name=id('f-mname').value.trim();if(!name){toast('請填名稱','err');return false}
+    let image=(m||{}).image||'';
+    if(imgFile){setS('loading','上傳中...');try{image=await upImg(imgFile,'images');}catch(e){toast('上傳失敗','err');setS('error','失敗');return false}finally{imgFile=null;}}
+    const nid=id_||nextId(D.worldMaps||[]);
+    const item={id:nid,name,caption:id('f-mcap').value.trim(),image};
+    if(!D.worldMaps)D.worldMaps=[];
+    if(id_)D.worldMaps=D.worldMaps.map(x=>x.id===id_?item:x);else D.worldMaps=[...D.worldMaps,item];
+    rMap();imgFile=null;
+  });
+}
+function dMap(i){if(!confirm('刪除？'))return;D.worldMaps=(D.worldMaps||[]).filter(x=>x.id!==i);rMap();toast('已刪除');}
+
+// ── Regions ──
+function rReg(){
+  const el=id('reg-list'),items=D.regions||[];
+  if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏘️</div><p>尚無地區</p></div>';return}
+  el.innerHTML=items.map(r=>`<div class="icard"><div class="thumb">${r.icon||'🏘️'}</div><div class="ibody"><div class="ititle">${x(r.name)}</div><div class="imeta">${(D.characters||[]).filter(c=>c.regionId===r.id).length} 名角色</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oReg(${r.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dReg(${r.id})">刪除</button></div></div>`).join('');
+}
+function regForm(r={}){
+  return `<div class="field"><label>地區名稱 *</label><input id="f-rname" value="${x(r.name||'')}"></div>
+  <div class="field"><label>圖示 Emoji</label><input id="f-ricon" value="${x(r.icon||'🏘️')}"></div>
+  <div class="field"><label>地區描述</label><textarea id="f-rdesc">${x(r.description||'')}</textarea></div>
+  <div class="field"><label>地區橫幅圖片（選填）</label>
+    <div class="upzone" onclick="document.getElementById('reg-img-file').click()"><p>點此選擇圖片</p><input type="file" id="reg-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'img-preview')"></div>
+    ${r.image?`<p class="cur-img">目前：${r.image}</p>`:''}
+    <div id="img-preview"></div>
+  </div>`;
+}
+function oReg(id_){
+  imgFile=null;const r=id_?(D.regions||[]).find(x=>x.id===id_):{};
+  openMo(id_?'編輯地區':'新增地區',regForm(r||{}),async()=>{
+    const name=id('f-rname').value.trim();if(!name){toast('請填名稱','err');return false}
+    let image=(r||{}).image||'';
+    if(imgFile){setS('loading','上傳中...');try{image=await upImg(imgFile,'images');}catch(e){toast('上傳失敗','err');setS('error','失敗');return false}finally{imgFile=null;}}
+    const nid=id_||nextId(D.regions||[]);
+    const item={id:nid,name,icon:id('f-ricon').value.trim()||'🏘️',description:id('f-rdesc').value.trim(),image};
+    if(!D.regions)D.regions=[];
+    if(id_)D.regions=D.regions.map(x=>x.id===id_?item:x);else D.regions=[...D.regions,item];
+    rReg();imgFile=null;
+  });
+}
+function dReg(i){if(!confirm('刪除？'))return;D.regions=(D.regions||[]).filter(x=>x.id!==i);rReg();toast('已刪除');}
 
 // ── Patch Notes ──
 function rPatch(){
@@ -473,10 +515,13 @@ function rChr(){
   el.innerHTML=items.map(ch=>{const s=ch.image?`https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${ch.image}`:'';const th=s?`<div class="thumb"><img src="${s}" onerror="this.parentNode.innerHTML='${ch.icon||'⚔️'}'"></div>`:`<div class="thumb">${ch.icon||'⚔️'}</div>`;return `<div class="icard">${th}<div class="ibody"><div class="ititle">${x(ch.name)}</div><div class="imeta">${[ch.title,ch.class,ch.race].filter(Boolean).join(' · ')}</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oChr(${ch.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dChr(${ch.id})">刪除</button></div></div>`;}).join('');
 }
 function chrForm(c={}){
+  const regs=D.regions||[];
+  const regOpts=`<option value="">（無）</option>`+regs.map(r=>`<option value="${r.id}"${c.regionId===r.id?' selected':''}>${x(r.name)}</option>`).join('');
   return `<div class="field"><label>名字 *</label><input id="f-name" value="${x(c.name||'')}"></div>
   <div class="field"><label>稱號</label><input id="f-ctitle" value="${x(c.title||'')}"></div>
   <div class="field"><label>職業</label><input id="f-class" value="${x(c.class||'')}"></div>
   <div class="field"><label>種族</label><input id="f-race" value="${x(c.race||'')}"></div>
+  <div class="field"><label>所屬地區</label><select id="f-region">${regOpts}</select></div>
   <div class="field"><label>簡介（顯示在卡片）</label><textarea id="f-summary">${x(c.summary||'')}</textarea></div>
   <div class="field"><label>詳細介紹（點開後顯示，可換行）</label><textarea id="f-desc" style="min-height:120px">${x(c.description||'')}</textarea></div>
   <div class="field"><label>圖示 Emoji</label><input id="f-icon" value="${x(c.icon||'⚔️')}"></div>
@@ -494,7 +539,8 @@ function oChr(id_){
     let image=(c||{}).image||'';
     if(imgFile){setS('loading','上傳圖片...');try{image=await upImg(imgFile);}catch(e){toast('圖片上傳失敗','err');setS('error','失敗');return false}finally{imgFile=null;}}
     const nid=id_||nextId(D.characters);
-    const item={id:nid,name,title:id('f-ctitle').value.trim(),class:id('f-class').value.trim(),race:id('f-race').value.trim(),summary:id('f-summary').value.trim(),description:id('f-desc').value.trim(),icon:id('f-icon').value.trim()||'⚔️',image};
+    const regVal=id('f-region')&&id('f-region').value;const regionId=regVal?parseInt(regVal):null;
+    const item={id:nid,name,title:id('f-ctitle').value.trim(),class:id('f-class').value.trim(),race:id('f-race').value.trim(),regionId,summary:id('f-summary').value.trim(),description:id('f-desc').value.trim(),icon:id('f-icon').value.trim()||'⚔️',image};
     if(id_)D.characters=D.characters.map(x=>x.id===id_?item:x);else D.characters=[...(D.characters||[]),item];
     rChr();imgFile=null;
   });
