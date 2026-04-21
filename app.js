@@ -52,7 +52,7 @@ function initScrollReveal() {
       obs.unobserve(e.target);
     });
   },{threshold:0.08});
-  document.querySelectorAll('.announcement-card,.character-card,.order-ranked-card,.clue-card,.patchnote-card')
+  document.querySelectorAll('.announcement-card,.character-card,.order-ranked-card,.clue-card,.patchnote-card,.region-card')
     .forEach((el,i)=>{ el.dataset.delay=(i%5)*90; obs.observe(el); });
 }
 
@@ -76,19 +76,23 @@ function renderAnnouncements(list) {
     </article>`).join('');
 }
 
-/* ── World Map ── */
-function renderWorldMap(map) {
+/* ── World Maps ── */
+function renderWorldMaps(list) {
   const el = document.getElementById('map-container');
   if (!el) return;
-  if (map && map.image) {
-    el.innerHTML = `
-      <div class="map-wrap" onclick="openMapLightbox('${map.image}')">
-        <img src="${map.image}" alt="${map.caption||'大陸地圖'}" class="map-img">
-      </div>
-      <div class="map-caption">${map.caption||'格蘭大陸全圖'}</div>`;
-  } else {
+  const maps = (list||[]).filter(m=>m.image);
+  if (!maps.length) {
     el.innerHTML = `<div class="map-placeholder"><span style="font-size:4rem;opacity:0.15">🗺️</span><p>管理員尚未上傳地圖</p></div>`;
+    return;
   }
+  el.innerHTML = `<div class="maps-grid">${maps.map(m=>`
+    <div class="map-card" onclick="openMapLightbox('${m.image}')">
+      <div class="map-card-wrap"><img src="${m.image}" alt="${m.name}" class="map-card-img"><div class="map-card-dimmer"></div></div>
+      <div class="map-card-foot">
+        <span class="map-card-name">${m.name}</span>
+        ${m.caption?`<span class="map-card-caption">${m.caption}</span>`:''}
+      </div>
+    </div>`).join('')}</div>`;
 }
 
 /* ── Patch Notes ── */
@@ -111,27 +115,49 @@ function renderPatchNotes(list) {
 }
 
 /* ── Characters ── */
-function renderCharacters(list) {
+function charCardHtml(c) {
+  const portrait = c.image
+    ? `<img src="${c.image}" alt="${c.name}">`
+    : `<div class="character-portrait-placeholder"><span class="char-icon">${c.icon||'⚔️'}</span></div>`;
+  return `
+    <article class="character-card" onclick="openDetail('character',${c.id})">
+      <div class="character-portrait">${portrait}</div>
+      <div class="character-info">
+        <h3 class="character-name">${c.name}</h3>
+        <p class="character-title-tag">${c.title}</p>
+        <div class="character-badges">
+          ${c.class?`<span class="character-badge">${c.class}</span>`:''}
+          ${c.race?`<span class="character-badge">${c.race}</span>`:''}
+        </div>
+        <p class="character-desc">${c.summary||c.description}</p>
+      </div>
+    </article>`;
+}
+function renderCharacters(list, regions) {
   const el = document.getElementById('characters-grid');
   if (!el) return;
-  el.innerHTML = list.map(c=>{
-    const portrait = c.image
-      ? `<img src="${c.image}" alt="${c.name}">`
-      : `<div class="character-portrait-placeholder"><span class="char-icon">${c.icon||'⚔️'}</span></div>`;
-    return `
-      <article class="character-card" onclick="openDetail('character',${c.id})">
-        <div class="character-portrait">${portrait}</div>
-        <div class="character-info">
-          <h3 class="character-name">${c.name}</h3>
-          <p class="character-title-tag">${c.title}</p>
-          <div class="character-badges">
-            ${c.class?`<span class="character-badge">${c.class}</span>`:''}
-            ${c.race?`<span class="character-badge">${c.race}</span>`:''}
+  if (regions && regions.length) {
+    el.className = 'regions-grid';
+    const regionMap = {};
+    regions.forEach(r => { regionMap[r.id] = []; });
+    list.forEach(c => { if (c.regionId && regionMap[c.regionId]) regionMap[c.regionId].push(c); });
+    el.innerHTML = regions.map(r => {
+      const rc = regionMap[r.id]||[];
+      return `
+        <div class="region-card" onclick="openDetail('region',${r.id})">
+          ${r.image?`<div class="region-card-banner"><img src="${r.image}" alt="${r.name}"><div class="region-card-dimmer"></div></div>`:''}
+          <div class="region-card-body">
+            <div class="region-card-icon">${r.icon||'🏘️'}</div>
+            <div class="region-card-name">${r.name}</div>
+            <div class="region-card-count">${rc.length} 名角色</div>
+            <div class="region-card-previews">${rc.slice(0,5).map(c=>`<span title="${c.name}">${c.icon||'⚔️'}</span>`).join('')}</div>
           </div>
-          <p class="character-desc">${c.summary||c.description}</p>
-        </div>
-      </article>`;
-  }).join('');
+        </div>`;
+    }).join('');
+  } else {
+    el.className = 'characters-grid';
+    el.innerHTML = list.map(c => charCardHtml(c)).join('');
+  }
 }
 
 /* ── Knight Orders ── */
@@ -331,6 +357,31 @@ function renderDetail() {
         <div class="detail-article">${(m.description||'').replace(/\n/g,'<br>')}</div>
       </div>`;
     }
+  } else if (type === 'region') {
+    const r = siteData.regions.find(x=>x.id===id);
+    if (r) {
+      const chars = (siteData.characters||[]).filter(c=>c.regionId===id);
+      html = `
+        ${r.image?`<img src="${r.image}" class="detail-clue-img" alt="${r.name}">`:''}
+        <div class="detail-body">
+          <div class="detail-badges"><span style="font-size:2rem">${r.icon||'🏘️'}</span></div>
+          <h1 class="detail-name">${r.name}</h1>
+          ${r.description?`<div class="detail-divider"></div><div class="detail-article">${r.description}</div>`:''}
+          <div class="detail-divider"></div>
+          <h2 class="detail-section-title">此地區角色（${chars.length}）</h2>
+          ${chars.length
+            ? `<div class="region-chars-grid">${chars.map(c=>`
+                <article class="character-card" onclick="event.stopPropagation();pushDetail('character',${c.id})">
+                  <div class="character-portrait">${c.image?`<img src="${c.image}" alt="${c.name}">`:`<div class="character-portrait-placeholder"><span class="char-icon">${c.icon||'⚔️'}</span></div>`}</div>
+                  <div class="character-info">
+                    <h3 class="character-name">${c.name}</h3>
+                    <p class="character-title-tag">${c.title||''}</p>
+                    <div class="character-badges">${c.class?`<span class="character-badge">${c.class}</span>`:''}${c.race?`<span class="character-badge">${c.race}</span>`:''}</div>
+                  </div>
+                </article>`).join('')}</div>`
+            : `<p style="color:var(--stone);font-size:0.9rem">此地區尚無角色</p>`}
+        </div>`;
+    }
   } else if (type === 'clue') {
     const c = siteData.clues.find(x=>x.id===id);
     if (c) html = `
@@ -379,14 +430,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   initParticles();
   initNavbar();
   try {
-    const res = await fetch('data.json');
+    const res = await fetch('data.json?v=' + Date.now());
     if (!res.ok) throw new Error('無法載入 data.json');
     siteData = await res.json();
     fillStaticTexts(siteData.site);
-    renderWorldMap(siteData.worldMap || {});
+    renderWorldMaps(siteData.worldMaps || (siteData.worldMap ? [{id:1, name:'格蘭大陸全圖', ...siteData.worldMap}] : []));
     renderPatchNotes(siteData.patchNotes || []);
     renderAnnouncements(siteData.announcements || []);
-    renderCharacters(siteData.characters || []);
+    renderCharacters(siteData.characters || [], siteData.regions || []);
     renderOrders(siteData.knightOrders || []);
     renderClues(siteData.clues || []);
     setTimeout(initScrollReveal, 120);
