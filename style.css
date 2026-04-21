@@ -530,6 +530,52 @@ body::before {
 .clue-desc { font-size: 0.88rem; color: var(--parchment-dim); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
 /* =============================================
+   Compendium
+   ============================================= */
+#compendium-container { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 2.5rem; }
+.comp-group-title {
+  font-family: var(--font-heading); font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold-dim);
+  margin-bottom: 1rem; padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+}
+.comp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 0.6rem;
+}
+@media (max-width: 480px) {
+  .comp-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 0.45rem; }
+}
+.comp-tile {
+  position: relative; cursor: pointer;
+  aspect-ratio: 1/1; overflow: hidden;
+  border: 1px solid var(--border);
+  background: #000;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  opacity: 0; transform: scale(0.9);
+}
+.comp-tile.visible { animation: compReveal 0.4s cubic-bezier(0.16,1,0.3,1) forwards; }
+@keyframes compReveal { from{opacity:0;transform:scale(0.88)} to{opacity:1;transform:scale(1)} }
+.comp-tile:hover { border-color: rgba(201,168,76,0.5); transform: scale(1.04); box-shadow: 0 8px 28px rgba(0,0,0,0.7); z-index: 1; }
+.comp-tile-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+.comp-tile:hover .comp-tile-img { transform: scale(1.08); }
+.comp-tile-blank { width: 100%; height: 100%; background: #000; }
+.comp-tile-name {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 0.5rem 0.4rem 0.35rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 70%, transparent 100%);
+  font-family: var(--font-heading); font-size: 0.62rem; font-weight: 700;
+  color: var(--parchment); text-align: center; line-height: 1.3;
+  letter-spacing: 0.04em;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.comp-detail-blank {
+  width: 100%; height: 180px; background: #000;
+  border-bottom: 1px solid var(--border);
+}
+
+/* =============================================
    Compact Character Grid (inside accordion)
    ============================================= */
 .chr-compact-grid {
@@ -606,8 +652,18 @@ body::before {
 .note-card.visible { animation: cardReveal 0.65s ease forwards; }
 .note-card:hover { border-color: rgba(201,168,76,0.38); box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
 .note-img-wrap { width: 100%; overflow: hidden; }
+.note-img-clickable { cursor: zoom-in; position: relative; }
 .note-img { width: 100%; display: block; max-height: 260px; object-fit: cover; transition: transform 0.5s; }
-.note-card:hover .note-img { transform: scale(1.03); }
+.note-img-clickable:hover .note-img { transform: scale(1.03); }
+.note-img-zoom {
+  position: absolute; top: 0.6rem; right: 0.6rem;
+  background: rgba(0,0,0,0.55); color: #fff;
+  font-size: 0.8rem; width: 28px; height: 28px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.2s;
+  pointer-events: none;
+}
+.note-img-clickable:hover .note-img-zoom { opacity: 1; }
 .note-body { padding: 1.5rem 1.75rem; }
 .note-title {
   font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700;

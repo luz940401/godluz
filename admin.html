@@ -163,6 +163,7 @@
     <button class="tab" onclick="sw('world',this)">🌍 總覽</button>
     <button class="tab" onclick="sw('ord',this)">🏰 騎士團</button>
     <button class="tab" onclick="sw('clue',this)">🔍 線索</button>
+    <button class="tab" onclick="sw('comp',this)">📖 圖鑑</button>
     <button class="tab" onclick="sw('report',this)">📰 世界報導</button>
     <button class="tab" onclick="sw('note',this)">📌 備註板</button>
     <button class="tab" onclick="sw('site',this)">⚙️ 網站設定</button>
@@ -216,6 +217,12 @@
     <div id="tab-clue" class="panel">
       <div class="ph"><h2>線索清單</h2><button class="btn btn-primary" onclick="oClue()">＋ 新增線索</button></div>
       <div id="clue-list" class="ilist"><div class="empty"><div class="empty-icon">🔍</div><p>請先點「↓ 讀取」</p></div></div>
+    </div>
+
+    <!-- 圖鑑 -->
+    <div id="tab-comp" class="panel">
+      <div class="ph"><h2>圖鑑管理</h2><button class="btn btn-primary" onclick="oComp()">＋ 新增項目</button></div>
+      <div id="comp-list" class="ilist"><div class="empty"><div class="empty-icon">📖</div><p>請先點「↓ 讀取」</p></div></div>
     </div>
 
     <!-- 世界報導 -->
@@ -420,13 +427,13 @@ function x(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').repl
 function nextId(arr){return arr&&arr.length?Math.max(...arr.map(a=>a.id))+1:1;}
 function prevImg(input,previewId){
   const f=input.files[0]; if(!f) return;
-  if(previewId==='img-preview'||previewId==='mem-img-preview'||previewId==='reg-img-preview'||previewId==='ord-img-preview'||previewId==='report-img-preview'||previewId==='note-img-preview') imgFile=f;
+  if(previewId==='img-preview'||previewId==='mem-img-preview'||previewId==='reg-img-preview'||previewId==='ord-img-preview'||previewId==='report-img-preview'||previewId==='note-img-preview'||previewId==='comp-img-preview') imgFile=f;
   if(previewId==='map-prev') mapFile=f;
   const rd=new FileReader();
   rd.onload=e=>{const b=id(previewId);if(b)b.innerHTML=`<img src="${e.target.result}" style="max-width:100%;max-height:160px;object-fit:contain;border-radius:4px">`};
   rd.readAsDataURL(f);
 }
-function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMaps:[],patchNotes:[],announcements:[],regions:[],characters:[],knightOrders:[],clues:[],worldReports:[],notes:[]};}
+function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMaps:[],patchNotes:[],announcements:[],regions:[],characters:[],knightOrders:[],clues:[],compendium:[],worldReports:[],notes:[]};}
 
 // ── Google Sheet ──
 function sheetUrl(){const c=cfg();return c&&c.sheetUrl||'';}
@@ -458,7 +465,7 @@ function saveLocal(){try{if(D)localStorage.setItem('dnd-local-bk',JSON.stringify
 function loadLocal(){try{const s=localStorage.getItem('dnd-local-bk');return s?JSON.parse(s):null;}catch(e){return null;}}
 
 // ── Render All ──
-function rAll(){if(!D) return; rAnn();rMap();rPatch();rChr();rReg();rWorld();rOrd();rClue();rReport();rNote();rSite();saveLocal();}
+function rAll(){if(!D) return; rAnn();rMap();rPatch();rChr();rReg();rWorld();rOrd();rClue();rComp();rReport();rNote();rSite();saveLocal();}
 
 // ── Announcements ──
 function rAnn(){
@@ -787,6 +794,40 @@ function oClue(id_){
   });
 }
 function dClue(i){if(!confirm('刪除？'))return;D.clues=D.clues.filter(x=>x.id!==i);rClue();toast('已刪除');}
+
+// ── Compendium ──
+function rComp(){
+  const el=id('comp-list'),items=D.compendium||[];
+  if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">📖</div><p>尚無圖鑑項目</p></div>';return}
+  const c=cfg();
+  el.innerHTML=items.map(i=>{const s=i.image?`https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${i.image}`:'';const th=s?`<div class="thumb" style="background:#000;border:1px solid var(--bd)"><img src="${s}" onerror="this.parentNode.innerHTML='▪'" style="width:100%;height:100%;object-fit:cover"></div>`:`<div class="thumb" style="background:#000;border:1px solid var(--bd);color:#333;font-size:1.6rem;align-items:center;justify-content:center;display:flex">▪</div>`;return `<div class="icard">${th}<div class="ibody"><div class="ititle">${x(i.name)}</div><div class="imeta">${i.category?x(i.category):'未分類'}</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oComp(${i.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dComp(${i.id})">刪除</button></div></div>`;}).join('');
+}
+function compForm(i={}){
+  const cats=[...new Set((D.compendium||[]).map(c=>c.category).filter(Boolean))];
+  const datalist=cats.length?`<datalist id="comp-cats">${cats.map(c=>`<option value="${x(c)}">`).join('')}</datalist>`:'';
+  return `<div class="field"><label>名稱 *</label><input id="f-iname" value="${x(i.name||'')}"></div>
+  <div class="field"><label>分類（可自定義，相同分類會群組顯示）</label><input id="f-icat" value="${x(i.category||'')}" list="comp-cats" placeholder="例：武器、道具、怪物">${datalist}</div>
+  <div class="field"><label>說明描述（選填）</label><textarea id="f-idesc" style="min-height:100px">${x(i.description||'')}</textarea></div>
+  <div class="field"><label>圖片（選填，未上傳則顯示黑格）</label>
+    <div class="upzone" onclick="document.getElementById('comp-img-file').click()"><p>點此選擇圖片</p><small>不上傳則顯示純黑格子</small><input type="file" id="comp-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'comp-img-preview')"></div>
+    ${i.image?`<p class="cur-img">目前：${i.image}</p>`:''}
+    <div id="comp-img-preview"></div>
+  </div>`;
+}
+function oComp(id_){
+  imgFile=null;const i=id_?(D.compendium||[]).find(x=>x.id===id_):{};
+  openMo(id_?'編輯圖鑑項目':'新增圖鑑項目',compForm(i||{}),async()=>{
+    const name=id('f-iname').value.trim();if(!name){toast('請填名稱','err');return false}
+    let image=(i||{}).image||'';
+    if(imgFile){setS('loading','上傳中...');try{image=await upImg(imgFile,'images');}catch(e){toast('上傳失敗','err');setS('error','失敗');return false}finally{imgFile=null;}}
+    const nid=id_||nextId(D.compendium||[]);
+    const item={id:nid,name,category:id('f-icat').value.trim()||'未分類',description:id('f-idesc').value.trim(),image};
+    if(!D.compendium)D.compendium=[];
+    if(id_)D.compendium=D.compendium.map(x=>x.id===id_?item:x);else D.compendium=[...D.compendium,item];
+    rComp();imgFile=null;
+  });
+}
+function dComp(i){if(!confirm('刪除？'))return;D.compendium=(D.compendium||[]).filter(x=>x.id!==i);rComp();toast('已刪除');}
 
 // ── World Reports ──
 function rReport(){

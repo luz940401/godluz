@@ -52,7 +52,7 @@ function initScrollReveal() {
       obs.unobserve(e.target);
     });
   },{threshold:0.08});
-  document.querySelectorAll('.announcement-card,.character-card,.order-ranked-card,.clue-card,.patchnote-card,.region-accordion-item,.report-card,.note-card')
+  document.querySelectorAll('.announcement-card,.character-card,.order-ranked-card,.clue-card,.patchnote-card,.region-accordion-item,.report-card,.note-card,.comp-tile')
     .forEach((el,i)=>{ el.dataset.delay=(i%5)*90; obs.observe(el); });
 }
 
@@ -297,6 +297,30 @@ function renderWorldReports(list) {
     </div>`).join('');
 }
 
+/* ── Compendium ── */
+function renderCompendium(list) {
+  const el = document.getElementById('compendium-container');
+  if (!el) return;
+  if (!list.length) { el.innerHTML='<p style="text-align:center;color:var(--stone);font-family:var(--font-heading);letter-spacing:0.15em">暫無圖鑑項目</p>'; return; }
+  const cats = [...new Set(list.map(i=>i.category||'未分類'))];
+  el.innerHTML = cats.map(cat => {
+    const items = list.filter(i=>(i.category||'未分類')===cat);
+    return `
+      <div class="comp-group">
+        <div class="comp-group-title">${cat}</div>
+        <div class="comp-grid">${items.map(i=>{
+          const tile = i.image
+            ? `<img src="${i.image}" alt="${i.name}" class="comp-tile-img">`
+            : `<div class="comp-tile-blank"></div>`;
+          return `<div class="comp-tile" onclick="openDetail('item',${i.id})">
+            ${tile}
+            <div class="comp-tile-name">${i.name}</div>
+          </div>`;
+        }).join('')}</div>
+      </div>`;
+  }).join('');
+}
+
 /* ── Notes ── */
 function renderNotes(list) {
   const el = document.getElementById('notes-grid');
@@ -304,7 +328,7 @@ function renderNotes(list) {
   if (!list.length) { el.innerHTML='<p style="text-align:center;color:var(--stone);font-family:var(--font-heading);letter-spacing:0.15em">暫無備註</p>'; return; }
   el.innerHTML = list.map(n=>`
     <div class="note-card">
-      ${n.image?`<div class="note-img-wrap"><img src="${n.image}" alt="${n.title}" class="note-img"></div>`:''}
+      ${n.image?`<div class="note-img-wrap note-img-clickable" onclick="openMapLightbox('${n.image}')"><img src="${n.image}" alt="${n.title}" class="note-img"><div class="note-img-zoom">🔍</div></div>`:''}
       <div class="note-body">
         <div class="note-title">${n.title}</div>
         ${n.content?`<div class="note-content">${n.content.replace(/\n/g,'<br>')}</div>`:''}
@@ -521,6 +545,16 @@ function renderDetail() {
             : `<p style="color:var(--stone);font-size:0.9rem">此地區尚無角色</p>`}
         </div>`;
     }
+  } else if (type === 'item') {
+    const item = (siteData.compendium||[]).find(x=>x.id===id);
+    if (item) html = `
+      ${item.image?`<img src="${item.image}" class="detail-clue-img" alt="${item.name}">`
+        :`<div class="comp-detail-blank"></div>`}
+      <div class="detail-body">
+        ${item.category?`<div class="detail-badges"><span class="character-badge">${item.category}</span></div>`:''}
+        <h1 class="detail-name">${item.name}</h1>
+        ${item.description?`<div class="detail-divider"></div><div class="detail-article">${item.description.replace(/\n/g,'<br>')}</div>`:''}
+      </div>`;
   } else if (type === 'report') {
     const r = (siteData.worldReports||[]).find(x=>x.id===id);
     if (r) html = `
@@ -590,6 +624,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderCharacters(siteData.characters || [], siteData.regions || []);
     renderOrders(siteData.knightOrders || [], siteData.regions || []);
     renderClues(siteData.clues || []);
+    renderCompendium(siteData.compendium || []);
     renderNotes(siteData.notes || []);
     setTimeout(initScrollReveal, 120);
   } catch(err) {
