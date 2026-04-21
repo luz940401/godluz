@@ -163,6 +163,8 @@
     <button class="tab" onclick="sw('world',this)">🌍 總覽</button>
     <button class="tab" onclick="sw('ord',this)">🏰 騎士團</button>
     <button class="tab" onclick="sw('clue',this)">🔍 線索</button>
+    <button class="tab" onclick="sw('report',this)">📰 世界報導</button>
+    <button class="tab" onclick="sw('note',this)">📌 備註板</button>
     <button class="tab" onclick="sw('site',this)">⚙️ 網站設定</button>
   </nav>
   <div class="content">
@@ -214,6 +216,18 @@
     <div id="tab-clue" class="panel">
       <div class="ph"><h2>線索清單</h2><button class="btn btn-primary" onclick="oClue()">＋ 新增線索</button></div>
       <div id="clue-list" class="ilist"><div class="empty"><div class="empty-icon">🔍</div><p>請先點「↓ 讀取」</p></div></div>
+    </div>
+
+    <!-- 世界報導 -->
+    <div id="tab-report" class="panel">
+      <div class="ph"><h2>世界報導</h2><button class="btn btn-primary" onclick="oReport()">＋ 新增報導</button></div>
+      <div id="report-list" class="ilist"><div class="empty"><div class="empty-icon">📰</div><p>請先點「↓ 讀取」</p></div></div>
+    </div>
+
+    <!-- 備註板 -->
+    <div id="tab-note" class="panel">
+      <div class="ph"><h2>備註板</h2><button class="btn btn-primary" onclick="oNote()">＋ 新增備註</button></div>
+      <div id="note-list" class="ilist"><div class="empty"><div class="empty-icon">📌</div><p>請先點「↓ 讀取」</p></div></div>
     </div>
 
     <!-- 網站設定 -->
@@ -406,13 +420,13 @@ function x(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').repl
 function nextId(arr){return arr&&arr.length?Math.max(...arr.map(a=>a.id))+1:1;}
 function prevImg(input,previewId){
   const f=input.files[0]; if(!f) return;
-  if(previewId==='img-preview'||previewId==='mem-img-preview'||previewId==='reg-img-preview'||previewId==='ord-img-preview') imgFile=f;
+  if(previewId==='img-preview'||previewId==='mem-img-preview'||previewId==='reg-img-preview'||previewId==='ord-img-preview'||previewId==='report-img-preview'||previewId==='note-img-preview') imgFile=f;
   if(previewId==='map-prev') mapFile=f;
   const rd=new FileReader();
   rd.onload=e=>{const b=id(previewId);if(b)b.innerHTML=`<img src="${e.target.result}" style="max-width:100%;max-height:160px;object-fit:contain;border-radius:4px">`};
   rd.readAsDataURL(f);
 }
-function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMaps:[],patchNotes:[],announcements:[],regions:[],characters:[],knightOrders:[],clues:[]};}
+function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMaps:[],patchNotes:[],announcements:[],regions:[],characters:[],knightOrders:[],clues:[],worldReports:[],notes:[]};}
 
 // ── Google Sheet ──
 function sheetUrl(){const c=cfg();return c&&c.sheetUrl||'';}
@@ -444,7 +458,7 @@ function saveLocal(){try{if(D)localStorage.setItem('dnd-local-bk',JSON.stringify
 function loadLocal(){try{const s=localStorage.getItem('dnd-local-bk');return s?JSON.parse(s):null;}catch(e){return null;}}
 
 // ── Render All ──
-function rAll(){if(!D) return; rAnn();rMap();rPatch();rChr();rReg();rWorld();rOrd();rClue();rSite();saveLocal();}
+function rAll(){if(!D) return; rAnn();rMap();rPatch();rChr();rReg();rWorld();rOrd();rClue();rReport();rNote();rSite();saveLocal();}
 
 // ── Announcements ──
 function rAnn(){
@@ -576,7 +590,7 @@ function oChr(id_){
     if(imgFile){setS('loading','上傳圖片...');try{image=await upImg(imgFile);}catch(e){toast('圖片上傳失敗','err');setS('error','失敗');return false}finally{imgFile=null;}}
     const nid=id_||nextId(D.characters);
     const regVal=id('f-region')&&id('f-region').value;const regionId=regVal?parseInt(regVal):null;
-    const item={id:nid,name,title:id('f-ctitle').value.trim(),class:id('f-class').value.trim(),race:id('f-race').value.trim(),regionId,summary:id('f-summary').value.trim(),description:id('f-desc').value.trim(),icon:id('f-icon').value.trim()||'⚔️',image};
+    const item={id:nid,name,title:id('f-ctitle').value.trim(),class:id('f-class').value.trim(),race:id('f-race').value.trim(),regionId,summary:id('f-summary').value.trim(),description:id('f-desc').value.trim(),image};
     if(id_)D.characters=D.characters.map(x=>x.id===id_?item:x);else D.characters=[...(D.characters||[]),item];
     rChr();imgFile=null;
   });
@@ -773,6 +787,71 @@ function oClue(id_){
   });
 }
 function dClue(i){if(!confirm('刪除？'))return;D.clues=D.clues.filter(x=>x.id!==i);rClue();toast('已刪除');}
+
+// ── World Reports ──
+function rReport(){
+  const el=id('report-list'),items=D.worldReports||[];
+  if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">📰</div><p>尚無報導</p></div>';return}
+  const c=cfg();
+  el.innerHTML=items.map(r=>{const s=r.image?`https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${r.image}`:'';const th=s?`<div class="thumb"><img src="${s}" onerror="this.parentNode.innerHTML='📰'"></div>`:`<div class="thumb">📰</div>`;return `<div class="icard">${th}<div class="ibody"><div class="ititle">${x(r.title)}</div><div class="imeta">${r.date||''} ${r.subtitle?'· '+x(r.subtitle):''}</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oReport(${r.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dReport(${r.id})">刪除</button></div></div>`;}).join('');
+}
+function reportForm(r={}){
+  const today=new Date().toISOString().split('T')[0];
+  return `<div class="field"><label>主標題 *</label><input id="f-rtitle" value="${x(r.title||'')}"></div>
+  <div class="field"><label>副標題</label><input id="f-rsubtitle" value="${x(r.subtitle||'')}"></div>
+  <div class="field"><label>日期</label><input type="date" id="f-rdate" value="${r.date||today}"></div>
+  <div class="field"><label>內文（可換行）</label><textarea id="f-rcontent" style="min-height:160px">${x(r.content||'')}</textarea></div>
+  <div class="field"><label>圖片</label>
+    <div class="upzone" onclick="document.getElementById('report-img-file').click()"><p>點此選擇圖片</p><input type="file" id="report-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'report-img-preview')"></div>
+    ${r.image?`<p class="cur-img">目前：${r.image}</p>`:''}
+    <div id="report-img-preview"></div>
+  </div>`;
+}
+function oReport(id_){
+  imgFile=null;const r=id_?(D.worldReports||[]).find(x=>x.id===id_):{};
+  openMo(id_?'編輯報導':'新增報導',reportForm(r||{}),async()=>{
+    const t=id('f-rtitle').value.trim();if(!t){toast('請填主標題','err');return false}
+    let image=(r||{}).image||'';
+    if(imgFile){setS('loading','上傳中...');try{image=await upImg(imgFile,'images');}catch(e){toast('上傳失敗','err');setS('error','失敗');return false}finally{imgFile=null;}}
+    const nid=id_||nextId(D.worldReports||[]);
+    const item={id:nid,title:t,subtitle:id('f-rsubtitle').value.trim(),date:id('f-rdate').value,content:id('f-rcontent').value.trim(),image};
+    if(!D.worldReports)D.worldReports=[];
+    if(id_)D.worldReports=D.worldReports.map(x=>x.id===id_?item:x);else D.worldReports=[...D.worldReports,item];
+    rReport();imgFile=null;
+  });
+}
+function dReport(i){if(!confirm('刪除？'))return;D.worldReports=(D.worldReports||[]).filter(x=>x.id!==i);rReport();toast('已刪除');}
+
+// ── Notes ──
+function rNote(){
+  const el=id('note-list'),items=D.notes||[];
+  if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">📌</div><p>尚無備註</p></div>';return}
+  const c=cfg();
+  el.innerHTML=items.map(n=>{const s=n.image?`https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${n.image}`:'';const th=s?`<div class="thumb"><img src="${s}" onerror="this.parentNode.innerHTML='📌'"></div>`:`<div class="thumb">📌</div>`;return `<div class="icard">${th}<div class="ibody"><div class="ititle">${x(n.title)}</div><div class="imeta" style="display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden">${x(n.content||'')}</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oNote(${n.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dNote(${n.id})">刪除</button></div></div>`;}).join('');
+}
+function noteForm(n={}){
+  return `<div class="field"><label>標題 *</label><input id="f-ntitle" value="${x(n.title||'')}"></div>
+  <div class="field"><label>備註內容（可換行）</label><textarea id="f-ncontent" style="min-height:160px">${x(n.content||'')}</textarea></div>
+  <div class="field"><label>圖片（選填）</label>
+    <div class="upzone" onclick="document.getElementById('note-img-file').click()"><p>點此選擇圖片</p><input type="file" id="note-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'note-img-preview')"></div>
+    ${n.image?`<p class="cur-img">目前：${n.image}</p>`:''}
+    <div id="note-img-preview"></div>
+  </div>`;
+}
+function oNote(id_){
+  imgFile=null;const n=id_?(D.notes||[]).find(x=>x.id===id_):{};
+  openMo(id_?'編輯備註':'新增備註',noteForm(n||{}),async()=>{
+    const t=id('f-ntitle').value.trim();if(!t){toast('請填標題','err');return false}
+    let image=(n||{}).image||'';
+    if(imgFile){setS('loading','上傳中...');try{image=await upImg(imgFile,'images');}catch(e){toast('上傳失敗','err');setS('error','失敗');return false}finally{imgFile=null;}}
+    const nid=id_||nextId(D.notes||[]);
+    const item={id:nid,title:t,content:id('f-ncontent').value.trim(),image};
+    if(!D.notes)D.notes=[];
+    if(id_)D.notes=D.notes.map(x=>x.id===id_?item:x);else D.notes=[...D.notes,item];
+    rNote();imgFile=null;
+  });
+}
+function dNote(i){if(!confirm('刪除？'))return;D.notes=(D.notes||[]).filter(x=>x.id!==i);rNote();toast('已刪除');}
 
 // ── Site Settings ──
 function rSite(){const s=D.site||{};['title','subtitle','desc','tagline','year'].forEach(k=>{const el=id('s-'+k);if(el)el.value=s[k==='desc'?'description':k]??'';});const su=id('s-sheet-url');if(su)su.value=sheetUrl();}

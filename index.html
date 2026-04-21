@@ -18,12 +18,13 @@
         <span class="nav-logo-text">D&amp;D 官方公告</span>
       </div>
       <ul class="nav-links" id="nav-links">
-        <li><a href="#announcements" onclick="closeNav()">公告</a></li>
-        <li><a href="#worldmap" onclick="closeNav()">世界地圖</a></li>
         <li><a href="#patchnotes" onclick="closeNav()">改版資訊</a></li>
+        <li><a href="#worldmap" onclick="closeNav()">世界地圖</a></li>
+        <li><a href="#worldreports" onclick="closeNav()">世界報導</a></li>
         <li><a href="#characters" onclick="closeNav()">已解鎖地區</a></li>
         <li><a href="#orders" onclick="closeNav()">已遭遇組織</a></li>
         <li><a href="#clues" onclick="closeNav()">線索清單</a></li>
+        <li><a href="#notes" onclick="closeNav()">備註板</a></li>
       </ul>
       <button class="nav-hamburger" id="hamburger" onclick="toggleNav()" aria-label="選單">
         <span></span><span></span><span></span>
@@ -67,14 +68,14 @@
 
   <main>
 
-    <!-- 公告 -->
-    <section id="announcements" class="section">
+    <!-- 改版資訊 -->
+    <section id="patchnotes" class="section">
       <div class="section-header">
         <div class="section-divider"></div>
-        <h2 class="section-title">官方公告</h2>
+        <h2 class="section-title">改版資訊</h2>
         <div class="section-divider right"></div>
       </div>
-      <div class="announcements-grid" id="announcements-grid"></div>
+      <div class="patchnotes-list" id="patchnotes-list"></div>
     </section>
 
     <!-- 世界地圖 -->
@@ -87,14 +88,14 @@
       <div id="map-container"></div>
     </section>
 
-    <!-- 改版資訊 -->
-    <section id="patchnotes" class="section">
+    <!-- 世界報導 -->
+    <section id="worldreports" class="section">
       <div class="section-header">
         <div class="section-divider"></div>
-        <h2 class="section-title">改版資訊</h2>
+        <h2 class="section-title">世界報導</h2>
         <div class="section-divider right"></div>
       </div>
-      <div class="patchnotes-list" id="patchnotes-list"></div>
+      <div class="reports-grid" id="reports-grid"></div>
     </section>
 
     <!-- 已解鎖地區 -->
@@ -125,6 +126,16 @@
         <div class="section-divider right"></div>
       </div>
       <div class="clues-grid" id="clues-grid"></div>
+    </section>
+
+    <!-- 備註板 -->
+    <section id="notes" class="section section-alt">
+      <div class="section-header">
+        <div class="section-divider"></div>
+        <h2 class="section-title">備註板</h2>
+        <div class="section-divider right"></div>
+      </div>
+      <div class="notes-grid" id="notes-grid"></div>
     </section>
 
   </main>

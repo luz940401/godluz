@@ -52,7 +52,7 @@ function initScrollReveal() {
       obs.unobserve(e.target);
     });
   },{threshold:0.08});
-  document.querySelectorAll('.announcement-card,.character-card,.order-ranked-card,.clue-card,.patchnote-card,.region-accordion-item')
+  document.querySelectorAll('.announcement-card,.character-card,.order-ranked-card,.clue-card,.patchnote-card,.region-accordion-item,.report-card,.note-card')
     .forEach((el,i)=>{ el.dataset.delay=(i%5)*90; obs.observe(el); });
 }
 
@@ -133,6 +133,17 @@ function charCardHtml(c) {
       </div>
     </article>`;
 }
+function charCompactHtml(c) {
+  const av = c.image
+    ? `<img src="${c.image}" alt="${c.name}">`
+    : `<div class="chr-mini-avatar-ph">${c.name.charAt(0)}</div>`;
+  return `
+    <div class="chr-mini-card" onclick="openDetail('character',${c.id})">
+      <div class="chr-mini-avatar">${av}</div>
+      <div class="chr-mini-name">${c.name}</div>
+      ${c.title?`<div class="chr-mini-title">${c.title}</div>`:''}
+    </div>`;
+}
 function renderCharacters(list, regions) {
   const el = document.getElementById('characters-grid');
   if (!el) return;
@@ -144,7 +155,7 @@ function renderCharacters(list, regions) {
     el.innerHTML = regions.map(r => {
       const rc = regionMap[r.id]||[];
       const inner = rc.length
-        ? `<div class="characters-grid acc-chars">${rc.map(c=>charCardHtml(c)).join('')}</div>`
+        ? `<div class="chr-compact-grid">${rc.map(c=>charCompactHtml(c)).join('')}</div>`
         : `<p class="acc-empty">此地區尚無角色</p>`;
       return `
         <div class="region-accordion-item" id="racc-${r.id}">
@@ -267,6 +278,38 @@ function toggleOrgCat(id) {
   const item = document.getElementById('orgcat-'+id);
   if (!item) return;
   item.classList.toggle('open');
+}
+
+/* ── World Reports ── */
+function renderWorldReports(list) {
+  const el = document.getElementById('reports-grid');
+  if (!el) return;
+  if (!list.length) { el.innerHTML='<p style="text-align:center;color:var(--stone);font-family:var(--font-heading);letter-spacing:0.15em">暫無世界報導</p>'; return; }
+  el.innerHTML = list.map(r=>`
+    <div class="report-card" onclick="openDetail('report',${r.id})">
+      ${r.image?`<div class="report-card-img"><img src="${r.image}" alt="${r.title}"></div>`:''}
+      <div class="report-body">
+        <div class="report-title">${r.title}</div>
+        ${r.subtitle?`<div class="report-subtitle">${r.subtitle}</div>`:''}
+        ${r.content?`<div class="report-excerpt">${r.content.replace(/\n/g,' ').substring(0,120)}…</div>`:''}
+        ${r.date?`<div class="report-date">${r.date}</div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+/* ── Notes ── */
+function renderNotes(list) {
+  const el = document.getElementById('notes-grid');
+  if (!el) return;
+  if (!list.length) { el.innerHTML='<p style="text-align:center;color:var(--stone);font-family:var(--font-heading);letter-spacing:0.15em">暫無備註</p>'; return; }
+  el.innerHTML = list.map(n=>`
+    <div class="note-card">
+      ${n.image?`<div class="note-img-wrap"><img src="${n.image}" alt="${n.title}" class="note-img"></div>`:''}
+      <div class="note-body">
+        <div class="note-title">${n.title}</div>
+        ${n.content?`<div class="note-content">${n.content.replace(/\n/g,'<br>')}</div>`:''}
+      </div>
+    </div>`).join('');
 }
 
 /* ── Clues ── */
@@ -469,18 +512,26 @@ function renderDetail() {
           <div class="detail-divider"></div>
           <h2 class="detail-section-title">此地區角色（${chars.length}）</h2>
           ${chars.length
-            ? `<div class="region-chars-grid">${chars.map(c=>`
-                <article class="character-card" onclick="event.stopPropagation();pushDetail('character',${c.id})">
-                  <div class="character-portrait">${c.image?`<img src="${c.image}" alt="${c.name}">`:`<div class="character-portrait-placeholder"><span class="char-icon">${c.icon||'⚔️'}</span></div>`}</div>
-                  <div class="character-info">
-                    <h3 class="character-name">${c.name}</h3>
-                    <p class="character-title-tag">${c.title||''}</p>
-                    <div class="character-badges">${c.class?`<span class="character-badge">${c.class}</span>`:''}${c.race?`<span class="character-badge">${c.race}</span>`:''}</div>
-                  </div>
-                </article>`).join('')}</div>`
+            ? `<div class="chr-compact-grid">${chars.map(c=>`
+                <div class="chr-mini-card" onclick="event.stopPropagation();pushDetail('character',${c.id})">
+                  <div class="chr-mini-avatar">${c.image?`<img src="${c.image}" alt="${c.name}">`:`<div class="chr-mini-avatar-ph">${c.name.charAt(0)}</div>`}</div>
+                  <div class="chr-mini-name">${c.name}</div>
+                  ${c.title?`<div class="chr-mini-title">${c.title}</div>`:''}
+                </div>`).join('')}</div>`
             : `<p style="color:var(--stone);font-size:0.9rem">此地區尚無角色</p>`}
         </div>`;
     }
+  } else if (type === 'report') {
+    const r = (siteData.worldReports||[]).find(x=>x.id===id);
+    if (r) html = `
+      ${r.image?`<img src="${r.image}" class="detail-clue-img" alt="${r.title}">`:''}
+      <div class="detail-body">
+        ${r.date?`<div class="detail-version-header"><span class="version-date-large">${r.date}</span></div>`:''}
+        <h1 class="detail-name">${r.title}</h1>
+        ${r.subtitle?`<p class="detail-title-tag">${r.subtitle}</p>`:''}
+        <div class="detail-divider"></div>
+        <div class="detail-article">${(r.content||'').replace(/\n/g,'<br>')}</div>
+      </div>`;
   } else if (type === 'clue') {
     const c = siteData.clues.find(x=>x.id===id);
     if (c) html = `
@@ -535,10 +586,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     fillStaticTexts(siteData.site);
     renderWorldMaps(siteData.worldMaps || (siteData.worldMap ? [{id:1, name:'格蘭大陸全圖', ...siteData.worldMap}] : []));
     renderPatchNotes(siteData.patchNotes || []);
-    renderAnnouncements(siteData.announcements || []);
+    renderWorldReports(siteData.worldReports || []);
     renderCharacters(siteData.characters || [], siteData.regions || []);
     renderOrders(siteData.knightOrders || [], siteData.regions || []);
     renderClues(siteData.clues || []);
+    renderNotes(siteData.notes || []);
     setTimeout(initScrollReveal, 120);
   } catch(err) {
     console.error('載入失敗:', err);
