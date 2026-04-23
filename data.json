@@ -161,6 +161,18 @@
       "description": "",
       "badge": "images/1776927998276.png",
       "members": []
+    },
+    {
+      "id": 8,
+      "rank": 2,
+      "name": "雷霆獵衛",
+      "regionId": 1,
+      "parentId": null,
+      "founding": "格蘭歷13年",
+      "motto": "",
+      "description": "",
+      "badge": "images/1776928004164.png",
+      "members": []
     }
   ],
   "clues": [
