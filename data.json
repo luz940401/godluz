@@ -173,6 +173,18 @@
       "description": "",
       "badge": "images/1776928085165.png",
       "members": []
+    },
+    {
+      "id": 9,
+      "rank": 4,
+      "name": "龍焰十字禁衛軍",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "格蘭歷112年",
+      "motto": "",
+      "description": "",
+      "badge": "images/1776928200411.png",
+      "members": []
     }
   ],
   "clues": [
