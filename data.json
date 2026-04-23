@@ -164,14 +164,14 @@
     },
     {
       "id": 8,
-      "rank": 2,
-      "name": "雷霆獵衛",
+      "rank": 3,
+      "name": "晨星盟約",
       "regionId": 1,
       "parentId": null,
-      "founding": "格蘭歷13年",
+      "founding": "格蘭歷6年",
       "motto": "",
       "description": "",
-      "badge": "images/1776928004164.png",
+      "badge": "images/1776928085165.png",
       "members": []
     }
   ],
