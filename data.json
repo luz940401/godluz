@@ -155,7 +155,7 @@
       "rank": 2,
       "name": "雷霆獵衛",
       "regionId": 1,
-      "parentId": null,
+      "parentId": 5,
       "founding": "格蘭歷13年",
       "motto": "",
       "description": "",
