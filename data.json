@@ -115,6 +115,14 @@
           "class": "刺客",
           "description": "我爸好壞",
           "image": "images/1776688827280.png"
+        },
+        {
+          "id": 7,
+          "name": "鈴",
+          "role": "",
+          "class": "吟遊詩人",
+          "description": "來自原「骷髏莊園酒館」地下室的封印，在神之領域將其解開後，所誕生的精神體存在，後顯現實體—「鈴」",
+          "image": "images/1776927014146.png"
         }
       ]
     },
@@ -128,6 +136,18 @@
       "motto": "",
       "description": "",
       "badge": "images/1776778843959.png",
+      "members": []
+    },
+    {
+      "id": 6,
+      "rank": 1,
+      "name": "天穹聖焰騎士團",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "無法知曉",
+      "motto": "",
+      "description": "",
+      "badge": "images/1776927900301.png",
       "members": []
     }
   ],
