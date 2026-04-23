@@ -167,7 +167,7 @@
       "rank": 3,
       "name": "晨星盟約",
       "regionId": 1,
-      "parentId": null,
+      "parentId": 5,
       "founding": "格蘭歷6年",
       "motto": "",
       "description": "",
