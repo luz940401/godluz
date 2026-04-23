@@ -185,6 +185,18 @@
       "description": "",
       "badge": "images/1776928200411.png",
       "members": []
+    },
+    {
+      "id": 10,
+      "rank": 5,
+      "name": "霜鐵軍團",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "格蘭歷12年",
+      "motto": "",
+      "description": "",
+      "badge": "images/1776928438813.png",
+      "members": []
     }
   ],
   "clues": [
