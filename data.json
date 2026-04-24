@@ -663,7 +663,16 @@
       "motto": "",
       "description": "",
       "badge": "",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "門羅業火",
+          "role": "會長",
+          "class": "",
+          "description": "蒼藍之火 即是我血之本源",
+          "image": "images/1777056331992.png"
+        }
+      ]
     }
   ],
   "clues": [
