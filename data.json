@@ -339,6 +339,18 @@
       "description": "",
       "badge": "images/1777044814940.jpg",
       "members": []
+    },
+    {
+      "id": 18,
+      "rank": 11,
+      "name": "鋼翼",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044845491.jpg",
+      "members": []
     }
   ],
   "clues": [
