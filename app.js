@@ -432,7 +432,7 @@ function renderDetail() {
         <h2 class="detail-section-title">好感度</h2>
         <div class="rel-list">
           ${(c.relations||[]).map(r=>{
-            const v=Math.max(-5,Math.min(5,r.affinity||0));
+            const v=Math.max(-10,Math.min(10,r.affinity||0));
             const hearts = v>0
               ? `<span class="rel-hearts pos">${'♥'.repeat(v)}</span>`
               : v<0

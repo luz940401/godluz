@@ -616,7 +616,7 @@ function chrForm(c={}){
     <label>好感度關係</label>
     <div id="f-relations">${rels}</div>
     <button type="button" class="btn btn-outline btn-sm" style="margin-top:.4rem" onclick="addRelRow()">＋ 新增關係</button>
-    <small>正數 = 好感（❤），負數 = 厭惡（灰心），範圍 -5 ~ +5</small>
+    <small>正數 = 好感（❤），負數 = 厭惡（灰心），範圍 -10 ~ +10</small>
   </div>`;
 }
 function relRowHtml(i,target,affinity){
@@ -630,7 +630,7 @@ function relRowHtml(i,target,affinity){
   </div>`;
 }
 function relDisp(v){
-  v=Math.max(-5,Math.min(5,parseInt(v)||0));
+  v=Math.max(-10,Math.min(10,parseInt(v)||0));
   if(v>0)return `<span style="color:#e86b8a">${'♥'.repeat(v)}</span>`;
   if(v<0)return `<span style="color:#6a6880">${'♥'.repeat(Math.abs(v))}</span>`;
   return `<span style="color:#6a6880">—</span>`;
@@ -639,7 +639,7 @@ function adjRel(btn,delta){
   const row=btn.closest('.rel-edit-row');
   const hin=row.querySelector('.rel-val-in');
   const disp=row.querySelector('.rel-val-disp');
-  let v=Math.max(-5,Math.min(5,(parseInt(hin.value)||0)+delta));
+  let v=Math.max(-10,Math.min(10,(parseInt(hin.value)||0)+delta));
   hin.value=v; disp.innerHTML=relDisp(v);
 }
 function addRelRow(){
