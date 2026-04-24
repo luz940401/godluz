@@ -327,6 +327,18 @@
       "description": "",
       "badge": "images/1777044785816.jpg",
       "members": []
+    },
+    {
+      "id": 17,
+      "rank": 10,
+      "name": "獅鷲之刃",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044814940.jpg",
+      "members": []
     }
   ],
   "clues": [
