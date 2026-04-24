@@ -351,6 +351,18 @@
       "description": "",
       "badge": "images/1777044845491.jpg",
       "members": []
+    },
+    {
+      "id": 19,
+      "rank": 12,
+      "name": "狼牙紋章團",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044870180.jpg",
+      "members": []
     }
   ],
   "clues": [
