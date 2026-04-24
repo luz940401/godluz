@@ -167,7 +167,16 @@
       "motto": "",
       "description": "",
       "badge": "images/1776927900301.png",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "阿蘭迪爾",
+          "role": "團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777048954888.png"
+        }
+      ]
     },
     {
       "id": 7,
@@ -521,11 +530,11 @@
         },
         {
           "id": 2,
-          "name": "烈牙",
-          "role": "",
-          "class": "狂戰士",
+          "name": "賽芙莉亞",
+          "role": "副團長",
+          "class": "",
           "description": "",
-          "image": "images/1777048798017.png"
+          "image": "images/1777047536303.jpg"
         }
       ]
     },
@@ -576,7 +585,16 @@
       "motto": "",
       "description": "",
       "badge": "",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "塔古拉",
+          "role": "軍長",
+          "class": "",
+          "description": "",
+          "image": "images/1777046888132.jpg"
+        }
+      ]
     }
   ],
   "clues": [
