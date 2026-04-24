@@ -449,7 +449,24 @@
       "motto": "",
       "description": "",
       "badge": "images/1777044845491.jpg",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "艾雷斯",
+          "role": "團長",
+          "class": "戰士",
+          "description": "",
+          "image": "images/1777051802014.png"
+        },
+        {
+          "id": 2,
+          "name": "伊瑟琳",
+          "role": "副團長",
+          "class": "術士",
+          "description": "",
+          "image": "images/1777051911095.png"
+        }
+      ]
     },
     {
       "id": 19,
