@@ -649,6 +649,12 @@
       "name": "銀月城",
       "description": "",
       "image": "images/1776779119983.png"
+    },
+    {
+      "id": 4,
+      "name": "鐵影殿（前精鐵城）",
+      "description": "",
+      "image": ""
     }
   ],
   "worldMaps": [
