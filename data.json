@@ -375,6 +375,18 @@
       "description": "",
       "badge": "images/1777044896176.jpg",
       "members": []
+    },
+    {
+      "id": 21,
+      "rank": 16,
+      "name": "黑石守望",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044922918.jpg",
+      "members": []
     }
   ],
   "clues": [
