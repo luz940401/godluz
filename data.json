@@ -578,7 +578,7 @@
           "id": 1,
           "name": "薩戈爾",
           "role": "團長",
-          "class": "",
+          "class": "戰士",
           "description": "",
           "image": "images/1777046302545.jpg"
         },
@@ -586,7 +586,7 @@
           "id": 2,
           "name": "艾羅",
           "role": "副團長",
-          "class": "",
+          "class": "戰士",
           "description": "",
           "image": "images/1777046316417.jpg"
         },
@@ -594,7 +594,7 @@
           "id": 3,
           "name": "梅薩克",
           "role": "",
-          "class": "魔人",
+          "class": "煉金術師",
           "description": "",
           "image": "images/1777046394163.jpg"
         }
@@ -615,7 +615,7 @@
           "id": 1,
           "name": "塔古拉",
           "role": "軍長",
-          "class": "",
+          "class": "武僧",
           "description": "",
           "image": "images/1777046888132.jpg"
         }
