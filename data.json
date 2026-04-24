@@ -605,7 +605,7 @@
       "rank": 1,
       "name": "伏龍破拳騎士團（已流放）",
       "regionId": 1,
-      "parentId": null,
+      "parentId": 25,
       "founding": "",
       "motto": "",
       "description": "",
