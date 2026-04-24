@@ -565,14 +565,14 @@
     },
     {
       "id": 22,
-      "rank": 20,
+      "rank": 1,
       "name": "影鳴騎士團",
       "regionId": 1,
       "parentId": null,
       "founding": "",
       "motto": "",
       "description": "",
-      "badge": "",
+      "badge": "images/1777052254212.png",
       "members": [
         {
           "id": 1,
