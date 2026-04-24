@@ -265,7 +265,7 @@
         },
         {
           "id": 3,
-          "name": "待補",
+          "name": "赤牙",
           "role": "軍長",
           "class": "",
           "description": "",
@@ -535,6 +535,14 @@
           "class": "",
           "description": "",
           "image": "images/1777047536303.jpg"
+        },
+        {
+          "id": 3,
+          "name": "烈牙",
+          "role": "",
+          "class": "",
+          "description": "",
+          "image": "images/1777050232676.png"
         }
       ]
     },
