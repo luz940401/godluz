@@ -618,6 +618,14 @@
           "class": "武僧",
           "description": "",
           "image": "images/1777046888132.jpg"
+        },
+        {
+          "id": 2,
+          "name": "穗元霸",
+          "role": "團長",
+          "class": "武僧",
+          "description": "",
+          "image": "images/1777052803382.png"
         }
       ]
     },
