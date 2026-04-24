@@ -215,6 +215,35 @@
       "motto": "",
       "description": "",
       "badge": "",
+      "members": [
+        {
+          "id": 1,
+          "name": "奧瑞莉亞",
+          "role": "",
+          "class": "",
+          "description": "",
+          "image": ""
+        },
+        {
+          "id": 2,
+          "name": "尼可",
+          "role": "",
+          "class": "",
+          "description": "我是書呆子",
+          "image": ""
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "rank": 1,
+      "name": "紅鋼",
+      "regionId": 2,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
       "members": []
     }
   ],
