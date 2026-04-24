@@ -251,7 +251,7 @@
           "id": 1,
           "name": "伊格尼斯",
           "role": "團長",
-          "class": "",
+          "class": "劍士",
           "description": "",
           "image": "images/1777045522748.jpg"
         },
@@ -259,7 +259,7 @@
           "id": 2,
           "name": "蕾奧妮",
           "role": "副團長",
-          "class": "",
+          "class": "魔導師",
           "description": "",
           "image": "images/1777045535286.jpg"
         },
@@ -267,7 +267,7 @@
           "id": 3,
           "name": "赤牙",
           "role": "軍長",
-          "class": "",
+          "class": "狂戰士",
           "description": "",
           "image": "images/1777045969919.jpg"
         }
@@ -288,7 +288,7 @@
           "id": 1,
           "name": "布雷姆",
           "role": "團長",
-          "class": "",
+          "class": "守護騎士",
           "description": "",
           "image": "images/1777045560612.jpg"
         },
@@ -296,7 +296,7 @@
           "id": 2,
           "name": "卡萊爾",
           "role": "副團長",
-          "class": "",
+          "class": "騎士",
           "description": "",
           "image": "images/1777045574785.jpg"
         }
@@ -338,7 +338,7 @@
           "id": 1,
           "name": "露涅",
           "role": "團長",
-          "class": "",
+          "class": "魔導師",
           "description": "",
           "image": "images/1777045631470.jpg"
         },
@@ -346,7 +346,7 @@
           "id": 2,
           "name": "艾莉西亞",
           "role": "副團長",
-          "class": "",
+          "class": "魔導師",
           "description": "",
           "image": "images/1777045644727.jpg"
         }
@@ -367,7 +367,7 @@
           "id": 1,
           "name": "席爾瓦勒",
           "role": "團長",
-          "class": "",
+          "class": "戰士",
           "description": "",
           "image": "images/1777045667253.jpg"
         },
@@ -375,7 +375,7 @@
           "id": 2,
           "name": "黎曦",
           "role": "副團長",
-          "class": "",
+          "class": "牧師",
           "description": "",
           "image": "images/1777045685493.jpg"
         }
@@ -396,7 +396,7 @@
           "id": 1,
           "name": "卡洛",
           "role": "團長",
-          "class": "",
+          "class": "槍騎士",
           "description": "",
           "image": "images/1777045712368.jpg"
         },
@@ -404,7 +404,7 @@
           "id": 2,
           "name": "布拉克",
           "role": "副團長",
-          "class": "",
+          "class": "狂戰士",
           "description": "",
           "image": "images/1777045726923.jpg"
         }
@@ -425,7 +425,7 @@
           "id": 1,
           "name": "葉隼",
           "role": "團長",
-          "class": "",
+          "class": "槍騎士",
           "description": "",
           "image": "images/1777045751819.jpg"
         },
@@ -433,7 +433,7 @@
           "id": 2,
           "name": "拂羽",
           "role": "副團長",
-          "class": "",
+          "class": "騎士",
           "description": "",
           "image": "images/1777045768324.jpg"
         }
@@ -466,7 +466,7 @@
           "id": 1,
           "name": "芬迪克",
           "role": "團長",
-          "class": "",
+          "class": "戰士",
           "description": "",
           "image": "images/1777046014619.jpg"
         },
@@ -474,7 +474,7 @@
           "id": 2,
           "name": "葛拉托克",
           "role": "副團長",
-          "class": "",
+          "class": "戰士",
           "description": "",
           "image": "images/1777046027873.jpg"
         }
@@ -495,7 +495,7 @@
           "id": 1,
           "name": "北鋒",
           "role": "團長",
-          "class": "",
+          "class": "遊俠",
           "description": "",
           "image": "images/1777045794584.jpg"
         },
@@ -503,7 +503,7 @@
           "id": 2,
           "name": "北嵐",
           "role": "副團長",
-          "class": "",
+          "class": "遊俠",
           "description": "",
           "image": "images/1777050135849.png"
         }
@@ -524,7 +524,7 @@
           "id": 1,
           "name": "艾格瑞",
           "role": "團長",
-          "class": "",
+          "class": "奇械師",
           "description": "",
           "image": "images/1777046102187.jpg"
         },
@@ -532,7 +532,7 @@
           "id": 2,
           "name": "賽芙莉亞",
           "role": "副團長",
-          "class": "",
+          "class": "刺客",
           "description": "",
           "image": "images/1777047536303.jpg"
         },
@@ -540,7 +540,7 @@
           "id": 3,
           "name": "烈牙",
           "role": "",
-          "class": "",
+          "class": "狂戰士",
           "description": "",
           "image": "images/1777050232676.png"
         }
