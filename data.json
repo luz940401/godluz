@@ -172,7 +172,7 @@
           "id": 1,
           "name": "阿蘭迪爾",
           "role": "團長",
-          "class": "",
+          "class": "聖騎士",
           "description": "",
           "image": "images/1777049981809.png"
         }
@@ -193,7 +193,7 @@
           "id": 1,
           "name": "白",
           "role": "團長",
-          "class": "",
+          "class": "刺客",
           "description": "",
           "image": "images/1777038305708.jpg"
         },
@@ -201,7 +201,7 @@
           "id": 2,
           "name": "沙茲",
           "role": "副團長",
-          "class": "",
+          "class": "法師",
           "description": "",
           "image": "images/1777038337235.jpg"
         }
@@ -222,7 +222,7 @@
           "id": 1,
           "name": "天雲",
           "role": "團長",
-          "class": "",
+          "class": "幻術師",
           "description": "",
           "image": "images/1777045467794.jpg"
         },
@@ -230,7 +230,7 @@
           "id": 2,
           "name": "泰瑞昂",
           "role": "副團長",
-          "class": "",
+          "class": "魔劍士",
           "description": "",
           "image": "images/1777045491369.jpg"
         }
