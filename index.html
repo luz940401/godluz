@@ -25,6 +25,7 @@
         <li><a href="#orders" onclick="closeNav()">已遭遇組織</a></li>
         <li><a href="#clues" onclick="closeNav()">線索清單</a></li>
         <li><a href="#compendium" onclick="closeNav()">圖鑑</a></li>
+        <li><a href="#inventory" onclick="closeNav()">道具欄</a></li>
         <li><a href="#notes" onclick="closeNav()">備註板</a></li>
       </ul>
       <button class="nav-hamburger" id="hamburger" onclick="toggleNav()" aria-label="選單">
@@ -137,6 +138,20 @@
         <div class="section-divider right"></div>
       </div>
       <div id="compendium-container"></div>
+    </section>
+
+    <!-- 玩家道具欄 -->
+    <section id="inventory" class="section section-clues">
+      <div class="section-header">
+        <div class="section-divider"></div>
+        <h2 class="section-title">玩家道具欄</h2>
+        <div class="section-divider right"></div>
+      </div>
+      <div class="inv-toolbar">
+        <span id="inv-sync-ind" class="inv-sync-off">○ 本機模式</span>
+        <button class="inv-add-player-btn" onclick="invAddPlayer()">＋ 新增玩家</button>
+      </div>
+      <div id="inventory-container"></div>
     </section>
 
     <!-- 備註板 -->

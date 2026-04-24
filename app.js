@@ -589,6 +589,175 @@ function renderDetail() {
   if (type === 'member') initMemberSwipe(extra.orderId, id);
 }
 
+/* ── Player Inventory (localStorage + Google Sheets sync) ── */
+const INV_KEY = 'dnd-inventory';
+let _invPollTimer = null;
+let _invPollHash = '';
+const INV_CATS = [
+  {key:'equipped',  label:'目前裝備'},
+  {key:'backpack',  label:'背包裝備'},
+  {key:'quest',     label:'任務道具'},
+  {key:'items',     label:'道具'},
+  {key:'materials', label:'素材'},
+  {key:'herbs',     label:'藥草'},
+  {key:'enchant',   label:'附魂'},
+];
+const INV_RARITIES = [
+  {key:'common',    label:'普通',  color:'#c8c8c8'},
+  {key:'magic',     label:'魔法',  color:'#1eff00'},
+  {key:'rare',      label:'稀有',  color:'#4db5ff'},
+  {key:'unique',    label:'獨特',  color:'#a335ee'},
+  {key:'legendary', label:'傳說',  color:'#ff4040'},
+  {key:'mythic',    label:'神話',  color:'#e6cc80'},
+];
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function invLoad(){try{const s=localStorage.getItem(INV_KEY);return s?JSON.parse(s):{players:[]};}catch(e){return{players:[]};}}
+function invSave(d){
+  localStorage.setItem(INV_KEY,JSON.stringify(d));
+  invPushSheet(d);
+}
+function invNid(arr){return arr&&arr.length?Math.max(...arr.map(x=>x.id||0))+1:1;}
+
+function invSheetUrl(){try{const c=JSON.parse(localStorage.getItem('dnd-cfg')||'null');return(c&&c.sheetUrl)||'';}catch(e){return '';}}
+async function invPushSheet(data){
+  const url=invSheetUrl();if(!url)return;
+  try{await fetch(url+'?op=inventory',{method:'POST',mode:'no-cors',body:JSON.stringify(data)});}catch(e){}
+}
+async function invFetchSheet(){
+  const url=invSheetUrl();if(!url)return null;
+  try{const r=await fetch(url+'?op=inventory',{mode:'cors'});if(!r.ok)return null;return await r.json();}catch(e){return null;}
+}
+function invSetInd(text,cls){const el=document.getElementById('inv-sync-ind');if(el){el.textContent=text;el.className=cls;}}
+function invInitSync(){
+  const url=invSheetUrl();
+  if(!url)return;
+  invSetInd('◌ 連線中...','inv-sync-on');
+  invFetchSheet().then(data=>{
+    if(data){localStorage.setItem(INV_KEY,JSON.stringify(data));_invRender(data);_invPollHash=JSON.stringify(data);}
+    invSetInd('● 同步中','inv-sync-on');
+    clearInterval(_invPollTimer);
+    _invPollTimer=setInterval(async()=>{
+      const d=await invFetchSheet();if(!d)return;
+      const h=JSON.stringify(d);
+      if(h!==_invPollHash){_invPollHash=h;localStorage.setItem(INV_KEY,JSON.stringify(d));_invRender(d);}
+      invSetInd('● 同步中','inv-sync-on');
+    },15000);
+  }).catch(()=>invSetInd('○ 本機模式','inv-sync-off'));
+}
+
+function renderInventory(){ _invRender(invLoad()); }
+
+function _invRender(data){
+  const el=document.getElementById('inventory-container');
+  if(!el)return;
+  if(!data.players||!data.players.length){el.innerHTML='<p class="inv-empty">尚無玩家欄位，點上方「新增玩家」建立</p>';return;}
+  el.innerHTML=data.players.map(p=>invPlayerHtml(p)).join('');
+}
+
+function invPlayerHtml(p){
+  const rarOpts=INV_RARITIES.map(r=>`<option value="${r.key}">${r.label}</option>`).join('');
+  const catOpts=INV_CATS.map(c=>`<option value="${c.key}">${c.label}</option>`).join('');
+  const catHtml=INV_CATS.map(cat=>{
+    const its=(p.items||[]).filter(i=>i.category===cat.key);
+    return `<div class="inv-cat">
+      <div class="inv-cat-head">
+        <span class="inv-cat-lbl">${cat.label}</span>
+        ${its.length?`<span class="inv-cat-cnt">${its.length}</span>`:''}
+        <button class="inv-cat-add" onclick="invShowForm(${p.id},'${cat.key}')">＋</button>
+      </div>
+      ${its.length?`<div class="inv-items">${its.map(i=>invItemHtml(p.id,i)).join('')}</div>`:''}</div>`;
+  }).join('');
+  return `<div class="inv-player" id="invp-${p.id}">
+    <div class="inv-phd">
+      <input class="inv-pname" value="${esc(p.name||'')}" placeholder="玩家名稱" onchange="invSetName(${p.id},this.value)">
+      <button class="inv-pdel" onclick="invDelPlayer(${p.id})" title="刪除">✕</button>
+    </div>
+    <div class="inv-gold-row">
+      <span class="inv-gold-sym">◈</span>
+      <input class="inv-gold" type="number" value="${p.gold||0}" min="0" onchange="invSetGold(${p.id},this.value)">
+      <span class="inv-gold-lbl">金幣</span>
+    </div>
+    ${catHtml}
+    <div class="inv-form-wrap" id="invfw-${p.id}" style="display:none">
+      <div class="inv-form">
+        <div class="inv-frow">
+          <input id="ifn-${p.id}" class="inv-fi" placeholder="道具名稱 *" style="flex:2;min-width:120px">
+          <select id="ifc-${p.id}" class="inv-fi inv-fsel">${catOpts}</select>
+        </div>
+        <div class="inv-frow">
+          <div class="inv-rar-wrap">
+            <div class="inv-rar-dot" id="ifrd-${p.id}" style="background:${INV_RARITIES[0].color}"></div>
+            <select id="ifr-${p.id}" class="inv-fi inv-fsel" onchange="invRarDot(${p.id})">${rarOpts}</select>
+          </div>
+          <input id="ifq-${p.id}" class="inv-fi" type="number" value="1" min="1" placeholder="數量" style="width:64px;flex:none">
+          <input id="ifnt-${p.id}" class="inv-fi" placeholder="備註（選填）" style="flex:2;min-width:100px">
+        </div>
+        <div class="inv-fbtns">
+          <button class="inv-fbsave" onclick="invSaveItem(${p.id})">新增道具</button>
+          <button class="inv-fbcancel" onclick="invHideForm(${p.id})">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function invItemHtml(pid,item){
+  const r=INV_RARITIES.find(x=>x.key===item.rarity)||INV_RARITIES[0];
+  return `<div class="inv-item">
+    <span class="inv-idot" style="background:${r.color}"></span>
+    <span class="inv-iname" style="color:${r.color}">${esc(item.name)}</span>
+    ${item.quantity>1?`<span class="inv-iqty">×${item.quantity}</span>`:''}
+    ${item.note?`<span class="inv-inote-ico" onclick="invToggleNote(${pid},${item.id})" title="備註">📝</span>`:''}
+    <button class="inv-idel" onclick="invDelItem(${pid},${item.id})">×</button>
+    ${item.note?`<div class="inv-inote" id="invnote-${pid}-${item.id}">${esc(item.note)}</div>`:''}
+  </div>`;
+}
+
+function invShowForm(pid,catKey){
+  const w=document.getElementById('invfw-'+pid);if(!w)return;
+  w.style.display='block';
+  const sel=document.getElementById('ifc-'+pid);if(sel)sel.value=catKey;
+  const ni=document.getElementById('ifn-'+pid);if(ni)ni.focus();
+}
+function invHideForm(pid){const w=document.getElementById('invfw-'+pid);if(w)w.style.display='none';}
+function invRarDot(pid){
+  const sel=document.getElementById('ifr-'+pid);
+  const dot=document.getElementById('ifrd-'+pid);
+  if(!sel||!dot)return;
+  const r=INV_RARITIES.find(x=>x.key===sel.value);
+  if(r)dot.style.background=r.color;
+}
+function invSaveItem(pid){
+  const name=(document.getElementById('ifn-'+pid)||{}).value?.trim();
+  if(!name){alert('請填寫道具名稱');return;}
+  const cat=(document.getElementById('ifc-'+pid)||{}).value||'items';
+  const rar=(document.getElementById('ifr-'+pid)||{}).value||'common';
+  const qty=parseInt((document.getElementById('ifq-'+pid)||{}).value)||1;
+  const note=((document.getElementById('ifnt-'+pid)||{}).value||'').trim();
+  const d=invLoad();
+  const p=d.players.find(x=>x.id===pid);if(!p)return;
+  if(!p.items)p.items=[];
+  p.items.push({id:invNid(p.items),name,category:cat,rarity:rar,quantity:qty,note});
+  invSave(d);renderInventory();
+}
+function invDelItem(pid,iid){
+  if(!confirm('刪除此道具？'))return;
+  const d=invLoad();const p=d.players.find(x=>x.id===pid);if(!p)return;
+  p.items=(p.items||[]).filter(x=>x.id!==iid);invSave(d);renderInventory();
+}
+function invSetName(pid,val){const d=invLoad();const p=d.players.find(x=>x.id===pid);if(!p)return;p.name=val;invSave(d);}
+function invSetGold(pid,val){const d=invLoad();const p=d.players.find(x=>x.id===pid);if(!p)return;p.gold=parseInt(val)||0;invSave(d);}
+function invDelPlayer(pid){
+  if(!confirm('刪除此玩家的所有資料？'))return;
+  const d=invLoad();d.players=d.players.filter(x=>x.id!==pid);invSave(d);renderInventory();
+}
+function invToggleNote(pid,iid){const el=document.getElementById('invnote-'+pid+'-'+iid);if(el)el.classList.toggle('show');}
+function invAddPlayer(){
+  const d=invLoad();const nid=invNid(d.players);
+  d.players.push({id:nid,name:'玩家 '+nid,gold:0,items:[]});
+  invSave(d);renderInventory();
+}
+
 /* ── Map Lightbox ── */
 function openMapLightbox(src) {
   document.getElementById('lightbox-img').src = src;
@@ -613,6 +782,8 @@ function fillStaticTexts(s) {
 document.addEventListener('DOMContentLoaded', async () => {
   initParticles();
   initNavbar();
+  invInitSync();
+  renderInventory();
   try {
     const res = await fetch('data.json?v=' + Date.now());
     if (!res.ok) throw new Error('無法載入 data.json');

@@ -268,10 +268,18 @@
               <p>3. 點「部署」→「新增部署項目」→ 類型選「網頁應用程式」</p>
               <p>4. 執行身分：<strong>我</strong>，存取權：<strong>所有人</strong> → 部署</p>
               <p>5. 複製「網頁應用程式網址」貼到上方欄位</p>
-              <textarea readonly onclick="this.select()" style="width:100%;margin-top:.8rem;background:var(--sf2);border:1px solid var(--bd);color:#a0c0a0;padding:.75rem;border-radius:4px;font-family:monospace;font-size:.72rem;line-height:1.6;min-height:260px;resize:vertical;cursor:text">const SHEET='DND備份';
+              <textarea readonly onclick="this.select()" style="width:100%;margin-top:.8rem;background:var(--sf2);border:1px solid var(--bd);color:#a0c0a0;padding:.75rem;border-radius:4px;font-family:monospace;font-size:.72rem;line-height:1.6;min-height:380px;resize:vertical;cursor:text">const SHEET='DND備份';
+const INV_SHEET='DND道具欄';
 function doPost(e){
   try{
+    const op=e.parameter&&e.parameter.op||'backup';
     const ss=SpreadsheetApp.getActiveSpreadsheet();
+    if(op==='inventory'){
+      let sh=ss.getSheetByName(INV_SHEET)||ss.insertSheet(INV_SHEET);
+      sh.getRange('A1').setValue(e.postData.contents);
+      sh.getRange('B1').setValue(new Date().toLocaleString('zh-TW'));
+      return ContentService.createTextOutput('ok');
+    }
     let sh=ss.getSheetByName(SHEET)||ss.insertSheet(SHEET);
     sh.clearContents();
     sh.getRange('A1').setValue('備份時間');
@@ -283,9 +291,15 @@ function doPost(e){
     return ContentService.createTextOutput('error:'+err.message);
   }
 }
-function doGet(){
+function doGet(e){
   try{
+    const op=e.parameter&&e.parameter.op||'backup';
     const ss=SpreadsheetApp.getActiveSpreadsheet();
+    if(op==='inventory'){
+      const sh=ss.getSheetByName(INV_SHEET);
+      if(!sh)return ContentService.createTextOutput('{"players":[]}').setMimeType(ContentService.MimeType.JSON);
+      return ContentService.createTextOutput(sh.getRange('A1').getValue()||'{"players":[]}').setMimeType(ContentService.MimeType.JSON);
+    }
     const sh=ss.getSheetByName(SHEET);
     if(!sh)return ContentService.createTextOutput('{}');
     return ContentService.createTextOutput(sh.getRange('B2').getValue()||'{}')
@@ -895,8 +909,32 @@ function oNote(id_){
 function dNote(i){if(!confirm('刪除？'))return;D.notes=(D.notes||[]).filter(x=>x.id!==i);rNote();toast('已刪除');}
 
 // ── Site Settings ──
-function rSite(){const s=D.site||{};['title','subtitle','desc','tagline','year'].forEach(k=>{const el=id('s-'+k);if(el)el.value=s[k==='desc'?'description':k]??'';});const su=id('s-sheet-url');if(su)su.value=sheetUrl();}
+function rSite(){
+  const s=D.site||{};['title','subtitle','desc','tagline','year'].forEach(k=>{const el=id('s-'+k);if(el)el.value=s[k==='desc'?'description':k]??'';});
+  const su=id('s-sheet-url');if(su)su.value=sheetUrl();
+  try{const fb=JSON.parse(localStorage.getItem('dnd-firebase')||'{}');
+    if(id('s-fb-url'))id('s-fb-url').value=fb.databaseURL||'';
+    if(id('s-fb-key'))id('s-fb-key').value=fb.apiKey||'';
+    if(id('s-fb-proj'))id('s-fb-proj').value=fb.projectId||'';
+  }catch(e){}
+}
 function saveSite(){if(!D) return;D.site={title:id('s-title').value,subtitle:id('s-subtitle').value,description:id('s-desc').value,tagline:id('s-tagline').value,year:parseInt(id('s-year').value)||new Date().getFullYear()};toast('設定已套用');}
+function saveFbCfg(){
+  const url=(id('s-fb-url')||{}).value?.trim();
+  const key=(id('s-fb-key')||{}).value?.trim();
+  const proj=(id('s-fb-proj')||{}).value?.trim();
+  if(!url||!key||!proj){toast('請填寫所有 Firebase 欄位','err');return;}
+  localStorage.setItem('dnd-firebase',JSON.stringify({databaseURL:url,apiKey:key,projectId:proj,appId:'dnd-'+proj}));
+  toast('✓ Firebase 設定已儲存，請重新整理前台頁面即可同步','ok');
+}
+function clearFbCfg(){
+  if(!confirm('清除 Firebase 設定並改回本機模式？'))return;
+  localStorage.removeItem('dnd-firebase');
+  if(id('s-fb-url'))id('s-fb-url').value='';
+  if(id('s-fb-key'))id('s-fb-key').value='';
+  if(id('s-fb-proj'))id('s-fb-proj').value='';
+  toast('已清除，道具欄改回本機模式');
+}
 
 // ── Modal ──
 function openMo(title,body,cb){id('mo-title').textContent=title;id('mo-body').innerHTML=body;id('mo').classList.add('open');moCb=cb;}
