@@ -303,6 +303,18 @@
       "description": "",
       "badge": "images/1777044719758.jpg",
       "members": []
+    },
+    {
+      "id": 15,
+      "rank": 8,
+      "name": "煌金獅心",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044758055.jpg",
+      "members": []
     }
   ],
   "clues": [
