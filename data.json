@@ -196,7 +196,24 @@
       "motto": "",
       "description": "",
       "badge": "images/1776928085165.png",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "天雲",
+          "role": "團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045467794.jpg"
+        },
+        {
+          "id": 2,
+          "name": "泰瑞昂",
+          "role": "副團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045491369.jpg"
+        }
+      ]
     },
     {
       "id": 9,
@@ -208,7 +225,32 @@
       "motto": "",
       "description": "",
       "badge": "images/1776928200411.png",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "伊格尼斯",
+          "role": "團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045522748.jpg"
+        },
+        {
+          "id": 2,
+          "name": "蕾奧妮",
+          "role": "副團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045535286.jpg"
+        },
+        {
+          "id": 3,
+          "name": "待補",
+          "role": "軍長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045969919.jpg"
+        }
+      ]
     },
     {
       "id": 10,
@@ -220,63 +262,22 @@
       "motto": "",
       "description": "",
       "badge": "images/1776928438813.png",
-      "members": []
-    },
-    {
-      "id": 11,
-      "rank": 1,
-      "name": "黃鐵",
-      "regionId": 2,
-      "parentId": null,
-      "founding": "",
-      "motto": "",
-      "description": "",
-      "badge": "",
       "members": [
         {
           "id": 1,
-          "name": "奧瑞莉亞",
-          "role": "",
+          "name": "布雷姆",
+          "role": "團長",
           "class": "",
           "description": "",
-          "image": ""
+          "image": "images/1777045560612.jpg"
         },
         {
           "id": 2,
-          "name": "尼可",
-          "role": "",
+          "name": "卡萊爾",
+          "role": "副團長",
           "class": "",
-          "description": "我是書呆子",
-          "image": ""
-        }
-      ]
-    },
-    {
-      "id": 12,
-      "rank": 1,
-      "name": "紅鋼",
-      "regionId": 2,
-      "parentId": null,
-      "founding": "",
-      "motto": "",
-      "description": "",
-      "badge": "",
-      "members": [
-        {
-          "id": 1,
-          "name": "索芮雅",
-          "role": "",
-          "class": "",
-          "description": "救救我兒子",
-          "image": ""
-        },
-        {
-          "id": 2,
-          "name": "艾芮克",
-          "role": "",
-          "class": "",
-          "description": "我在艾佛利斯！不知道有沒有人看到漂流瓶🥹......",
-          "image": ""
+          "description": "",
+          "image": "images/1777045574785.jpg"
         }
       ]
     },
@@ -290,7 +291,16 @@
       "motto": "",
       "description": "",
       "badge": "images/1777038417787.png",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "傳聲史萊姆",
+          "role": "",
+          "class": "",
+          "description": "",
+          "image": "images/1777045598794.jpg"
+        }
+      ]
     },
     {
       "id": 14,
@@ -302,7 +312,24 @@
       "motto": "",
       "description": "",
       "badge": "images/1777044719758.jpg",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "露涅",
+          "role": "團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045631470.jpg"
+        },
+        {
+          "id": 2,
+          "name": "艾莉西亞",
+          "role": "副團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045644727.jpg"
+        }
+      ]
     },
     {
       "id": 15,
@@ -314,7 +341,24 @@
       "motto": "",
       "description": "",
       "badge": "images/1777044758055.jpg",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "席爾瓦勒",
+          "role": "團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045667253.jpg"
+        },
+        {
+          "id": 2,
+          "name": "黎曦",
+          "role": "副團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045685493.jpg"
+        }
+      ]
     },
     {
       "id": 16,
@@ -326,7 +370,24 @@
       "motto": "",
       "description": "",
       "badge": "images/1777044785816.jpg",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "卡洛",
+          "role": "團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045712368.jpg"
+        },
+        {
+          "id": 2,
+          "name": "布拉克",
+          "role": "副團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045726923.jpg"
+        }
+      ]
     },
     {
       "id": 17,
@@ -338,7 +399,24 @@
       "motto": "",
       "description": "",
       "badge": "images/1777044814940.jpg",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "葉隼",
+          "role": "團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045751819.jpg"
+        },
+        {
+          "id": 2,
+          "name": "拂羽",
+          "role": "副團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045768324.jpg"
+        }
+      ]
     },
     {
       "id": 18,
@@ -362,7 +440,24 @@
       "motto": "",
       "description": "",
       "badge": "images/1777044870180.jpg",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "待補",
+          "role": "團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777046014619.jpg"
+        },
+        {
+          "id": 2,
+          "name": "待補",
+          "role": "副團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777046027873.jpg"
+        }
+      ]
     },
     {
       "id": 20,
@@ -374,7 +469,24 @@
       "motto": "",
       "description": "",
       "badge": "images/1777044896176.jpg",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "北鋒",
+          "role": "團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777045794584.jpg"
+        },
+        {
+          "id": 2,
+          "name": "北嵐",
+          "role": "副團長",
+          "class": "",
+          "description": "",
+          "image": ""
+        }
+      ]
     },
     {
       "id": 21,
@@ -386,6 +498,27 @@
       "motto": "",
       "description": "",
       "badge": "images/1777044922918.jpg",
+      "members": [
+        {
+          "id": 1,
+          "name": "烈牙",
+          "role": "團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777046102187.jpg"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "rank": 1,
+      "name": "影鳴騎士團",
+      "regionId": 1,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
       "members": []
     }
   ],
