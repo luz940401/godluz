@@ -568,7 +568,7 @@
       "rank": 1,
       "name": "影鳴騎士團",
       "regionId": 1,
-      "parentId": null,
+      "parentId": 24,
       "founding": "",
       "motto": "",
       "description": "",
