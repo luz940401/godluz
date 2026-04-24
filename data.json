@@ -167,7 +167,24 @@
       "motto": "",
       "description": "",
       "badge": "images/1776927998276.png",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "白",
+          "role": "團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777038305708.jpg"
+        },
+        {
+          "id": 2,
+          "name": "沙茲",
+          "role": "副團長",
+          "class": "",
+          "description": "",
+          "image": "images/1777038337235.jpg"
+        }
+      ]
     },
     {
       "id": 8,
@@ -244,6 +261,35 @@
       "motto": "",
       "description": "",
       "badge": "",
+      "members": [
+        {
+          "id": 1,
+          "name": "索芮雅",
+          "role": "",
+          "class": "",
+          "description": "救救我兒子",
+          "image": ""
+        },
+        {
+          "id": 2,
+          "name": "艾芮克",
+          "role": "",
+          "class": "",
+          "description": "我在艾佛利斯！不知道有沒有人看到漂流瓶🥹......",
+          "image": ""
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "rank": 6,
+      "name": "深淵殘響",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777038417787.png",
       "members": []
     }
   ],
