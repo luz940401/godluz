@@ -602,14 +602,14 @@
     },
     {
       "id": 23,
-      "rank": 21,
-      "name": "伏龍破拳騎士團",
+      "rank": 1,
+      "name": "伏龍破拳騎士團（已流放）",
       "regionId": 1,
       "parentId": null,
       "founding": "",
       "motto": "",
       "description": "",
-      "badge": "",
+      "badge": "images/1777052601765.png",
       "members": [
         {
           "id": 1,
