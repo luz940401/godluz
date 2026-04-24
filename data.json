@@ -632,6 +632,18 @@
       "description": "",
       "badge": "images/1777052452776.jpg",
       "members": []
+    },
+    {
+      "id": 25,
+      "rank": 1,
+      "name": "歷代騎士團",
+      "regionId": 1,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777052665568.jpg",
+      "members": []
     }
   ],
   "clues": [
