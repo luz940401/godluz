@@ -315,6 +315,18 @@
       "description": "",
       "badge": "images/1777044758055.jpg",
       "members": []
+    },
+    {
+      "id": 16,
+      "rank": 9,
+      "name": "赤煉血騎",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044785816.jpg",
+      "members": []
     }
   ],
   "clues": [
