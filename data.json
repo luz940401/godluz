@@ -620,6 +620,18 @@
           "image": "images/1777046888132.jpg"
         }
       ]
+    },
+    {
+      "id": 24,
+      "rank": 1,
+      "name": "監管中",
+      "regionId": 1,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777052452776.jpg",
+      "members": []
     }
   ],
   "clues": [
