@@ -704,6 +704,12 @@
       "name": "鐵影殿（前精鐵城）",
       "description": "",
       "image": ""
+    },
+    {
+      "id": 5,
+      "name": "夜隱城",
+      "description": "",
+      "image": ""
     }
   ],
   "worldMaps": [
