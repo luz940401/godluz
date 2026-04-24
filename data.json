@@ -291,6 +291,18 @@
       "description": "",
       "badge": "images/1777038417787.png",
       "members": []
+    },
+    {
+      "id": 14,
+      "rank": 7,
+      "name": "水色幻想",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044719758.jpg",
+      "members": []
     }
   ],
   "clues": [
