@@ -427,6 +427,20 @@ function renderDetail() {
       const portrait = c.image
         ? `<div class="detail-hero-img"><img src="${c.image}" alt="${c.name}"></div>`
         : `<div class="detail-portrait-placeholder">${c.icon||'⚔️'}</div>`;
+      const relHtml = (c.relations||[]).length ? `
+        <div class="detail-divider"></div>
+        <h2 class="detail-section-title">好感度</h2>
+        <div class="rel-list">
+          ${(c.relations||[]).map(r=>{
+            const v=Math.max(-5,Math.min(5,r.affinity||0));
+            const hearts = v>0
+              ? `<span class="rel-hearts pos">${'♥'.repeat(v)}</span>`
+              : v<0
+              ? `<span class="rel-hearts neg">${'♥'.repeat(Math.abs(v))}</span>`
+              : `<span class="rel-neutral">—</span>`;
+            return `<div class="rel-row-disp"><span class="rel-target">${r.target||''}</span>${hearts}</div>`;
+          }).join('')}
+        </div>` : '';
       html = `${portrait}<div class="detail-body">
         <div class="detail-badges">
           ${c.class?`<span class="character-badge">${c.class}</span>`:''}
@@ -436,6 +450,7 @@ function renderDetail() {
         <p class="detail-title-tag">${c.title}</p>
         <div class="detail-divider"></div>
         <div class="detail-article">${(c.description||'').replace(/\n/g,'<br>')}</div>
+        ${relHtml}
       </div>`;
     }
   } else if (type === 'patchnote') {
@@ -618,7 +633,10 @@ function invSave(d){
 }
 function invNid(arr){return arr&&arr.length?Math.max(...arr.map(x=>x.id||0))+1:1;}
 
-function invSheetUrl(){try{const c=JSON.parse(localStorage.getItem('dnd-cfg')||'null');return(c&&c.sheetUrl)||'';}catch(e){return '';}}
+function invSheetUrl(){
+  try{const c=JSON.parse(localStorage.getItem('dnd-cfg')||'null');if(c&&c.sheetUrl)return c.sheetUrl;}catch(e){}
+  return (siteData&&siteData.site&&siteData.site.sheetUrl)||'';
+}
 async function invPushSheet(data){
   const url=invSheetUrl();if(!url)return;
   try{await fetch(url+'?op=inventory',{method:'POST',mode:'no-cors',body:JSON.stringify(data)});}catch(e){}
@@ -782,7 +800,6 @@ function fillStaticTexts(s) {
 document.addEventListener('DOMContentLoaded', async () => {
   initParticles();
   initNavbar();
-  invInitSync();
   renderInventory();
   try {
     const res = await fetch('data.json?v=' + Date.now());
@@ -797,6 +814,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderClues(siteData.clues || []);
     renderCompendium(siteData.compendium || []);
     renderNotes(siteData.notes || []);
+    invInitSync();
     setTimeout(initScrollReveal, 120);
   } catch(err) {
     console.error('載入失敗:', err);

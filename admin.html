@@ -95,6 +95,13 @@
     /* Members sub-modal */
     #mo2{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:110;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .2s}
     #mo2.open{opacity:1;pointer-events:all}
+    /* Relation editor */
+    .rel-edit-row{display:flex;align-items:center;gap:.4rem;margin-bottom:.4rem}
+    .rel-adj-btn{background:var(--sf2);border:1px solid var(--bd);color:var(--tx);width:26px;height:26px;border-radius:4px;cursor:pointer;font-size:.95rem;flex-shrink:0;line-height:1;display:flex;align-items:center;justify-content:center}
+    .rel-adj-btn:hover{border-color:var(--gdim);color:var(--gold)}
+    .rel-val-disp{min-width:60px;text-align:center;font-size:.95rem;flex-shrink:0}
+    .rel-del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;flex-shrink:0;padding:0 .2rem}
+    .rel-del-btn:hover{color:var(--red)}
     /* Toast */
     #toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(14px);background:var(--sf2);border:1px solid var(--bd);color:var(--tx);padding:.6rem 1.3rem;border-radius:100px;font-size:.85rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:200;white-space:nowrap}
     #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -471,7 +478,10 @@ async function restoreFromSheet(){
 function saveSheetUrl(){
   const url=(id('s-sheet-url')||{}).value||'';
   const c=cfg()||{};c.sheetUrl=url.trim();
-  localStorage.setItem('dnd-cfg',JSON.stringify(c));toast('Sheet URL 已儲存');
+  localStorage.setItem('dnd-cfg',JSON.stringify(c));
+  if(!D.site)D.site={};
+  D.site.sheetUrl=url.trim();
+  saveData().then(()=>toast('Sheet URL 已儲存並寫入 data.json','ok')).catch(()=>toast('URL 已存本機，但寫入 GitHub 失敗','err'));
 }
 
 // ── Local Backup ──
@@ -589,6 +599,7 @@ function rChr(){
 function chrForm(c={}){
   const regs=D.regions||[];
   const regOpts=`<option value="">（無）</option>`+regs.map(r=>`<option value="${r.id}"${c.regionId===r.id?' selected':''}>${x(r.name)}</option>`).join('');
+  const rels=(c.relations||[]).map((r,i)=>relRowHtml(i,r.target||'',r.affinity||0)).join('');
   return `<div class="field"><label>名字 *</label><input id="f-name" value="${x(c.name||'')}"></div>
   <div class="field"><label>稱號</label><input id="f-ctitle" value="${x(c.title||'')}"></div>
   <div class="field"><label>職業</label><input id="f-class" value="${x(c.class||'')}"></div>
@@ -600,7 +611,41 @@ function chrForm(c={}){
     <div class="upzone" onclick="document.getElementById('chr-img-file').click()"><p>點此選擇圖片</p><small>JPG、PNG、WebP</small><input type="file" id="chr-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'img-preview')"></div>
     ${c.image?`<p class="cur-img">目前：${c.image}</p>`:''}
     <div id="img-preview"></div>
+  </div>
+  <div class="field">
+    <label>好感度關係</label>
+    <div id="f-relations">${rels}</div>
+    <button type="button" class="btn btn-outline btn-sm" style="margin-top:.4rem" onclick="addRelRow()">＋ 新增關係</button>
+    <small>正數 = 好感（❤），負數 = 厭惡（灰心），範圍 -5 ~ +5</small>
   </div>`;
+}
+function relRowHtml(i,target,affinity){
+  return `<div class="rel-edit-row" data-ri="${i}">
+    <input class="rel-target-in" placeholder="角色名稱" value="${x(target)}" style="flex:1;background:var(--sf2);border:1px solid var(--bd);color:var(--tx);padding:.45rem .6rem;border-radius:var(--r);font-size:.88rem;font-family:inherit">
+    <button type="button" class="rel-adj-btn" onclick="adjRel(this,-1)">－</button>
+    <span class="rel-val-disp">${relDisp(affinity)}</span>
+    <input type="hidden" class="rel-val-in" value="${affinity}">
+    <button type="button" class="rel-adj-btn" onclick="adjRel(this,1)">＋</button>
+    <button type="button" class="rel-del-btn" onclick="this.closest('.rel-edit-row').remove()">✕</button>
+  </div>`;
+}
+function relDisp(v){
+  v=Math.max(-5,Math.min(5,parseInt(v)||0));
+  if(v>0)return `<span style="color:#e86b8a">${'♥'.repeat(v)}</span>`;
+  if(v<0)return `<span style="color:#6a6880">${'♥'.repeat(Math.abs(v))}</span>`;
+  return `<span style="color:#6a6880">—</span>`;
+}
+function adjRel(btn,delta){
+  const row=btn.closest('.rel-edit-row');
+  const hin=row.querySelector('.rel-val-in');
+  const disp=row.querySelector('.rel-val-disp');
+  let v=Math.max(-5,Math.min(5,(parseInt(hin.value)||0)+delta));
+  hin.value=v; disp.innerHTML=relDisp(v);
+}
+function addRelRow(){
+  const c=document.getElementById('f-relations');
+  const i=c.children.length;
+  c.insertAdjacentHTML('beforeend',relRowHtml(i,'',0));
 }
 function oChr(id_){
   imgFile=null;
@@ -611,7 +656,8 @@ function oChr(id_){
     if(imgFile){setS('loading','上傳圖片...');try{image=await upImg(imgFile);}catch(e){toast('圖片上傳失敗','err');setS('error','失敗');return false}finally{imgFile=null;}}
     const nid=id_||nextId(D.characters);
     const regVal=id('f-region')&&id('f-region').value;const regionId=regVal?parseInt(regVal):null;
-    const item={id:nid,name,title:id('f-ctitle').value.trim(),class:id('f-class').value.trim(),race:id('f-race').value.trim(),regionId,summary:id('f-summary').value.trim(),description:id('f-desc').value.trim(),image};
+    const relations=[...document.querySelectorAll('#f-relations .rel-edit-row')].map(row=>({target:row.querySelector('.rel-target-in').value.trim(),affinity:parseInt(row.querySelector('.rel-val-in').value)||0})).filter(r=>r.target);
+    const item={id:nid,name,title:id('f-ctitle').value.trim(),class:id('f-class').value.trim(),race:id('f-race').value.trim(),regionId,summary:id('f-summary').value.trim(),description:id('f-desc').value.trim(),image,relations};
     if(id_)D.characters=D.characters.map(x=>x.id===id_?item:x);else D.characters=[...(D.characters||[]),item];
     rChr();imgFile=null;
   });

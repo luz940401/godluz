@@ -889,6 +889,15 @@ body::before {
 /* Clue detail */
 .detail-clue-img { width: 100%; max-height: 420px; object-fit: cover; display: block; }
 
+/* Relation display (frontend) */
+.rel-list { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 0.5rem; }
+.rel-row-disp { display: flex; align-items: center; gap: 0.75rem; }
+.rel-target { font-family: var(--font-heading); font-size: 0.9rem; color: var(--parchment-dim); min-width: 80px; }
+.rel-hearts { font-size: 1.05rem; letter-spacing: 0.1em; }
+.rel-hearts.pos { color: #e86b8a; }
+.rel-hearts.neg { color: #6a6880; }
+.rel-neutral { color: var(--stone); }
+
 /* =============================================
    Map Lightbox
    ============================================= */
