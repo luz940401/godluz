@@ -652,6 +652,18 @@
       "description": "",
       "badge": "images/1777052665568.jpg",
       "members": []
+    },
+    {
+      "id": 26,
+      "rank": 1,
+      "name": "門羅蒼火工坊",
+      "regionId": 5,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
+      "members": []
     }
   ],
   "clues": [
