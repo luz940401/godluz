@@ -363,6 +363,18 @@
       "description": "",
       "badge": "images/1777044870180.jpg",
       "members": []
+    },
+    {
+      "id": 20,
+      "rank": 15,
+      "name": "北鋒精靈傭兵團",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044896176.jpg",
+      "members": []
     }
   ],
   "clues": [
