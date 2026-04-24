@@ -557,6 +557,18 @@
           "image": "images/1777046394163.jpg"
         }
       ]
+    },
+    {
+      "id": 23,
+      "rank": 21,
+      "name": "伏龍破拳騎士團",
+      "regionId": 1,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
+      "members": []
     }
   ],
   "clues": [
