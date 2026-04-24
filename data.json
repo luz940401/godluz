@@ -4,7 +4,8 @@
     "subtitle": "官方公告網站",
     "description": "冒險從這裡開始",
     "tagline": "願骰子永遠站在你這邊",
-    "year": 2026
+    "year": 2026,
+    "sheetUrl": "https://script.google.com/macros/s/AKfycbwLI4F7Ma_Lc5kRj4OROZP6GOvxq_2A28XQjfOvzQqaOOEIzqJ4GEpBQFDLZC6W3QQu/exec"
   },
   "worldMap": {
     "image": "images/1776693214693.jpg",
