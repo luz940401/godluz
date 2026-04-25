@@ -314,6 +314,18 @@
       "description": "",
       "image": "images/1777115575173.png",
       "relations": []
+    },
+    {
+      "id": 25,
+      "name": "威斯特",
+      "title": "鎮長",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115598365.png",
+      "relations": []
     }
   ],
   "knightOrders": [
