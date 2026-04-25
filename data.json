@@ -305,7 +305,12 @@
       "summary": "",
       "description": "",
       "image": "images/1777115475249.jpg",
-      "relations": []
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": -1
+        }
+      ]
     },
     {
       "id": 21,
