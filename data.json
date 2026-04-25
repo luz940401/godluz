@@ -230,6 +230,18 @@
       "description": "",
       "image": "images/1777115362155.jpg",
       "relations": []
+    },
+    {
+      "id": 18,
+      "name": "艾蕾莎",
+      "title": "巨人與精靈的信使",
+      "class": "",
+      "race": "",
+      "regionId": 1,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115391037.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
