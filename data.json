@@ -302,6 +302,18 @@
       "description": "",
       "image": "images/1777115550597.png",
       "relations": []
+    },
+    {
+      "id": 24,
+      "name": "哈利婭",
+      "title": "兌換所老闆",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115575173.png",
+      "relations": []
     }
   ],
   "knightOrders": [
