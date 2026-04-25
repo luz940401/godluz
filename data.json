@@ -738,6 +738,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 47,
+      "name": "巴魯加斯",
+      "title": "大隊長",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "前精鐵城大隊長",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
