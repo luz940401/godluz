@@ -170,6 +170,18 @@
       "description": "",
       "image": "images/1777115033500.jpg",
       "relations": []
+    },
+    {
+      "id": 13,
+      "name": "里沙爾",
+      "title": "魔法商店老闆",
+      "class": "",
+      "race": "",
+      "regionId": 1,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115056908.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
