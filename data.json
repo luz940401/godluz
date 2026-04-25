@@ -98,6 +98,18 @@
       "description": "",
       "image": "images/1777114822303.jpg",
       "relations": []
+    },
+    {
+      "id": 7,
+      "name": "弗隆",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777114838509.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
