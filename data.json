@@ -822,6 +822,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 54,
+      "name": "林克",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
