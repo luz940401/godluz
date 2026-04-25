@@ -762,6 +762,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 49,
+      "name": "尼可",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
