@@ -870,6 +870,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 58,
+      "name": "達歐特",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 4,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
