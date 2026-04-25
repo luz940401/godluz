@@ -74,7 +74,16 @@
       "summary": "",
       "description": "",
       "image": "images/1777046587388.jpg",
-      "relations": []
+      "relations": [
+        {
+          "target": "小泉理莎",
+          "affinity": 3
+        },
+        {
+          "target": "其它",
+          "affinity": 1
+        }
+      ]
     },
     {
       "id": 5,
