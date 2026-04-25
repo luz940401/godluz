@@ -1686,7 +1686,58 @@
       "motto": "",
       "description": "",
       "badge": "",
-      "members": []
+      "members": [
+        {
+          "id": 1,
+          "name": "蒂妲",
+          "role": "葬龍之冰姬",
+          "class": "魔導師",
+          "description": "",
+          "image": "images/1777133488585.png",
+          "relations": [
+            {
+              "target": "穗道忠武",
+              "affinity": 1
+            },
+            {
+              "target": "黑皮諾",
+              "affinity": 1
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "烏爾斯圖爾",
+          "role": "",
+          "class": "聖戰士",
+          "description": "",
+          "image": "",
+          "relations": []
+        },
+        {
+          "id": 3,
+          "name": "北羽",
+          "role": "墮天之弓",
+          "class": "",
+          "description": "",
+          "image": "images/1777133556785.jpg",
+          "relations": []
+        },
+        {
+          "id": 4,
+          "name": "梅薩克",
+          "role": "",
+          "class": "",
+          "description": "",
+          "image": "images/1777133615587.jpg",
+          "relations": [
+            {
+              "target": "神之領域騎士團",
+              "affinity": -1
+            }
+          ]
+        }
+      ]
     }
   ],
   "clues": [
