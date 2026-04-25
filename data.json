@@ -398,6 +398,18 @@
       "description": "",
       "image": "images/1777115753569.png",
       "relations": []
+    },
+    {
+      "id": 32,
+      "name": "奧格雷克",
+      "title": "副警長",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115773598.png",
+      "relations": []
     }
   ],
   "knightOrders": [
