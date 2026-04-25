@@ -290,6 +290,18 @@
       "description": "",
       "image": "images/1777115528705.png",
       "relations": []
+    },
+    {
+      "id": 23,
+      "name": "埃德瑪",
+      "title": "退役指揮官",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115550597.png",
+      "relations": []
     }
   ],
   "knightOrders": [
