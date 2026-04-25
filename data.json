@@ -798,6 +798,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 52,
+      "name": "洛恩",
+      "title": "前火剪城大隊長",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
