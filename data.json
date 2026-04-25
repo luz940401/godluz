@@ -906,7 +906,17 @@
           "role": "團長",
           "class": "劍士",
           "description": "",
-          "image": "images/1777053004061.png"
+          "image": "images/1777053004061.png",
+          "relations": [
+            {
+              "target": "穗道忠武",
+              "affinity": 2
+            },
+            {
+              "target": "神之領域騎士團",
+              "affinity": 1
+            }
+          ]
         },
         {
           "id": 2,
