@@ -206,6 +206,18 @@
       "description": "",
       "image": "images/1777115292048.jpg",
       "relations": []
+    },
+    {
+      "id": 16,
+      "name": "瓦萊塔",
+      "title": "貢德神廟",
+      "class": "",
+      "race": "",
+      "regionId": 1,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115321356.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
