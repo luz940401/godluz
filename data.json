@@ -218,6 +218,18 @@
       "description": "",
       "image": "images/1777115321356.jpg",
       "relations": []
+    },
+    {
+      "id": 17,
+      "name": "尼姆",
+      "title": "貢德神廟機偶",
+      "class": "",
+      "race": "",
+      "regionId": 1,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115362155.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
