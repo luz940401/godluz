@@ -906,6 +906,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 61,
+      "name": "穆拉卡爾",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 11,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
