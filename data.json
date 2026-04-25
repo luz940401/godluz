@@ -566,7 +566,7 @@
       "founding": "格蘭曆139年",
       "motto": "看到就殺爛",
       "description": "不要問那麼多 先吃我一拳",
-      "badge": "images/1777118233548.png",
+      "badge": "images/1776688360276.png",
       "members": [
         {
           "id": 1,
@@ -574,7 +574,7 @@
           "role": "團長",
           "class": "武僧",
           "description": "我好有錢",
-          "image": "images/1777118248017.png"
+          "image": "images/1776688393004.png"
         },
         {
           "id": 2,
@@ -582,7 +582,7 @@
           "role": "副團長",
           "class": "牧師",
           "description": "我叫你 起來",
-          "image": "images/1777117854119.png"
+          "image": "images/1776688421289.png"
         },
         {
           "id": 3,
@@ -622,7 +622,7 @@
           "role": "",
           "class": "吟遊詩人",
           "description": "來自原「骷髏莊園酒館」地下室的封印，在神之領域將其解開後，所誕生的精神體存在，後顯現實體—「鈴」",
-          "image": "images/1777118644497.png"
+          "image": "images/1776927014146.png"
         }
       ]
     },
@@ -1164,7 +1164,7 @@
       "founding": "",
       "motto": "",
       "description": "",
-      "badge": "images/1777118148032.jpg",
+      "badge": "",
       "members": [
         {
           "id": 1,
@@ -1266,19 +1266,19 @@
       "id": 8,
       "name": "凡達林",
       "description": "",
-      "image": "images/1777118469027.png"
+      "image": "images/1777119417956.jpg"
     },
     {
       "id": 9,
       "name": "凌風堡",
       "description": "",
-      "image": "images/1777118478740.png"
+      "image": ""
     },
     {
       "id": 10,
       "name": "魔導都市",
       "description": "",
-      "image": "images/1777118623094.png"
+      "image": ""
     }
   ],
   "worldMaps": [
