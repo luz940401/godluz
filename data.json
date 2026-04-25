@@ -846,6 +846,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 56,
+      "name": "萊菈",
+      "title": "歌姬",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
