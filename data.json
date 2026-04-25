@@ -269,7 +269,12 @@
       "summary": "",
       "description": "",
       "image": "images/1777115362155.jpg",
-      "relations": []
+      "relations": [
+        {
+          "target": "小泉理莎",
+          "affinity": 1
+        }
+      ]
     },
     {
       "id": 18,
