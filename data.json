@@ -1237,6 +1237,12 @@
       "name": "凌風堡",
       "description": "",
       "image": ""
+    },
+    {
+      "id": 10,
+      "name": "魔導都市",
+      "description": "",
+      "image": ""
     }
   ],
   "worldMaps": [
