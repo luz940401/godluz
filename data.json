@@ -1675,6 +1675,18 @@
       "description": "",
       "badge": "",
       "members": []
+    },
+    {
+      "id": 30,
+      "rank": 1,
+      "name": "四冥座",
+      "regionId": 12,
+      "parentId": 29,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
+      "members": []
     }
   ],
   "clues": [
