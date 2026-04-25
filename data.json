@@ -918,6 +918,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 62,
+      "name": "巴爾／薩雷奧",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 4,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
