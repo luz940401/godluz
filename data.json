@@ -266,6 +266,18 @@
       "description": "",
       "image": "images/1777115475249.jpg",
       "relations": []
+    },
+    {
+      "id": 21,
+      "name": "石丘",
+      "title": "旅館老闆",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115508648.png",
+      "relations": []
     }
   ],
   "knightOrders": [
