@@ -461,11 +461,11 @@
     },
     {
       "id": 37,
-      "name": "加莉爾修女",
+      "name": "加莉爾",
       "title": "修女",
       "class": "",
       "race": "",
-      "regionId": null,
+      "regionId": 6,
       "summary": "",
       "description": "",
       "image": "images/1777115910300.jpg",
