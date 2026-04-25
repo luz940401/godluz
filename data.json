@@ -1118,6 +1118,18 @@
           "image": "images/1777056331992.png"
         }
       ]
+    },
+    {
+      "id": 27,
+      "rank": 1,
+      "name": "銀玫騎士團",
+      "regionId": 1,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
+      "members": []
     }
   ],
   "clues": [
