@@ -383,7 +383,16 @@
       "summary": "",
       "description": "",
       "image": "images/1777115575173.png",
-      "relations": []
+      "relations": [
+        {
+          "target": "富貴人家",
+          "affinity": 2
+        },
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
     },
     {
       "id": 25,
