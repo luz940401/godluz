@@ -242,6 +242,18 @@
       "description": "",
       "image": "images/1777115391037.jpg",
       "relations": []
+    },
+    {
+      "id": 19,
+      "name": "青蟒",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 4,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115439220.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
