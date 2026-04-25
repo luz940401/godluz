@@ -254,6 +254,18 @@
       "description": "",
       "image": "images/1777115439220.jpg",
       "relations": []
+    },
+    {
+      "id": 20,
+      "name": "斯維普",
+      "title": "小博士",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115475249.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
