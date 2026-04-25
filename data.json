@@ -726,6 +726,18 @@
           "affinity": 1
         }
       ]
+    },
+    {
+      "id": 46,
+      "name": "赤霞珠",
+      "title": "",
+      "class": "流浪牧師",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
