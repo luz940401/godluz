@@ -858,6 +858,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 57,
+      "name": "雷恩",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "火剪城庸兵團",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
