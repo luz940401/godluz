@@ -774,6 +774,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 50,
+      "name": "索芮雅",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
