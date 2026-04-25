@@ -894,6 +894,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 60,
+      "name": "尼希洛爾",
+      "title": "奪心魔",
+      "class": "",
+      "race": "",
+      "regionId": 11,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
