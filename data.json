@@ -36,7 +36,7 @@
       "relations": [
         {
           "target": "小泉理莎",
-          "affinity": 5
+          "affinity": 7
         }
       ]
     },
@@ -1366,6 +1366,10 @@
             {
               "target": "穗道忠武",
               "affinity": 5
+            },
+            {
+              "target": "神之領域騎士團",
+              "affinity": 1
             }
           ]
         },
@@ -1375,7 +1379,17 @@
           "role": "",
           "class": "",
           "description": "",
-          "image": "images/1777116137836.jpg"
+          "image": "images/1777116137836.jpg",
+          "relations": [
+            {
+              "target": "黑皮諾",
+              "affinity": 2
+            },
+            {
+              "target": "神之領域騎士團",
+              "affinity": 1
+            }
+          ]
         },
         {
           "id": 3,
@@ -1383,7 +1397,17 @@
           "role": "",
           "class": "",
           "description": "",
-          "image": "images/1777116151676.jpg"
+          "image": "images/1777116151676.jpg",
+          "relations": [
+            {
+              "target": "黑皮諾",
+              "affinity": 2
+            },
+            {
+              "target": "神之領域騎士團",
+              "affinity": 1
+            }
+          ]
         }
       ]
     },
