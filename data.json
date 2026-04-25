@@ -410,6 +410,18 @@
       "description": "",
       "image": "images/1777115773598.png",
       "relations": []
+    },
+    {
+      "id": 33,
+      "name": "西拉克",
+      "title": "阿圖斯之子",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115794306.png",
+      "relations": []
     }
   ],
   "knightOrders": [
