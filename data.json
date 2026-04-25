@@ -458,6 +458,18 @@
       "description": "",
       "image": "images/1777115877115.png",
       "relations": []
+    },
+    {
+      "id": 37,
+      "name": "加莉爾修女",
+      "title": "修女",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115910300.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
