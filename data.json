@@ -1718,7 +1718,7 @@
           "id": 3,
           "name": "北羽",
           "role": "墮天之弓",
-          "class": "",
+          "class": "精靈",
           "description": "",
           "image": "images/1777133556785.jpg",
           "relations": []
@@ -1727,7 +1727,7 @@
           "id": 4,
           "name": "梅薩克",
           "role": "",
-          "class": "",
+          "class": "魔人",
           "description": "",
           "image": "images/1777133615587.jpg",
           "relations": [
