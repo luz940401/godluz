@@ -494,6 +494,18 @@
       "description": "",
       "image": "images/1777115965636.jpg",
       "relations": []
+    },
+    {
+      "id": 40,
+      "name": "火鬍凱爾文",
+      "title": "凱爾文酒館",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115987747.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
