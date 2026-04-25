@@ -278,6 +278,18 @@
       "description": "",
       "image": "images/1777115508648.png",
       "relations": []
+    },
+    {
+      "id": 22,
+      "name": "巴森",
+      "title": "雜貨店老闆",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115528705.png",
+      "relations": []
     }
   ],
   "knightOrders": [
