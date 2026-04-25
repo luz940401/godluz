@@ -834,6 +834,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 55,
+      "name": "貝拉",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
