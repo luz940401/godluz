@@ -422,6 +422,18 @@
       "description": "",
       "image": "images/1777115794306.png",
       "relations": []
+    },
+    {
+      "id": 34,
+      "name": "杜維薩",
+      "title": "議員",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115822018.png",
+      "relations": []
     }
   ],
   "knightOrders": [
