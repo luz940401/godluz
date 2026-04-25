@@ -1181,7 +1181,13 @@
           "role": "團長",
           "class": "劍士",
           "description": "",
-          "image": "images/1777124151755.png"
+          "image": "images/1777124151755.png",
+          "relations": [
+            {
+              "target": "穗道忠武",
+              "affinity": 5
+            }
+          ]
         },
         {
           "id": 2,
