@@ -786,6 +786,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 51,
+      "name": "艾芮克",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
