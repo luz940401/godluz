@@ -530,6 +530,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 43,
+      "name": "帝妲",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 4,
+      "summary": "四冥座之一",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
