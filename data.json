@@ -810,6 +810,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 53,
+      "name": "艾蓮",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
