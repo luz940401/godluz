@@ -598,7 +598,12 @@
       "summary": "",
       "description": "",
       "image": "images/1777115910300.jpg",
-      "relations": []
+      "relations": [
+        {
+          "target": "黑皮諾",
+          "affinity": 1
+        }
+      ]
     },
     {
       "id": 38,
