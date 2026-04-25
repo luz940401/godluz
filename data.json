@@ -298,7 +298,12 @@
       "summary": "",
       "description": "",
       "image": "images/1777115439220.jpg",
-      "relations": []
+      "relations": [
+        {
+          "target": "北腳爸爸",
+          "affinity": 1
+        }
+      ]
     },
     {
       "id": 20,
