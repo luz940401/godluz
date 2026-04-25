@@ -86,6 +86,18 @@
       "description": "",
       "image": "images/1777114773150.jpg",
       "relations": []
+    },
+    {
+      "id": 6,
+      "name": "雷納德",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 1,
+      "summary": "",
+      "description": "",
+      "image": "images/1777114822303.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
