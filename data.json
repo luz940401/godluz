@@ -1003,7 +1003,13 @@
           "role": "團長",
           "class": "魔導師",
           "description": "",
-          "image": "images/1777125880743.png"
+          "image": "images/1777125880743.png",
+          "relations": [
+            {
+              "target": "神之領域騎士團",
+              "affinity": 3
+            }
+          ]
         },
         {
           "id": 2,
