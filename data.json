@@ -930,6 +930,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 63,
+      "name": "伊瑟洛",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 4,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
