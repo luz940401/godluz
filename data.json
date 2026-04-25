@@ -50,7 +50,16 @@
       "summary": "怎麼 ?",
       "description": "找我 ?",
       "image": "images/1777114622653.jpg",
-      "relations": []
+      "relations": [
+        {
+          "target": "小泉理莎",
+          "affinity": 1
+        },
+        {
+          "target": "穗道忠武",
+          "affinity": 1
+        }
+      ]
     },
     {
       "id": 3,
