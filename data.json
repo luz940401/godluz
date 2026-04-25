@@ -158,6 +158,18 @@
       "description": "",
       "image": "images/1777115010325.jpg",
       "relations": []
+    },
+    {
+      "id": 12,
+      "name": "法拉",
+      "title": "藥水鋪老闆",
+      "class": "",
+      "race": "",
+      "regionId": 1,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115033500.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
