@@ -110,6 +110,18 @@
       "description": "",
       "image": "images/1777114838509.jpg",
       "relations": []
+    },
+    {
+      "id": 8,
+      "name": "賽斯",
+      "title": "警備隊大隊長",
+      "class": "",
+      "race": "",
+      "regionId": 1,
+      "summary": "",
+      "description": "",
+      "image": "images/1777114926508.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
