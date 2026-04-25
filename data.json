@@ -194,6 +194,18 @@
       "description": "",
       "image": "images/1777115254547.jpg",
       "relations": []
+    },
+    {
+      "id": 15,
+      "name": "艾斯特拉",
+      "title": "獵鷹之眼",
+      "class": "",
+      "race": "",
+      "regionId": 1,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115292048.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
