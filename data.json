@@ -338,6 +338,18 @@
       "description": "",
       "image": "images/1777115620406.png",
       "relations": []
+    },
+    {
+      "id": 27,
+      "name": "甘德倫",
+      "title": "",
+      "class": "",
+      "race": "矮人",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115642615.png",
+      "relations": []
     }
   ],
   "knightOrders": [
