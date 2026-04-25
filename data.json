@@ -326,6 +326,18 @@
       "description": "",
       "image": "images/1777115598365.png",
       "relations": []
+    },
+    {
+      "id": 26,
+      "name": "奎琳",
+      "title": "農場主人",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115620406.png",
+      "relations": []
     }
   ],
   "knightOrders": [
