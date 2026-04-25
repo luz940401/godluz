@@ -781,6 +781,7 @@ function rMembers(ordId){
     <div class="ilist">${members.length?members.map(m=>{const s=m.image?`https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${m.image}`:'';const th=s?`<div class="thumb" style="width:36px;height:36px"><img src="${s}" onerror="this.parentNode.innerHTML='?'"></div>`:`<div class="thumb" style="width:36px;height:36px;font-size:1rem">${m.name.charAt(0)}</div>`;return `<div class="icard">${th}<div class="ibody"><div class="ititle">${x(m.name)}</div><div class="imeta">${[m.role,m.class].filter(Boolean).join(' · ')}</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oMem(${m.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dMem(${m.id})">刪除</button></div></div>`;}).join(''):'<div class="empty"><p>尚無成員</p></div>'}</div>`;
 }
 function memForm(m={}){
+  const rels=(m.relations||[]).map((r,i)=>relRowHtml('m'+i,r.target||'',r.affinity||0)).join('');
   return `<div class="field"><label>姓名 *</label><input id="m-name" value="${x(m.name||'')}"></div>
   <div class="field"><label>職稱（如：騎士長）</label><input id="m-role" value="${x(m.role||'')}"></div>
   <div class="field"><label>職業</label><input id="m-class" value="${x(m.class||'')}"></div>
@@ -789,7 +790,18 @@ function memForm(m={}){
     <div class="upzone" onclick="document.getElementById('mem-img-file').click()"><p>點此選擇圖片</p><input type="file" id="mem-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'mem-img-preview')"></div>
     ${m.image?`<p class="cur-img">目前：${m.image}</p>`:''}
     <div id="mem-img-preview"></div>
+  </div>
+  <div class="field">
+    <label>好感度關係</label>
+    <div id="m-relations">${rels}</div>
+    <button type="button" class="btn btn-outline btn-sm" style="margin-top:.4rem" onclick="addMemRelRow()">＋ 新增關係</button>
+    <small>正數 = 好感（❤），負數 = 厭惡（灰心），範圍 -10 ~ +10</small>
   </div>`;
+}
+function addMemRelRow(){
+  const c=document.getElementById('m-relations');
+  const i='m'+c.children.length;
+  c.insertAdjacentHTML('beforeend',relRowHtml(i,'',0));
 }
 function oMem(mid){
   if(curOrdId===null) return;
@@ -811,7 +823,8 @@ async function saveMem(ordId,mid){
   let image=(mid?(o.members||[]).find(x=>x.id===mid):{})||{};image=image.image||'';
   if(imgFile){setS('loading','上傳圖片...');try{image=await upImg(imgFile);}catch(e){toast('上傳失敗','err');setS('error','失敗');return}finally{imgFile=null;}}
   const nid=mid||nextId(o.members);
-  const item={id:nid,name,role:id('m-role').value.trim(),class:id('m-class').value.trim(),description:id('m-desc').value.trim(),image};
+  const relations=[...document.querySelectorAll('#m-relations .rel-edit-row')].map(row=>({target:row.querySelector('.rel-target-in').value.trim(),affinity:parseInt(row.querySelector('.rel-val-in').value)||0})).filter(r=>r.target);
+  const item={id:nid,name,role:id('m-role').value.trim(),class:id('m-class').value.trim(),description:id('m-desc').value.trim(),image,relations};
   if(!o.members) o.members=[];
   if(mid) o.members=o.members.map(x=>x.id===mid?item:x);else o.members=[...o.members,item];
   toast('成員已儲存，記得點「↑ 儲存到 GitHub」');

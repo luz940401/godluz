@@ -527,6 +527,20 @@ function renderDetail() {
       const portrait = m.image
         ? `<div class="detail-hero-img"><img src="${m.image}" alt="${m.name}"></div>`
         : `<div class="detail-portrait-placeholder">${m.name.charAt(0)||'?'}</div>`;
+      const memRelHtml = (m.relations||[]).length ? `
+        <div class="detail-divider"></div>
+        <h2 class="detail-section-title">好感度</h2>
+        <div class="rel-list">
+          ${(m.relations||[]).map(r=>{
+            const v=Math.max(-10,Math.min(10,r.affinity||0));
+            const hearts = v>0
+              ? `<span class="rel-hearts pos">${'♥'.repeat(v)}</span>`
+              : v<0
+              ? `<span class="rel-hearts neg">${'♥'.repeat(Math.abs(v))}</span>`
+              : `<span class="rel-neutral">—</span>`;
+            return `<div class="rel-row-disp"><span class="rel-target">${r.target||''}</span>${hearts}</div>`;
+          }).join('')}
+        </div>` : '';
       html = `${portrait}<div class="detail-body">
         <div class="detail-badges">
           ${o?`<span class="character-badge">${o.name}</span>`:''}
@@ -536,6 +550,7 @@ function renderDetail() {
         <h1 class="detail-name">${m.name}</h1>
         <div class="detail-divider"></div>
         <div class="detail-article">${(m.description||'').replace(/\n/g,'<br>')}</div>
+        ${memRelHtml}
       </div>`;
     }
   } else if (type === 'region') {
