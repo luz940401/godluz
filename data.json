@@ -750,6 +750,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 48,
+      "name": "奧瑞莉亞",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
     }
   ],
   "knightOrders": [
