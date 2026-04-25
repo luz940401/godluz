@@ -74,6 +74,18 @@
       "description": "",
       "image": "images/1777046587388.jpg",
       "relations": []
+    },
+    {
+      "id": 5,
+      "name": "沃洛",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 1,
+      "summary": "",
+      "description": "",
+      "image": "images/1777114773150.jpg",
+      "relations": []
     }
   ],
   "knightOrders": [
