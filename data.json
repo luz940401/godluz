@@ -1221,6 +1221,18 @@
           "image": "images/1777116151676.jpg"
         }
       ]
+    },
+    {
+      "id": 28,
+      "rank": 1,
+      "name": "一般騎士團",
+      "regionId": 1,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
+      "members": []
     }
   ],
   "clues": [
