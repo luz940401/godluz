@@ -632,7 +632,12 @@
       "summary": "貪慾公會",
       "description": "",
       "image": "images/1777115965636.jpg",
-      "relations": []
+      "relations": [
+        {
+          "target": "黑皮諾",
+          "affinity": 1
+        }
+      ]
     },
     {
       "id": 40,
