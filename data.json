@@ -942,6 +942,18 @@
       "description": "",
       "image": "",
       "relations": []
+    },
+    {
+      "id": 64,
+      "name": "卡特",
+      "title": "流星之弓",
+      "class": "遊俠",
+      "race": "精靈",
+      "regionId": 3,
+      "summary": "",
+      "description": "",
+      "image": "images/1777301919981.png",
+      "relations": []
     }
   ],
   "knightOrders": [
