@@ -356,6 +356,15 @@ function renderClues(list) {
   }).join('');
 }
 
+function openMemberOrChar(mid, oid) {
+  const o = siteData.knightOrders.find(x=>x.id===oid);
+  const m = o?.members?.find(x=>x.id===mid);
+  if (!m) return;
+  const linked = (siteData.characters||[]).find(c=>c.name===m.name);
+  if (linked) pushDetail('character', linked.id);
+  else pushDetail('member', mid, {orderId: oid});
+}
+
 /* ── Role Color ── */
 function roleClass(r) {
   if (!r) return 'role-member';
@@ -473,7 +482,7 @@ function renderDetail() {
       const rankColors = {1:'#c9a84c', 2:'#a8aab5', 3:'#cd7f32'};
       const rc = rankColors[o.rank]||'var(--stone)';
       const mems = (o.members||[]).map(m=>`
-        <div class="member-card" onclick="event.stopPropagation();pushDetail('member',${m.id},{orderId:${o.id}})">
+        <div class="member-card" onclick="event.stopPropagation();openMemberOrChar(${m.id},${o.id})">
           ${m.image?`<img src="${m.image}" class="member-avatar" alt="${m.name}">`:`<div class="member-avatar-placeholder">${m.name.charAt(0)}</div>`}
           <div class="member-name">${m.name}</div>
           <div class="member-role-badge ${roleClass(m.role)}">${m.role||'成員'}</div>
@@ -725,8 +734,9 @@ function invPlayerHtml(p){
           <input id="ifq-${p.id}" class="inv-fi" type="number" value="1" min="1" placeholder="數量" style="width:64px;flex:none">
           <input id="ifnt-${p.id}" class="inv-fi" placeholder="備註（選填）" style="flex:2;min-width:100px">
         </div>
+        <input type="hidden" id="ifeid-${p.id}" value="">
         <div class="inv-fbtns">
-          <button class="inv-fbsave" onclick="invSaveItem(${p.id})">新增道具</button>
+          <button class="inv-fbsave" id="ifbsave-${p.id}" onclick="invSaveItem(${p.id})">新增道具</button>
           <button class="inv-fbcancel" onclick="invHideForm(${p.id})">取消</button>
         </div>
       </div>
@@ -741,18 +751,46 @@ function invItemHtml(pid,item){
     <span class="inv-iname" style="color:${r.color}">${esc(item.name)}</span>
     ${item.quantity>1?`<span class="inv-iqty">×${item.quantity}</span>`:''}
     ${item.note?`<span class="inv-inote-ico" onclick="invToggleNote(${pid},${item.id})" title="備註">📝</span>`:''}
-    <button class="inv-idel" onclick="invDelItem(${pid},${item.id})">×</button>
+    <button class="inv-iedit" onclick="invEditItem(${pid},${item.id})" title="編輯">✏</button>
+    <button class="inv-idel" onclick="invDelItem(${pid},${item.id})" title="刪除">×</button>
     ${item.note?`<div class="inv-inote" id="invnote-${pid}-${item.id}">${esc(item.note)}</div>`:''}
   </div>`;
 }
 
-function invShowForm(pid,catKey){
+function invShowForm(pid,catKey,editItem=null){
   const w=document.getElementById('invfw-'+pid);if(!w)return;
   w.style.display='block';
-  const sel=document.getElementById('ifc-'+pid);if(sel)sel.value=catKey;
+  const eid=document.getElementById('ifeid-'+pid);
+  const btn=document.getElementById('ifbsave-'+pid);
+  if(editItem){
+    if(eid)eid.value=editItem.id;
+    if(btn)btn.textContent='更新道具';
+    const fn=document.getElementById('ifn-'+pid);if(fn)fn.value=editItem.name||'';
+    const fc=document.getElementById('ifc-'+pid);if(fc)fc.value=editItem.category||'items';
+    const fr=document.getElementById('ifr-'+pid);if(fr){fr.value=editItem.rarity||'common';invRarDot(pid);}
+    const fq=document.getElementById('ifq-'+pid);if(fq)fq.value=editItem.quantity||1;
+    const fnt=document.getElementById('ifnt-'+pid);if(fnt)fnt.value=editItem.note||'';
+  } else {
+    if(eid)eid.value='';
+    if(btn)btn.textContent='新增道具';
+    const fn=document.getElementById('ifn-'+pid);if(fn)fn.value='';
+    const fq=document.getElementById('ifq-'+pid);if(fq)fq.value=1;
+    const fnt=document.getElementById('ifnt-'+pid);if(fnt)fnt.value='';
+    const sel=document.getElementById('ifc-'+pid);if(sel&&catKey)sel.value=catKey;
+  }
   const ni=document.getElementById('ifn-'+pid);if(ni)ni.focus();
 }
-function invHideForm(pid){const w=document.getElementById('invfw-'+pid);if(w)w.style.display='none';}
+function invHideForm(pid){
+  const w=document.getElementById('invfw-'+pid);if(w)w.style.display='none';
+  const eid=document.getElementById('ifeid-'+pid);if(eid)eid.value='';
+  const btn=document.getElementById('ifbsave-'+pid);if(btn)btn.textContent='新增道具';
+}
+function invEditItem(pid,iid){
+  const d=invLoad();const p=d.players.find(x=>x.id===pid);if(!p)return;
+  const item=(p.items||[]).find(x=>x.id===iid);if(!item)return;
+  invShowForm(pid,item.category,item);
+  document.getElementById('invfw-'+pid)?.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
 function invRarDot(pid){
   const sel=document.getElementById('ifr-'+pid);
   const dot=document.getElementById('ifrd-'+pid);
@@ -767,10 +805,15 @@ function invSaveItem(pid){
   const rar=(document.getElementById('ifr-'+pid)||{}).value||'common';
   const qty=parseInt((document.getElementById('ifq-'+pid)||{}).value)||1;
   const note=((document.getElementById('ifnt-'+pid)||{}).value||'').trim();
+  const editId=parseInt((document.getElementById('ifeid-'+pid)||{}).value)||0;
   const d=invLoad();
   const p=d.players.find(x=>x.id===pid);if(!p)return;
   if(!p.items)p.items=[];
-  p.items.push({id:invNid(p.items),name,category:cat,rarity:rar,quantity:qty,note});
+  if(editId){
+    p.items=p.items.map(x=>x.id===editId?{...x,name,category:cat,rarity:rar,quantity:qty,note}:x);
+  } else {
+    p.items.push({id:invNid(p.items),name,category:cat,rarity:rar,quantity:qty,note});
+  }
   invSave(d);renderInventory();
 }
 function invDelItem(pid,iid){
