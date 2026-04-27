@@ -124,7 +124,8 @@
     .chip-edit:hover{color:var(--gold);border-color:var(--gdim)}
     .drop-hint{font-size:.75rem;color:var(--muted);font-style:italic;padding:.1rem .3rem}
     .org-mini-list{display:flex;flex-direction:column;gap:.35rem}
-    .org-mini-card{display:flex;align-items:center;gap:.65rem;padding:.5rem .75rem;background:var(--sf2);border:1px solid var(--bd);border-radius:4px}
+    .org-mini-card{display:flex;align-items:center;gap:.65rem;padding:.5rem .75rem;background:var(--sf2);border:1px solid var(--bd);border-radius:4px;transition:border-color .2s,background .2s}
+    .org-mini-card.drag-over{border-color:var(--gold)!important;background:rgba(201,168,76,.1)}
     .org-mini-name{font-weight:600;font-size:.87rem;margin-bottom:.1rem}
     .org-mini-meta{font-size:.74rem;color:var(--muted)}
   </style>
@@ -732,7 +733,7 @@ function orgTreeHtml(orgs,regionId,parentId,depth){
     const prefix=depth>0?'└ ':'';
     const cf=cfg();const bs=o.badge?`https://raw.githubusercontent.com/${cf.owner}/${cf.repo}/main/${o.badge}`:'';
     const bth=bs?`<div style="width:34px;height:34px;border-radius:50%;overflow:hidden;flex-shrink:0;border:1px solid rgba(201,168,76,.3)"><img src="${bs}" style="width:100%;height:100%;object-fit:cover"></div>`:`<div style="width:34px;height:34px;border-radius:50%;background:rgba(201,168,76,.15);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--gold);font-size:.85rem;flex-shrink:0">${o.name.charAt(0)}</div>`;
-    return`<div class="org-mini-card">${bth}<div style="flex:1;min-width:0"><div class="org-mini-name">${prefix}${x(o.name)}</div><div class="org-mini-meta">${(o.members||[]).length} 名成員${o.motto?' · '+x(o.motto):''}</div></div><div style="display:flex;gap:.3rem;flex-shrink:0;flex-wrap:wrap"><button class="btn btn-outline btn-sm" onclick="oOrd(${o.id})">編輯</button><button class="btn btn-outline btn-sm" onclick="openMembers(${o.id})">成員</button><button class="btn btn-outline btn-sm" onclick="oOrd(null,${regionId},${o.id})" title="新增子組織">＋子組</button><button class="btn btn-danger btn-sm" onclick="dOrd(${o.id})">刪除</button></div></div>${children}`;
+    return`<div class="org-mini-card" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropChrToOrg(event,${o.id})">${bth}<div style="flex:1;min-width:0"><div class="org-mini-name">${prefix}${x(o.name)}</div><div class="org-mini-meta">${(o.members||[]).length} 名成員${o.motto?' · '+x(o.motto):''} <span style="color:var(--gdim);font-size:.68rem">（可拖曳人物加入）</span></div></div><div style="display:flex;gap:.3rem;flex-shrink:0;flex-wrap:wrap"><button class="btn btn-outline btn-sm" onclick="oOrd(${o.id})">編輯</button><button class="btn btn-outline btn-sm" onclick="openMembers(${o.id})">成員</button><button class="btn btn-outline btn-sm" onclick="oOrd(null,${regionId},${o.id})" title="新增子組織">＋子組</button><button class="btn btn-danger btn-sm" onclick="dOrd(${o.id})">刪除</button></div></div>${children}`;
   }).join('')}</div>`;
 }
 function rWorld(){
@@ -767,6 +768,21 @@ function dropChr(event,regionId){
   D.characters=(D.characters||[]).map(c=>c.id===_dragChrId?{...c,regionId:rid}:c);
   _dragChrId=null;
   rWorld();rChr();saveData();
+}
+function dropChrToOrg(event,orgId){
+  event.preventDefault();event.stopPropagation();
+  event.currentTarget.classList.remove('drag-over');
+  if(_dragChrId===null)return;
+  const org=D.knightOrders.find(o=>o.id===orgId);
+  const chr=(D.characters||[]).find(c=>c.id===_dragChrId);
+  if(!org||!chr){_dragChrId=null;return;}
+  if(!org.members)org.members=[];
+  if(org.members.some(m=>m.name===chr.name)){toast(`${chr.name} 已是成員`,'err');_dragChrId=null;return;}
+  const nid=nextId(org.members);
+  org.members.push({id:nid,name:chr.name,role:'',class:chr.class||'',description:chr.description||'',image:chr.image||'',relations:chr.relations||[]});
+  _dragChrId=null;
+  rWorld();rOrd();saveData();
+  toast(`✓ ${chr.name} 已加入 ${org.name}`);
 }
 
 // ── Members ──
