@@ -900,6 +900,10 @@ body::before {
 
 /* Clue detail */
 .detail-clue-img { width: 100%; max-height: 420px; object-fit: cover; display: block; }
+.clue-detail-img-wrap { position: relative; cursor: zoom-in; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+.clue-detail-full-img { width: 100%; height: auto; display: block; object-fit: contain; }
+.clue-detail-zoom { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.55); color: var(--parchment-dim); font-size: 0.75rem; text-align: center; padding: 0.35rem; opacity: 0; transition: opacity 0.2s; }
+.clue-detail-img-wrap:hover .clue-detail-zoom { opacity: 1; }
 
 /* Relation display (frontend) */
 .rel-list { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 0.5rem; }

@@ -626,11 +626,10 @@ function renderDetail() {
   } else if (type === 'clue') {
     const c = siteData.clues.find(x=>x.id===id);
     if (c) html = `
-      ${c.image?`<img src="${c.image}" class="detail-clue-img" alt="${c.title}">`:''}
       <div class="detail-body">
         <h1 class="detail-name">${c.title}</h1>
-        <div class="detail-divider"></div>
-        <div class="detail-article">${(c.description||'').replace(/\n/g,'<br>')}</div>
+        ${c.description?`<div class="detail-divider"></div><div class="detail-article">${(c.description||'').replace(/\n/g,'<br>')}</div>`:''}
+        ${c.image?`<div class="detail-divider"></div><div class="clue-detail-img-wrap" onclick="openMapLightbox('${c.image}')" title="點擊放大"><img src="${c.image}" class="clue-detail-full-img" alt="${c.title}"><div class="clue-detail-zoom">🔍 點擊放大</div></div>`:''}
       </div>`;
   }
 
