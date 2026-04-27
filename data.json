@@ -1897,6 +1897,13 @@
       "category": "七宗罪",
       "description": "",
       "image": ""
+    },
+    {
+      "id": 8,
+      "name": "冬之戒",
+      "category": "格蘭大陸．三大神器",
+      "description": "",
+      "image": "images/1777301779027.png"
     }
   ],
   "worldReports": [
@@ -1927,6 +1934,12 @@
       "title": "星霜武器強化",
       "content": "",
       "image": "images/1776781587064.jpg"
+    }
+  ],
+  "compendiumCategories": [
+    {
+      "id": 1,
+      "name": "格蘭大陸．三大神器"
     }
   ]
 }
