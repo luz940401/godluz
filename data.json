@@ -1750,6 +1750,18 @@
           ]
         }
       ]
+    },
+    {
+      "id": 31,
+      "rank": 1,
+      "name": "十二律法",
+      "regionId": 3,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
+      "members": []
     }
   ],
   "clues": [
