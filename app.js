@@ -301,24 +301,42 @@ function renderWorldReports(list) {
 function renderCompendium(list) {
   const el = document.getElementById('compendium-container');
   if (!el) return;
-  if (!list.length) { el.innerHTML='<p style="text-align:center;color:var(--stone);font-family:var(--font-heading);letter-spacing:0.15em">暫無圖鑑項目</p>'; return; }
-  const cats = [...new Set(list.map(i=>i.category||'未分類'))];
-  el.innerHTML = cats.map(cat => {
+  const definedCats = (siteData.compendiumCategories||[]).map(c=>c.name||c);
+  const allCatNames = definedCats.length
+    ? [...definedCats, ...[...new Set(list.map(i=>i.category||'未分類'))].filter(c=>!definedCats.includes(c))]
+    : [...new Set(list.map(i=>i.category||'未分類'))];
+  const usedCats = allCatNames.filter(cat=>list.some(i=>(i.category||'未分類')===cat));
+  if (!usedCats.length) { el.innerHTML='<p style="text-align:center;color:var(--stone);font-family:var(--font-heading);letter-spacing:0.15em">暫無圖鑑項目</p>'; return; }
+  el.innerHTML = usedCats.map((cat,ci) => {
     const items = list.filter(i=>(i.category||'未分類')===cat);
     return `
       <div class="comp-group">
-        <div class="comp-group-title">${cat}</div>
-        <div class="comp-grid">${items.map(i=>{
-          const tile = i.image
-            ? `<img src="${i.image}" alt="${i.name}" class="comp-tile-img">`
-            : `<div class="comp-tile-blank"></div>`;
-          return `<div class="comp-tile" onclick="openDetail('item',${i.id})">
-            ${tile}
-            <div class="comp-tile-name">${i.name}</div>
-          </div>`;
-        }).join('')}</div>
+        <button class="comp-group-hd" onclick="compToggle(${ci})" aria-expanded="true">
+          <span class="comp-group-title">${cat}</span>
+          <span class="comp-group-cnt">${items.length}</span>
+          <span class="comp-group-arrow">▾</span>
+        </button>
+        <div class="comp-group-body" id="compg-${ci}">
+          <div class="comp-grid">${items.map(i=>{
+            const tile = i.image
+              ? `<img src="${i.image}" alt="${i.name}" class="comp-tile-img">`
+              : `<div class="comp-tile-blank"></div>`;
+            return `<div class="comp-tile" onclick="openDetail('item',${i.id})">
+              ${tile}
+              <div class="comp-tile-name">${i.name}</div>
+            </div>`;
+          }).join('')}</div>
+        </div>
       </div>`;
   }).join('');
+}
+function compToggle(ci){
+  const body=document.getElementById('compg-'+ci);
+  const btn=body?.previousElementSibling;
+  if(!body)return;
+  const open=body.style.display!=='none';
+  body.style.display=open?'none':'';
+  if(btn){btn.setAttribute('aria-expanded',String(!open));btn.querySelector('.comp-group-arrow').textContent=open?'▸':'▾';}
 }
 
 /* ── Notes ── */

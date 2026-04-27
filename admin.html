@@ -229,6 +229,14 @@
     <!-- 圖鑑 -->
     <div id="tab-comp" class="panel">
       <div class="ph"><h2>圖鑑管理</h2><button class="btn btn-primary" onclick="oComp()">＋ 新增項目</button></div>
+      <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1.1rem 1.2rem;margin-bottom:1.2rem">
+        <div style="font-size:.78rem;font-weight:700;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.8rem">分類管理</div>
+        <div id="comp-cats-list" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem"></div>
+        <div style="display:flex;gap:.5rem">
+          <input id="new-comp-cat" class="field input" placeholder="輸入新分類名稱" style="background:var(--sf2);border:1px solid var(--bd);color:var(--tx);padding:.45rem .7rem;border-radius:var(--r);font-size:.88rem;font-family:inherit;flex:1">
+          <button class="btn btn-outline btn-sm" onclick="addCompCat()">＋ 新增分類</button>
+        </div>
+      </div>
       <div id="comp-list" class="ilist"><div class="empty"><div class="empty-icon">📖</div><p>請先點「↓ 讀取」</p></div></div>
     </div>
 
@@ -454,7 +462,7 @@ function prevImg(input,previewId){
   rd.onload=e=>{const b=id(previewId);if(b)b.innerHTML=`<img src="${e.target.result}" style="max-width:100%;max-height:160px;object-fit:contain;border-radius:4px">`};
   rd.readAsDataURL(f);
 }
-function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMaps:[],patchNotes:[],announcements:[],regions:[],characters:[],knightOrders:[],clues:[],compendium:[],worldReports:[],notes:[]};}
+function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMaps:[],patchNotes:[],announcements:[],regions:[],characters:[],knightOrders:[],clues:[],compendiumCategories:[],compendium:[],worldReports:[],notes:[]};}
 
 // ── Google Sheet ──
 function sheetUrl(){const c=cfg();return c&&c.sheetUrl||'';}
@@ -489,7 +497,7 @@ function saveLocal(){try{if(D)localStorage.setItem('dnd-local-bk',JSON.stringify
 function loadLocal(){try{const s=localStorage.getItem('dnd-local-bk');return s?JSON.parse(s):null;}catch(e){return null;}}
 
 // ── Render All ──
-function rAll(){if(!D) return; rAnn();rMap();rPatch();rChr();rReg();rWorld();rOrd();rClue();rComp();rReport();rNote();rSite();saveLocal();}
+function rAll(){if(!D) return; rAnn();rMap();rPatch();rChr();rReg();rWorld();rOrd();rClue();rCompCat();rComp();rReport();rNote();rSite();saveLocal();}
 
 // ── Announcements ──
 function rAnn(){
@@ -868,6 +876,34 @@ function oClue(id_){
 }
 function dClue(i){if(!confirm('刪除？'))return;D.clues=D.clues.filter(x=>x.id!==i);rClue();toast('已刪除');}
 
+// ── Compendium Categories ──
+function rCompCat(){
+  const el=id('comp-cats-list');if(!el)return;
+  const cats=D.compendiumCategories||[];
+  if(!cats.length){el.innerHTML='<span style="font-size:.8rem;color:var(--muted)">尚無分類，請新增</span>';return;}
+  el.innerHTML=cats.map((c,i)=>`<span style="display:inline-flex;align-items:center;gap:.3rem;background:var(--sf2);border:1px solid var(--bd);border-radius:100px;padding:.25rem .7rem;font-size:.82rem">
+    ${x(c.name||c)}
+    <button onclick="delCompCat(${c.id||i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;line-height:1;padding:0" title="刪除">✕</button>
+  </span>`).join('');
+}
+function addCompCat(){
+  const inp=id('new-comp-cat');if(!inp)return;
+  const name=inp.value.trim();if(!name){toast('請輸入分類名稱','err');return;}
+  if(!D.compendiumCategories)D.compendiumCategories=[];
+  if(D.compendiumCategories.some(c=>(c.name||c)===name)){toast('分類已存在','err');return;}
+  const nid=D.compendiumCategories.length?Math.max(...D.compendiumCategories.map(c=>c.id||0))+1:1;
+  D.compendiumCategories.push({id:nid,name});
+  inp.value='';rCompCat();rComp();toast('分類已新增');
+}
+function delCompCat(cid){
+  if(!confirm('刪除此分類？（項目不會被刪除，但分類欄位會變空）'))return;
+  const cats=D.compendiumCategories||[];
+  const cat=cats.find(c=>c.id===cid);
+  const catName=cat?(cat.name||cat):'';
+  D.compendiumCategories=cats.filter(c=>c.id!==cid);
+  rCompCat();rComp();toast('分類已刪除');
+}
+
 // ── Compendium ──
 function rComp(){
   const el=id('comp-list'),items=D.compendium||[];
@@ -876,10 +912,10 @@ function rComp(){
   el.innerHTML=items.map(i=>{const s=i.image?`https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${i.image}`:'';const th=s?`<div class="thumb" style="background:#000;border:1px solid var(--bd)"><img src="${s}" onerror="this.parentNode.innerHTML='▪'" style="width:100%;height:100%;object-fit:cover"></div>`:`<div class="thumb" style="background:#000;border:1px solid var(--bd);color:#333;font-size:1.6rem;align-items:center;justify-content:center;display:flex">▪</div>`;return `<div class="icard">${th}<div class="ibody"><div class="ititle">${x(i.name)}</div><div class="imeta">${i.category?x(i.category):'未分類'}</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oComp(${i.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dComp(${i.id})">刪除</button></div></div>`;}).join('');
 }
 function compForm(i={}){
-  const cats=[...new Set((D.compendium||[]).map(c=>c.category).filter(Boolean))];
-  const datalist=cats.length?`<datalist id="comp-cats">${cats.map(c=>`<option value="${x(c)}">`).join('')}</datalist>`:'';
+  const cats=(D.compendiumCategories||[]);
+  const catOpts=`<option value="">（未分類）</option>`+cats.map(c=>`<option value="${x(c.name||c)}"${(i.category||'')===(c.name||c)?' selected':''}>${x(c.name||c)}</option>`).join('');
   return `<div class="field"><label>名稱 *</label><input id="f-iname" value="${x(i.name||'')}"></div>
-  <div class="field"><label>分類（可自定義，相同分類會群組顯示）</label><input id="f-icat" value="${x(i.category||'')}" list="comp-cats" placeholder="例：武器、道具、怪物">${datalist}</div>
+  <div class="field"><label>分類</label><select id="f-icat">${catOpts}</select><small>在上方「分類管理」先建立分類，才會出現在此選單</small></div>
   <div class="field"><label>說明描述（選填）</label><textarea id="f-idesc" style="min-height:100px">${x(i.description||'')}</textarea></div>
   <div class="field"><label>圖片（選填，未上傳則顯示黑格）</label>
     <div class="upzone" onclick="document.getElementById('comp-img-file').click()"><p>點此選擇圖片</p><small>不上傳則顯示純黑格子</small><input type="file" id="comp-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'comp-img-preview')"></div>
