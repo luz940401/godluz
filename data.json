@@ -1762,6 +1762,18 @@
       "description": "",
       "badge": "",
       "members": []
+    },
+    {
+      "id": 32,
+      "rank": 9,
+      "name": "流星追獵",
+      "regionId": 3,
+      "parentId": 31,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
+      "members": []
     }
   ],
   "clues": [
