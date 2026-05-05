@@ -916,8 +916,13 @@
       "regionId": 11,
       "summary": "",
       "description": "",
-      "image": "images/1778002402152.png",
-      "relations": []
+      "image": "images/1778002426058.png",
+      "relations": [
+        {
+          "target": "穗道忠武",
+          "affinity": 1
+        }
+      ]
     },
     {
       "id": 62,
