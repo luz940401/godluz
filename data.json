@@ -1981,6 +1981,13 @@
       "category": "格蘭大陸．三大神器",
       "description": "",
       "image": ""
+    },
+    {
+      "id": 11,
+      "name": "古靈神之核",
+      "category": "靈界．古靈神遺物",
+      "description": "",
+      "image": "images/1778003608267.png"
     }
   ],
   "worldReports": [
@@ -2017,6 +2024,10 @@
     {
       "id": 1,
       "name": "格蘭大陸．三大神器"
+    },
+    {
+      "id": 2,
+      "name": "靈界．古靈神遺物"
     }
   ]
 }
