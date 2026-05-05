@@ -959,6 +959,23 @@
       "description": "",
       "image": "images/1777301919981.png",
       "relations": []
+    },
+    {
+      "id": 65,
+      "name": "梅薩克",
+      "title": "鍛蒼之真火",
+      "class": "煉金術師／召喚師",
+      "race": "魔人族",
+      "regionId": 12,
+      "summary": "",
+      "description": "",
+      "image": "images/1778002735111.png",
+      "relations": [
+        {
+          "target": "所羅門",
+          "affinity": -2
+        }
+      ]
     }
   ],
   "knightOrders": [
