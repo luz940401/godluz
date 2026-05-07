@@ -970,6 +970,7 @@
     {
       "id": 65,
       "name": "梅薩克",
+      "category": "",
       "title": "鍛蒼之真火",
       "class": "煉金術師／召喚師",
       "race": "魔人族",
@@ -1540,13 +1541,13 @@
           "id": 3,
           "name": "梅薩克",
           "role": "",
-          "class": "煉金術師",
+          "class": "煉金術師／召喚師",
           "description": "",
-          "image": "images/1777046394163.jpg",
+          "image": "images/1778002735111.png",
           "relations": [
             {
-              "target": "神之領域騎士團",
-              "affinity": -1
+              "target": "所羅門",
+              "affinity": -2
             }
           ]
         }
@@ -1768,13 +1769,13 @@
           "id": 4,
           "name": "梅薩克",
           "role": "魔人族",
-          "class": "煉金術師",
+          "class": "煉金術師／召喚師",
           "description": "",
-          "image": "images/1777133615587.jpg",
+          "image": "images/1778002735111.png",
           "relations": [
             {
-              "target": "神之領域騎士團",
-              "affinity": -1
+              "target": "所羅門",
+              "affinity": -2
             }
           ]
         }
