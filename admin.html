@@ -199,6 +199,14 @@
     <!-- 人物 -->
     <div id="tab-chr" class="panel">
       <div class="ph"><h2>人物管理</h2><button class="btn btn-primary" onclick="oChr()">＋ 新增人物</button></div>
+      <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1.1rem 1.2rem;margin-bottom:1.2rem">
+        <div style="font-size:.78rem;font-weight:700;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.8rem">分類管理</div>
+        <div id="chr-cats-list" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem"></div>
+        <div style="display:flex;gap:.5rem">
+          <input id="new-chr-cat" class="field input" placeholder="輸入新分類名稱" style="background:var(--sf2);border:1px solid var(--bd);color:var(--tx);padding:.45rem .7rem;border-radius:var(--r);font-size:.88rem;font-family:inherit;flex:1">
+          <button class="btn btn-outline btn-sm" onclick="addChrCat()">＋ 新增分類</button>
+        </div>
+      </div>
       <div id="chr-list" class="ilist"><div class="empty"><div class="empty-icon">⚔️</div><p>請先點「↓ 讀取」</p></div></div>
     </div>
 
@@ -463,7 +471,7 @@ function prevImg(input,previewId){
   rd.onload=e=>{const b=id(previewId);if(b)b.innerHTML=`<img src="${e.target.result}" style="max-width:100%;max-height:160px;object-fit:contain;border-radius:4px">`};
   rd.readAsDataURL(f);
 }
-function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMaps:[],patchNotes:[],announcements:[],regions:[],characters:[],knightOrders:[],clues:[],compendiumCategories:[],compendium:[],worldReports:[],notes:[]};}
+function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMaps:[],patchNotes:[],announcements:[],regions:[],characterCategories:[],characters:[],knightOrders:[],clues:[],compendiumCategories:[],compendium:[],worldReports:[],notes:[]};}
 
 // ── Google Sheet ──
 function sheetUrl(){const c=cfg();return c&&c.sheetUrl||'';}
@@ -498,7 +506,7 @@ function saveLocal(){try{if(D)localStorage.setItem('dnd-local-bk',JSON.stringify
 function loadLocal(){try{const s=localStorage.getItem('dnd-local-bk');return s?JSON.parse(s):null;}catch(e){return null;}}
 
 // ── Render All ──
-function rAll(){if(!D) return; rAnn();rMap();rPatch();rChr();rReg();rWorld();rOrd();rClue();rCompCat();rComp();rReport();rNote();rSite();saveLocal();}
+function rAll(){if(!D) return; rAnn();rMap();rPatch();rChrCat();rChr();rReg();rWorld();rOrd();rClue();rCompCat();rComp();rReport();rNote();rSite();saveLocal();}
 
 // ── Announcements ──
 function rAnn(){
@@ -598,22 +606,61 @@ function patchForm(n={}){
 function oPatch(id_){const n=id_?D.patchNotes.find(x=>x.id===id_):{};openMo(id_?'編輯改版資訊':'新增改版資訊',patchForm(n||{}),()=>{const v=id('f-ver').value.trim(),t=id('f-title').value.trim();if(!v||!t){toast('請填版本號與標題','err');return false}const nid=id_||nextId(D.patchNotes);const item={id:nid,version:v,date:id('f-date').value,title:t,summary:id('f-summary').value.trim(),content:id('f-content').value.trim()};if(id_)D.patchNotes=D.patchNotes.map(x=>x.id===id_?item:x);else D.patchNotes=[...(D.patchNotes||[]),item];rPatch();});}
 function dPatch(i){if(!confirm('刪除？'))return;D.patchNotes=D.patchNotes.filter(x=>x.id!==i);rPatch();toast('已刪除');}
 
+// ── Character Categories ──
+function rChrCat(){
+  const el=id('chr-cats-list');if(!el)return;
+  const cats=D.characterCategories||[];
+  if(!cats.length){el.innerHTML='<span style="font-size:.8rem;color:var(--muted)">尚無分類，請新增</span>';return;}
+  el.innerHTML=cats.map(c=>`<span style="display:inline-flex;align-items:center;gap:.3rem;background:var(--sf2);border:1px solid var(--bd);border-radius:100px;padding:.25rem .7rem;font-size:.82rem">
+    ${x(c.name||c)}
+    <button onclick="delChrCat(${c.id})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;line-height:1;padding:0" title="刪除">✕</button>
+  </span>`).join('');
+}
+function addChrCat(){
+  const inp=id('new-chr-cat');if(!inp)return;
+  const name=inp.value.trim();if(!name){toast('請輸入分類名稱','err');return;}
+  if(!D.characterCategories)D.characterCategories=[];
+  if(D.characterCategories.some(c=>(c.name||c)===name)){toast('分類已存在','err');return;}
+  const nid=D.characterCategories.length?Math.max(...D.characterCategories.map(c=>c.id||0))+1:1;
+  D.characterCategories.push({id:nid,name});
+  inp.value='';rChrCat();rChr();toast('分類已新增');
+}
+function delChrCat(cid){
+  if(!confirm('刪除此分類？（人物不會被刪除）'))return;
+  D.characterCategories=(D.characterCategories||[]).filter(c=>c.id!==cid);
+  rChrCat();rChr();toast('分類已刪除');
+}
+
 // ── Characters ──
 function rChr(){
   const el=id('chr-list'),items=D.characters||[];
-  if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">⚔️</div><p>尚無人物</p></div>';return}
+  if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">⚔️</div><p>尚無人物</p></div>';rChrCat();return}
   const c=cfg();
-  el.innerHTML=items.map(ch=>{const s=ch.image?`https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${ch.image}`:'';const th=s?`<div class="thumb" style="border-radius:50%;overflow:hidden"><img src="${s}" style="width:100%;height:100%;object-fit:cover"></div>`:`<div class="thumb" style="border-radius:50%;background:rgba(201,168,76,.15);font-weight:700;color:var(--gold);font-size:1.1rem">${ch.name.charAt(0)}</div>`;return `<div class="icard">${th}<div class="ibody"><div class="ititle">${x(ch.name)}</div><div class="imeta">${[ch.title,ch.class,ch.race].filter(Boolean).join(' · ')}</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oChr(${ch.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dChr(${ch.id})">刪除</button></div></div>`;}).join('');
+  const cats=(D.characterCategories||[]).map(c=>c.name||c);
+  const allCatNames=cats.length?[...cats,...[...new Set(items.map(ch=>ch.category||'未分類'))].filter(c=>!cats.includes(c))]:['未分類'];
+  const usedCats=[...new Set([...allCatNames,...items.map(ch=>ch.category||'未分類')])].filter(cat=>items.some(ch=>(ch.category||'未分類')===cat));
+  function chrCard(ch){const s=ch.image?`https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${ch.image}`:'';const th=s?`<div class="thumb" style="border-radius:50%;overflow:hidden"><img src="${s}" style="width:100%;height:100%;object-fit:cover"></div>`:`<div class="thumb" style="border-radius:50%;background:rgba(201,168,76,.15);font-weight:700;color:var(--gold);font-size:1.1rem">${ch.name.charAt(0)}</div>`;const orgs=(D.knightOrders||[]).filter(o=>(o.members||[]).some(m=>m.name===ch.name)).map(o=>x(o.name)).join('、');return`<div class="icard">${th}<div class="ibody"><div class="ititle">${x(ch.name)}${ch.title?`<span class="badge b-gen">${x(ch.title)}</span>`:''}</div><div class="imeta">${[ch.class,ch.race].filter(Boolean).join(' · ')}${orgs?` · 🏰 ${orgs}`:''}</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oChr(${ch.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dChr(${ch.id})">刪除</button></div></div>`;}
+  el.innerHTML=usedCats.map((cat,ci)=>{
+    const its=items.filter(ch=>(ch.category||'未分類')===cat);
+    return`<div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:.6rem;padding:.4rem .5rem;background:var(--sf2);border-radius:4px;cursor:pointer;user-select:none" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'':'none'"><span style="font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)">${cat}</span><span style="font-size:.7rem;color:var(--muted);background:rgba(255,255,255,.06);padding:.05rem .35rem;border-radius:100px">${its.length}</span><span style="margin-left:auto;font-size:.7rem;color:var(--muted)">▾</span></div><div class="ilist" style="margin-top:.3rem">${its.map(ch=>chrCard(ch)).join('')}</div></div>`;
+  }).join('');
+  rChrCat();
 }
 function chrForm(c={}){
   const regs=D.regions||[];
   const regOpts=`<option value="">（無）</option>`+regs.map(r=>`<option value="${r.id}"${c.regionId===r.id?' selected':''}>${x(r.name)}</option>`).join('');
   const rels=(c.relations||[]).map((r,i)=>relRowHtml(i,r.target||'',r.affinity||0)).join('');
+  const chrCats=(D.characterCategories||[]);
+  const catOpts=`<option value="">（未分類）</option>`+chrCats.map(cat=>`<option value="${x(cat.name||cat)}"${(c.category||'')===(cat.name||cat)?' selected':''}>${x(cat.name||cat)}</option>`).join('');
+  const orgs=D.knightOrders||[];
+  const orgChecks=orgs.length?orgs.map(o=>{const isMem=(o.members||[]).some(m=>m.name===(c.name||'__NONE__'));return`<label style="display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;cursor:pointer;padding:.2rem .5rem;border:1px solid var(--bd);border-radius:4px;background:var(--sf2)"><input type="checkbox" class="f-chr-org-chk" value="${o.id}"${isMem?' checked':''}> ${x(o.name)}</label>`;}).join(''):'<span style="font-size:.8rem;color:var(--muted)">尚無組織</span>';
   return `<div class="field"><label>名字 *</label><input id="f-name" value="${x(c.name||'')}"></div>
+  <div class="field"><label>分類</label><select id="f-ccat">${catOpts}</select></div>
   <div class="field"><label>稱號</label><input id="f-ctitle" value="${x(c.title||'')}"></div>
   <div class="field"><label>職業</label><input id="f-class" value="${x(c.class||'')}"></div>
   <div class="field"><label>種族</label><input id="f-race" value="${x(c.race||'')}"></div>
   <div class="field"><label>所屬地區</label><select id="f-region">${regOpts}</select></div>
+  <div class="field"><label>所屬組織（可多選）</label><div style="display:flex;flex-wrap:wrap;gap:.4rem">${orgChecks}</div><small>勾選後儲存，自動加入組織成員；取消勾選則移除</small></div>
   <div class="field"><label>簡介（顯示在卡片）</label><textarea id="f-summary">${x(c.summary||'')}</textarea></div>
   <div class="field"><label>詳細介紹（點開後顯示，可換行）</label><textarea id="f-desc" style="min-height:120px">${x(c.description||'')}</textarea></div>
   <div class="field"><label>人物圖片（圓形頭像）</label>
@@ -666,9 +713,21 @@ function oChr(id_){
     const nid=id_||nextId(D.characters);
     const regVal=id('f-region')&&id('f-region').value;const regionId=regVal?parseInt(regVal):null;
     const relations=[...document.querySelectorAll('#f-relations .rel-edit-row')].map(row=>({target:row.querySelector('.rel-target-in').value.trim(),affinity:parseInt(row.querySelector('.rel-val-in').value)||0})).filter(r=>r.target);
-    const item={id:nid,name,title:id('f-ctitle').value.trim(),class:id('f-class').value.trim(),race:id('f-race').value.trim(),regionId,summary:id('f-summary').value.trim(),description:id('f-desc').value.trim(),image,relations};
+    const category=(id('f-ccat')||{}).value||'';
+    const oldName=id_?(D.characters.find(x=>x.id===id_)||{}).name||'':'';
+    const item={id:nid,name,category,title:id('f-ctitle').value.trim(),class:id('f-class').value.trim(),race:id('f-race').value.trim(),regionId,summary:id('f-summary').value.trim(),description:id('f-desc').value.trim(),image,relations};
     if(id_)D.characters=D.characters.map(x=>x.id===id_?item:x);else D.characters=[...(D.characters||[]),item];
-    rChr();imgFile=null;
+    // Sync org membership
+    const checkedOrgIds=[...document.querySelectorAll('.f-chr-org-chk:checked')].map(el=>parseInt(el.value));
+    (D.knightOrders||[]).forEach(org=>{
+      const isChecked=checkedOrgIds.includes(org.id);
+      if(!org.members)org.members=[];
+      const existIdx=org.members.findIndex(m=>m.name===name||m.name===oldName);
+      if(isChecked&&existIdx===-1){org.members.push({id:nextId(org.members),name,role:'',class:item.class,description:item.description,image,relations});}
+      else if(isChecked&&existIdx!==-1){org.members[existIdx]={...org.members[existIdx],name,class:item.class,image,relations};}
+      else if(!isChecked&&existIdx!==-1){org.members=org.members.filter((_,i)=>i!==existIdx);}
+    });
+    rChr();rOrd();imgFile=null;
   });
 }
 function dChr(i){if(!confirm('刪除？'))return;D.characters=D.characters.filter(x=>x.id!==i);rChr();toast('已刪除');}
