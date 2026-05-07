@@ -698,6 +698,7 @@
     {
       "id": 44,
       "name": "北羽",
+      "category": "",
       "title": "墮天之弓",
       "class": "遊俠",
       "race": "精靈",
@@ -1758,9 +1759,9 @@
           "id": 3,
           "name": "北羽",
           "role": "墮天之弓",
-          "class": "精靈",
+          "class": "遊俠",
           "description": "",
-          "image": "images/1777133556785.jpg",
+          "image": "images/1777977997448.png",
           "relations": []
         },
         {
