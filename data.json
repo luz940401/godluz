@@ -4,7 +4,8 @@
     "subtitle": "官方公告網站",
     "description": "冒險從這裡開始",
     "tagline": "願骰子永遠站在你這邊",
-    "year": 2026
+    "year": 2026,
+    "sheetUrl": "https://script.google.com/macros/s/AKfycbwLI4F7Ma_Lc5kRj4OROZP6GOvxq_2A28XQjfOvzQqaOOEIzqJ4GEpBQFDLZC6W3QQu/exec"
   },
   "worldMap": {
     "image": "images/1776693214693.jpg",
@@ -20,25 +21,7 @@
       "content": "目標： 優化戰鬥流暢度，強化打擊感，消除「揮空」的挫折體驗，並且讓ＡＣ（防禦值）有更加直觀的使用。\n\n一、 核心戰鬥邏輯：從「閃避」轉為「減傷」\n\n以往的 AC（護甲等級）只決定是否命中，現在改為固定減傷值。\n戰鬥將不存在「未命中」（除非有特殊狀況）。\n\n舊機制： 玩家骰 D20 + 調整值進行命中檢定，若低於目標 AC（防禦） 則沒有造成傷害（視為揮空或失誤攻擊）。\n\n新機制： 攻擊幾乎必中。 護甲值（AC）現在等同於固定的「傷害抵扣值」。\n\n計算公式：你造成的傷害 = 你骰出的攻擊總傷害 - 目標護甲值 (AC)\n範例：你的攻擊造成 100 點傷害，目標 AC 為 20，則目標將受到 80 點傷害。\n\n戰鬥破甲機制：護甲值並不是固定的，王或是怪物都會隨著攻擊逐漸弱化，容易出現越打越痛的情況（不一定每隻王都會）\n（例如：目標 AC 20，你打出了 100 傷害，王卻扣了 85 血）則代表目標可能護甲已經受損進入「破甲」，或是衰弱狀態。\n\n二、 全新投骰流程 \n\n投骰順序更換，優先決定「力道」，再由 D20 決定「傷害品質」。\n傷害投擲： 玩家先投擲傷害骰（如 2d6 + 調整值）。\n品質檢定 (D20)： 投擲一顆 D20 決定本次攻擊的精確度：\n【20】大成功 (Critical)： 觸發暴擊，傷害加倍。(物理職業限定／魔法職業正常看豁免)\n【1】大失敗 (Fumble)： 攻擊受挫，本次傷害減半。\n【2-19】一般： 造成正常傷害。\n\n三、 防禦體系與魔法護盾\n\n玩家與怪物的防禦能力現在分為物理與魔法兩個層次。\n1. 基礎防禦等級\n\n根據穿著護甲的不同，提供基礎的減傷數值：\n布甲 (Cloth)： 10 點物理減傷\n輕甲 (Light)： 13 點物理減傷\n重甲 (Heavy)： 15 點物理減傷\n2. 魔法護盾值\n針對魔法攻擊，玩家可透過技能或裝備獲得「魔法防禦 AC」，運作邏輯與物理護甲相同，優先抵扣魔法傷害。\n通常正常裝備只會提供物理減傷。\n\n四、 裝備強化系統 \n\n為了應對日益強大的敵人，工匠技術現在支援裝備的純粹素質強化。\n強化上限： 最高可強化至 +5。\n強化效果： 每級強化穩定增加 1 點 相應的防禦素質（AC）。\n系統純化： 強化僅針對「數值」提升，不額外增加能力。\n範例：一件重甲 +5，總減傷值將提升至 20 點 (15 + 5)。\n\n五、 更新總結與預期\n\n告別「揮空」： 解決「敵人明明在眼前卻打不到」的邏輯問題。\n戰略透明： 玩家可以透過傷害反饋，更直觀地感受怪物的強度與狀態變化。\n數值成長： 隨著裝備強化，玩家對低階怪物的防禦將具有統治地位。"
     }
   ],
-  "announcements": [
-    {
-      "id": 1,
-      "title": "(測試)第三賽季正式開幕：深淵之門",
-      "category": "重大公告",
-      "date": "2026-04-20",
-      "content": "深淵之門已然開啟，無盡的黑暗從裂縫中湧現。英雄們，是時候拿起武器，踏上這片被詛咒的土地，尋找失落的神器，阻止邪神降臨。",
-      "pinned": true
-    },
-    {
-      "id": 2,
-      "title": "(測試用)春之慶典 — 豐收祭活動開始",
-      "category": "活動",
-      "date": "2026-04-15",
-      "content": "春之女神的祝福降臨大地，限時活動「豐收祭」正式開幕。完成特定任務可獲得稀有坐騎與外觀，活動期間至 4 月 30 日止。",
-      "pinned": false
-    }
-  ],
-  "characterCategories": [],
+  "announcements": [],
   "characters": [
     {
       "id": 1,
@@ -46,10 +29,16 @@
       "title": "狂帝",
       "class": "魔導師",
       "race": "半精靈",
-      "regionId": 1,
+      "regionId": 9,
       "summary": "好奇嗎?",
       "description": "想看什麼",
-      "image": "images/1776688921681.jpg"
+      "image": "images/1777110341948.png",
+      "relations": [
+        {
+          "target": "小泉理莎",
+          "affinity": 7
+        }
+      ]
     },
     {
       "id": 2,
@@ -57,10 +46,942 @@
       "title": "魔導帝",
       "class": "魔導師",
       "race": "人類",
-      "regionId": 1,
+      "regionId": 10,
       "summary": "怎麼 ?",
       "description": "找我 ?",
-      "image": "images/1776688955293.webp"
+      "image": "images/1777114622653.jpg",
+      "relations": [
+        {
+          "target": "小泉理莎",
+          "affinity": 1
+        },
+        {
+          "target": "穗道忠武",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "彌西亞",
+      "title": "樂曲妖精",
+      "class": "吟遊詩人",
+      "race": "精靈",
+      "regionId": 1,
+      "summary": "",
+      "description": "目前在「神領酒窖」工作的吟遊詩人。性格過於熱情大方，對待任何客人都像老友般掏心掏肺，甚至常自掏腰包請客，卻也因為生性粗心，時常在端酒或表演時鬧出絆倒、灑出麥酒的笑話。然而，隱藏在她笨手笨腳與燦爛笑容之下的，是極度敏銳的情報蒐集能力；她總能在酒館的喧鬧與三教九流的交談中，悄悄捕捉並記下所有關鍵的秘密與小道消息。如果想打聽情報，找她喝杯酒絕對是最好的選擇——前提是你要有隨時被她潑到一身酒的心理準備。",
+      "image": "images/1777974399494.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "托比",
+      "title": "矮人",
+      "class": "",
+      "race": "矮人",
+      "regionId": 1,
+      "summary": "",
+      "description": "托比是一名來自亨德爾之石的矮人工匠，自幼便與礦石、鐵鎚與地底坑道為伍。他沉默寡言，不擅與人交流，一生幾乎都奉獻給了挖礦與鍛造。直到某天，他偶然遇見神之領域騎士團的小泉理莎，並從她口中第一次得到「托比」這個名字。對從未真正擁有名字與歸屬感的他而言，那是一份難以忘懷的溫暖。自此之後，他便默默追隨著神之領域，如今在酒窖中擔任雜工，以自己笨拙卻真誠的方式守護著這裡的一切。",
+      "image": "images/1777975881340.png",
+      "relations": [
+        {
+          "target": "小泉理莎",
+          "affinity": 3
+        },
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "沃洛",
+      "title": "知名作家",
+      "class": "",
+      "race": "",
+      "regionId": 1,
+      "summary": "",
+      "description": "沃洛是深水城中赫赫有名的冒險作家與情報收集者，總是穿著華麗、口若懸河，無論走到哪都能滔滔不絕地談上半天。他自稱見多識廣，手中握有大量關於地下勢力、怪物與各地傳聞的情報，因此在冒險者之間頗具名氣。然而，比起他的名聲，更廣為人知的，往往是他永遠還不清的債務與誇張過頭的說詞。即便如此，若真想打聽某些不為人知的秘密，沃洛依舊是深水城裡最不能忽視的人物之一。",
+      "image": "images/1777975499365.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "雷納德",
+      "title": "貴族之子",
+      "class": "",
+      "race": "人類",
+      "regionId": 1,
+      "summary": "",
+      "description": "雷納德是現任無冬城城主達格之子，與父親強硬果斷的作風不同，他待人溫和且富有同理心，總願意傾聽平民與冒險者的聲音。身為貴族之子，他從小接受嚴格教育，卻從未因此產生傲慢，反而更加理解權力應當用來守護人民。雖然仍缺乏真正統治者的歷練，但許多人都認為，若未來由他繼承無冬城，或許能為這座飽經戰火與陰謀的城市帶來不同於過去的希望與改變。",
+      "image": "images/1777975356364.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 2
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "弗隆",
+      "title": "人類",
+      "class": "",
+      "race": "人類",
+      "regionId": 1,
+      "summary": "",
+      "description": "弗隆是一名性格溫和且極具親和力的人，無論面對冒險者、商人還是酒館裡的陌生旅人，都能很快與對方打成一片。他擅長傾聽，也總能用自然真誠的態度拉近彼此距離，因此在各地都累積了不少朋友。雖然經常被拖去參加聚會與酒局，但他的酒量卻意外地差，常常沒喝幾杯就滿臉通紅、開始胡言亂語。即便如此，他仍與深水城知名作家沃洛維持著相當深厚的交情，兩人的性格也形成了有趣的反差。",
+      "image": "images/1777975699126.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "賽斯",
+      "title": "城市哨兵．大隊長",
+      "class": "戰士",
+      "race": "人類",
+      "regionId": 1,
+      "summary": "",
+      "description": "賽斯是深水城城市哨兵的大隊長，以剛正不阿的性格與豪爽直接的作風聞名。他說話大聲、不拘小節，總給人一種大喇喇的感覺，甚至偶爾會因粗心而鬧出些令人哭笑不得的失誤。然而，在真正的危機降臨時，他卻總能第一時間挺身而出。許多老資格的冒險者都知道，這位看似粗獷的隊長其實擁有遠超常人的實力，只是平日很少真正動用。據說在深水城某些被刻意隱藏的事件中，賽斯曾獨自鎮壓過足以威脅整個街區的危險存在。",
+      "image": "images/1777976069090.png",
+      "relations": []
+    },
+    {
+      "id": 9,
+      "name": "休斯塔斯",
+      "title": "城市哨兵．小隊長",
+      "class": "",
+      "race": "人類",
+      "regionId": 1,
+      "summary": "",
+      "description": "休斯塔斯是深水城城市哨兵的小隊長，性格沉穩寡言，總給人一種難以接近的冷淡感，但實際上卻是極具責任感與正義感的人。他做事細心謹慎，擅長觀察局勢，也經常在暗中協助與自己交好的騎士團處理麻煩與危機。據說他與「雷霆海爾」曾是並肩作戰多年的摯友，兩人之間有著外人難以理解的深厚默契與過往。除此之外，休斯塔斯俊朗的外表與冷酷氣質也讓他在深水城中擁有不少追求者，只是他本人似乎從未真正放在心上。",
+      "image": "images/1777973079624.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 2
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "雷霆海爾",
+      "title": "月神號船長",
+      "class": "槍騎士",
+      "race": "人類",
+      "regionId": 1,
+      "summary": "",
+      "description": "雷霆海爾是深水城知名船艦「月神號」的船長，一名充滿謎團的男子。沒有人真正知道他的來歷，也幾乎沒人聽過他談論自己的過去，只知道他總是帶著從容不迫的笑容，舉止瀟灑風流，彷彿任何危機都無法讓他動搖。據說他與城市哨兵小隊長休斯塔斯早在許多年以前便已相識，本人似乎還藏著難以解釋的秘密。",
+      "image": "images/1777972809889.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "羅布",
+      "title": "時間之蛇老闆",
+      "class": "",
+      "race": "",
+      "regionId": 1,
+      "summary": "",
+      "description": "他曾在傳說中的「時間沙海」中，親眼目睹過時間之主的本體。那並非凡人能夠理解的存在，僅僅一眼，便徹底改變了他的人生。自那之後，他選擇放棄原本的一切，轉而終身侍奉時間之主，並將其視為超越神明的偉大存在。如今的他長年收集與「時間之主」相關的古物、紀錄與禁忌知識，無論是殘缺石板、古老傳聞，甚至危險的遺物，他都願意高價收購。在某些人眼中，他只是個執迷不悟的信徒，但也有人相信，他或許真的窺見了時間背後的真相。",
+      "image": "images/1777973232757.png",
+      "relations": []
+    },
+    {
+      "id": 12,
+      "name": "法拉",
+      "title": "藥水鋪老闆",
+      "class": "",
+      "race": "",
+      "regionId": 1,
+      "summary": "",
+      "description": "法拉是一名經營藥水店的藥劑師，來自以高山藥草與寒地植物聞名的星辰峰。比起金錢與名聲，他更熱愛那些生長於峭壁、雪地與森林中的珍貴藥草，甚至能為了一株稀有植物親自深入危險地帶採集數日。他性格溫和。據說法拉僅憑氣味與葉片紋路，便能分辨出大多數藥材的年份與品質，因此在冒險者與藥劑師之間擁有不小名氣。",
+      "image": "images/1777976401412.png",
+      "relations": []
+    },
+    {
+      "id": 13,
+      "name": "里沙爾",
+      "title": "魔法商店老闆",
+      "class": "",
+      "race": "人類？",
+      "regionId": 1,
+      "summary": "",
+      "description": "里沙爾是一名販售魔法技能與秘術知識的商人，總是神神秘秘地窩在滿是卷軸的店鋪裡。他經常半開玩笑地聲稱，自己會變成如今這副奇特模樣，全都是研究魔法付出的代價。至於究竟發生過什麼，他卻從不正面回答。雖然里沙爾本人一再強調自己其實是「普通人類」，但幾乎沒有人願意相信——無論是他異於常人的氣息、古怪的外表，還是偶爾流露出的詭異魔力，都讓人懷疑他早已不是正常人類。可即便如此，仍有無數冒險者願意上門。",
+      "image": "images/1777976505697.png",
+      "relations": []
+    },
+    {
+      "id": 14,
+      "name": "布雷德",
+      "title": "布雷德商會老闆",
+      "class": "盜賊",
+      "race": "人類",
+      "regionId": 1,
+      "summary": "",
+      "description": "布雷德是一名專門販售稀有材料與古怪收藏品的貿易商人，長年奔波於各地城鎮之間，行蹤相當不固定。據說只要哪裡出現罕見素材、失落遺物或奇特礦石，他總能第一時間得到消息。因此，想遇見他並不容易，但只要布雷德現身，往往也代表市場上將出現一批平時難得一見的珍貴好物。他看起來總是一副冷酷的模樣，幾乎沒有人能輕易從他手上佔到便宜。",
+      "image": "images/1777977122876.png",
+      "relations": []
+    },
+    {
+      "id": 15,
+      "name": "艾斯特拉",
+      "title": "獵鷹之眼",
+      "class": "",
+      "race": "半精靈？人類？",
+      "regionId": 1,
+      "summary": "",
+      "description": "艾斯特拉是情報商店「獵鷹之眼」的老闆，以驚人的追蹤能力與情報網聞名。無論是事物、消失的人物，還是被刻意隱藏的秘密，只要付得起代價，據說幾乎沒有他找不到的東西。他總是扳著一張臉，說話簡短而直接，給人一種難以接近的壓迫感，甚至讓不少人連開口委託都會感到緊張。然而，在真正需要情報與搜尋能力的人眼中，艾斯特拉依舊是深水城最值得信賴、也最危險的獵人之一。",
+      "image": "images/1777974249404.png",
+      "relations": []
+    },
+    {
+      "id": 16,
+      "name": "瓦萊塔",
+      "title": "貢德神廟",
+      "class": "牧師",
+      "race": "龍人",
+      "regionId": 1,
+      "summary": "",
+      "description": "瓦萊塔是貢德神廟的牧師，平日負責機偶尼姆的生活照料，以及整座神廟所有機械裝置與日常運作的維持。雖然她本身並不擅長製造機械，也沒有工匠般的創造才能，但在神廟中的地位卻異常特殊。據說連尼姆都對她抱有近乎畏懼的態度，只要她一開口，再麻煩的事情機偶也會立刻照做。更離奇的是，神廟內甚至流傳著一句玩笑般的傳聞——「就連貢德本人，見到瓦萊塔時也得收斂脾氣。」至於原因，至今無人真正知曉。",
+      "image": "images/1777975097381.png",
+      "relations": []
+    },
+    {
+      "id": 17,
+      "name": "尼姆",
+      "title": "貢德神廟機偶",
+      "class": "工匠",
+      "race": "機械",
+      "regionId": 1,
+      "summary": "",
+      "description": "尼姆是由貢德親手創造的非生物機偶，也是極少數擁有真正自我意識的存在。與一般機械不同，他不僅能獨立思考，甚至具備自行製造與改良機械的能力，因此被許多人視為近乎「神蹟」般的存在。在貢德消失之後，尼姆也順理成章成為了貢德神廟的繼承者，默默維持著神廟內所有古老機械與失傳技術的運作。據說如今深水城中仍能見到的許多精密造物，其背後都隱藏著尼姆的影子。",
+      "image": "images/1777976275834.png",
+      "relations": [
+        {
+          "target": "小泉理莎",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "艾蕾莎",
+      "title": "巨人與精靈的信使",
+      "class": "",
+      "race": "精靈",
+      "regionId": 1,
+      "summary": "",
+      "description": "艾蕾莎是一名來自精靈族的信使，長年負責傳遞王國命令、騎士團調動與各地的重要情報。她做事準確且極少出錯，總能在最短時間內將消息送達指定之人。然而，比起與人交流，她更習慣沉默地完成工作，不擅長聊天與社交，總給人一種疏離而安靜的感覺。據說她曾經也有一位十分重要的好友，但對方早已離開深水城與無冬城，自那之後，艾蕾莎便變得更加沉默，也很少再主動與他人建立關係。",
+      "image": "images/1778000761434.png",
+      "relations": []
+    },
+    {
+      "id": 19,
+      "name": "青蟒",
+      "title": "灰燼之左手",
+      "class": "戰士",
+      "race": "獸人",
+      "regionId": 4,
+      "summary": "",
+      "description": "青蟒是深水城地下鬥技場中極具名氣的主持人，總是帶著危險而妖豔的笑容遊走於觀眾與鬥士之間。他表面上負責炒熱氣氛、安排賭局與主持廝殺，但實際上，他真正效忠的對象卻是「九悲歌」中的灰燼魔女。長年以來，青蟒始終暗中替灰燼魔女尋找適合的「用餐者」，並觀察那些在生死邊緣展露本性的強者。他尤其喜歡性格壓抑、表面冷淡的男性，享受對方悶騷固執的模樣。對他而言，地下鬥技場從來不只是娛樂，而是一場精心挑選獵物的盛宴。",
+      "image": "images/1778000628256.png",
+      "relations": [
+        {
+          "target": "北腳爸爸",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "name": "斯維普",
+      "title": "小博士",
+      "class": "",
+      "race": "",
+      "regionId": 7,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115475249.jpg",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": -1
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "name": "石丘",
+      "title": "旅館老闆",
+      "class": "",
+      "race": "",
+      "regionId": 8,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115508648.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "name": "巴森",
+      "title": "雜貨店老闆",
+      "class": "",
+      "race": "",
+      "regionId": 8,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115528705.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "name": "埃德瑪",
+      "title": "退役指揮官",
+      "class": "",
+      "race": "",
+      "regionId": 8,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115550597.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 2
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "name": "哈利婭",
+      "title": "兌換所老闆",
+      "class": "",
+      "race": "",
+      "regionId": 8,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115575173.png",
+      "relations": [
+        {
+          "target": "富貴人家",
+          "affinity": 2
+        },
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "name": "威斯特",
+      "title": "鎮長",
+      "class": "",
+      "race": "",
+      "regionId": 8,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115598365.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": -5
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "name": "奎琳",
+      "title": "農場主人",
+      "class": "",
+      "race": "",
+      "regionId": 8,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115620406.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 3
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "name": "甘德倫",
+      "title": "",
+      "class": "",
+      "race": "矮人",
+      "regionId": 8,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115642615.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 3
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "name": "修達霍溫特",
+      "title": "特工",
+      "class": "",
+      "race": "",
+      "regionId": 8,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115661055.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 2
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "name": "阿加莎",
+      "title": "白色禍端",
+      "class": "大魔導師",
+      "race": "精靈",
+      "regionId": 8,
+      "summary": "",
+      "description": "阿加莎被譽為傳奇時代最強的冰之魔導師，其名字曾讓無數魔法師與王國聞之色變。她性格冷漠孤僻，幾乎從不與他人同行，也從未真正隸屬任何勢力。傳聞她手中持有一本能夠「看見真實」的古老魔導書，據說其中記載著足以顛覆世界認知的知識，因此吸引了無數人前去尋找。然而，所有試圖接近她的人，幾乎都被她毫不留情地驅逐。如今，那本魔導書早已不知去向，只流傳著一則模糊的傳聞——阿加莎似乎已將它轉交給某個未知之人。",
+      "image": "images/1778001824388.png",
+      "relations": []
+    },
+    {
+      "id": 30,
+      "name": "里多斯",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 8,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115722178.png",
+      "relations": []
+    },
+    {
+      "id": 31,
+      "name": "馬克漢姆",
+      "title": "警長",
+      "class": "",
+      "race": "",
+      "regionId": 6,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115753569.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 2
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "name": "奧格雷克",
+      "title": "副警長",
+      "class": "",
+      "race": "",
+      "regionId": 6,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115773598.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "name": "西拉克",
+      "title": "阿圖斯之子",
+      "class": "",
+      "race": "",
+      "regionId": 6,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115794306.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 2
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "name": "杜維薩",
+      "title": "議員",
+      "class": "",
+      "race": "",
+      "regionId": 6,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115822018.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "name": "貝爾多拉",
+      "title": "哈珀遊蕩者",
+      "class": "",
+      "race": "",
+      "regionId": 6,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115849159.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "name": "莉莉安",
+      "title": "吟遊詩人",
+      "class": "",
+      "race": "",
+      "regionId": 6,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115877115.png",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "name": "加莉爾",
+      "title": "修女",
+      "class": "",
+      "race": "",
+      "regionId": 6,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115910300.jpg",
+      "relations": [
+        {
+          "target": "黑皮諾",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "name": "巴里克爵士",
+      "title": "人類信使",
+      "class": "",
+      "race": "",
+      "regionId": 6,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115935578.jpg",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "name": "阿多夫",
+      "title": "北境富商",
+      "class": "",
+      "race": "",
+      "regionId": 6,
+      "summary": "貪慾公會",
+      "description": "",
+      "image": "images/1777115965636.jpg",
+      "relations": [
+        {
+          "target": "黑皮諾",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "name": "火鬍凱爾文",
+      "title": "凱爾文酒館",
+      "class": "",
+      "race": "",
+      "regionId": 6,
+      "summary": "",
+      "description": "",
+      "image": "images/1777115987747.jpg",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "name": "默特爾",
+      "title": "死亡引渡人",
+      "class": "",
+      "race": "",
+      "regionId": 6,
+      "summary": "",
+      "description": "",
+      "image": "images/1777116009750.jpg",
+      "relations": [
+        {
+          "target": "神之領域騎士團",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "name": "烏爾斯圖爾",
+      "category": "",
+      "title": "弒光者",
+      "class": "劍士",
+      "race": "人類",
+      "regionId": 12,
+      "summary": "四冥座之一",
+      "description": "",
+      "image": "images/1777977411384.png",
+      "relations": []
+    },
+    {
+      "id": 44,
+      "name": "北羽",
+      "title": "墮天之弓",
+      "class": "遊俠",
+      "race": "精靈",
+      "regionId": 12,
+      "summary": "四冥座之一",
+      "description": "",
+      "image": "images/1777977997448.png",
+      "relations": []
+    },
+    {
+      "id": 45,
+      "name": "蒂妲",
+      "title": "葬龍之冰姬",
+      "class": "魔導師",
+      "race": "半精靈",
+      "regionId": 12,
+      "summary": "",
+      "description": "",
+      "image": "images/1777124468449.png",
+      "relations": [
+        {
+          "target": "穗道忠武",
+          "affinity": 1
+        },
+        {
+          "target": "黑皮諾",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "name": "赤霞珠",
+      "title": "",
+      "class": "流浪牧師",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 47,
+      "name": "巴魯加斯",
+      "title": "大隊長",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "前精鐵城大隊長",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 48,
+      "name": "奧瑞莉亞",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 49,
+      "name": "尼可",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 50,
+      "name": "索芮雅",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 51,
+      "name": "艾芮克",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 52,
+      "name": "洛恩",
+      "title": "紫耀劍鬼",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "前火剪城大隊長",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 53,
+      "name": "艾蓮",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 54,
+      "name": "林克",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 55,
+      "name": "貝拉",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 56,
+      "name": "萊菈",
+      "title": "歌姬",
+      "class": "",
+      "race": "",
+      "regionId": 2,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 57,
+      "name": "雷恩",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": null,
+      "summary": "火剪城庸兵團",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 58,
+      "name": "達歐特",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 4,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 59,
+      "name": "亞白川",
+      "title": "來自靈界的俠盜",
+      "class": "",
+      "race": "精靈",
+      "regionId": 11,
+      "summary": "",
+      "description": "亞白川是一名來自靈界的神秘人物，幾乎沒有人知道他的真正來歷與目的。他總是悄無聲息地出現在陷入危機的良善村莊與城鎮之中，並留下擁有強大力量的古靈神遺物，彷彿在暗中守護著某種未來。然而，每當人們試圖追問原因時，他卻只會提出同一個要求——無論發生什麼，都必須保護名為「小泉理莎」的存在。沒有人知道理莎究竟與他有何關聯，但隨著亞白川留下的遺物逐漸增加，越來越多人開始懷疑，他或許早已看見某個尚未到來的未來。",
+      "image": "images/1778003134282.png",
+      "relations": [
+        {
+          "target": "小泉理莎",
+          "affinity": 3
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "name": "尼希洛爾",
+      "title": "古靈神守護者",
+      "class": "",
+      "race": "奪心魔",
+      "regionId": 11,
+      "summary": "",
+      "description": "尼希洛爾是來自靈界的神秘存在，長年守護著被稱為「古靈神遺物」的禁忌之物。沒有人知道那件遺物真正的力量，只知道凡是試圖靠近或奪取之人，大多再也沒有回來。尼希洛爾本身極少與凡人接觸，總是如幽魂般徘徊於界線與裂縫之間，積極地履行自己的職責。然而，近年來他卻四處追尋一名叫做「亞白川」的存在，並聲稱他偷走了靈界的至寶，古靈神的遺物。",
+      "image": "images/1778003435056.png",
+      "relations": []
+    },
+    {
+      "id": 61,
+      "name": "穆拉卡爾",
+      "title": "守護靈獸",
+      "class": "",
+      "race": "獸族",
+      "regionId": 11,
+      "summary": "",
+      "description": "",
+      "image": "images/1778002426058.png",
+      "relations": [
+        {
+          "target": "穗道忠武",
+          "affinity": 1
+        }
+      ]
+    },
+    {
+      "id": 62,
+      "name": "巴爾／薩雷奧",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 4,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 63,
+      "name": "伊瑟洛／粉羽聖龍",
+      "title": "",
+      "class": "",
+      "race": "",
+      "regionId": 4,
+      "summary": "",
+      "description": "",
+      "image": "",
+      "relations": []
+    },
+    {
+      "id": 64,
+      "name": "卡特",
+      "title": "流星之弓",
+      "class": "遊俠",
+      "race": "精靈",
+      "regionId": 3,
+      "summary": "",
+      "description": "",
+      "image": "images/1777301919981.png",
+      "relations": []
+    },
+    {
+      "id": 65,
+      "name": "梅薩克",
+      "title": "鍛蒼之真火",
+      "class": "煉金術師／召喚師",
+      "race": "魔人族",
+      "regionId": 12,
+      "summary": "",
+      "description": "",
+      "image": "images/1778002735111.png",
+      "relations": [
+        {
+          "target": "所羅門",
+          "affinity": -2
+        }
+      ]
     }
   ],
   "knightOrders": [
@@ -81,7 +1002,7 @@
           "role": "團長",
           "class": "武僧",
           "description": "我好有錢",
-          "image": "images/1776688393004.png"
+          "image": "images/1777123932675.png"
         },
         {
           "id": 2,
@@ -89,7 +1010,7 @@
           "role": "副團長",
           "class": "牧師",
           "description": "我叫你 起來",
-          "image": "images/1776688421289.png"
+          "image": "images/1777123923295.png"
         },
         {
           "id": 3,
@@ -97,7 +1018,7 @@
           "role": "軍長",
           "class": "遊俠",
           "description": "我好帥",
-          "image": "images/1776688473004.jpg"
+          "image": "images/1777053781685.png"
         },
         {
           "id": 4,
@@ -105,7 +1026,7 @@
           "role": "",
           "class": "法師",
           "description": "我有男團 你有什麼",
-          "image": "images/1776688524025.png"
+          "image": "images/1777110370154.png"
         },
         {
           "id": 5,
@@ -113,7 +1034,7 @@
           "role": "",
           "class": "刺客",
           "description": "剩我一個",
-          "image": "images/1776688789584.jpg"
+          "image": "images/1777054735324.png"
         },
         {
           "id": 6,
@@ -121,14 +1042,22 @@
           "role": "",
           "class": "刺客",
           "description": "我爸好壞",
-          "image": "images/1776688827280.png"
+          "image": "images/1777083644764.png"
+        },
+        {
+          "id": 7,
+          "name": "鈴",
+          "role": "",
+          "class": "吟遊詩人",
+          "description": "來自原「骷髏莊園酒館」地下室的封印，在神之領域將其解開後，所誕生的精神體存在，後顯現實體—「鈴」",
+          "image": "images/1777123911963.png"
         }
       ]
     },
     {
       "id": 5,
       "rank": 1,
-      "name": "圓桌騎士",
+      "name": "圓桌騎士團（前16名）",
       "regionId": 1,
       "parentId": null,
       "founding": "格蘭曆2年",
@@ -136,39 +1065,764 @@
       "description": "",
       "badge": "images/1776778843959.png",
       "members": []
+    },
+    {
+      "id": 6,
+      "rank": 1,
+      "name": "天穹聖焰騎士團",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "無法知曉",
+      "motto": "",
+      "description": "",
+      "badge": "images/1776927900301.png",
+      "members": [
+        {
+          "id": 1,
+          "name": "阿蘭迪爾",
+          "role": "團長",
+          "class": "聖騎士",
+          "description": "",
+          "image": "images/1777049981809.png"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "rank": 2,
+      "name": "雷霆獵衛",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "格蘭歷13年",
+      "motto": "",
+      "description": "",
+      "badge": "images/1776927998276.png",
+      "members": [
+        {
+          "id": 1,
+          "name": "白",
+          "role": "團長",
+          "class": "刺客",
+          "description": "",
+          "image": "images/1777125864604.png"
+        },
+        {
+          "id": 2,
+          "name": "沙茲",
+          "role": "副團長",
+          "class": "法師",
+          "description": "",
+          "image": "images/1777038337235.jpg"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "rank": 3,
+      "name": "晨星盟約",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "格蘭歷6年",
+      "motto": "",
+      "description": "",
+      "badge": "images/1776928085165.png",
+      "members": [
+        {
+          "id": 1,
+          "name": "天雲",
+          "role": "團長",
+          "class": "幻術師",
+          "description": "",
+          "image": "images/1777053137217.png"
+        },
+        {
+          "id": 2,
+          "name": "泰瑞昂",
+          "role": "副團長",
+          "class": "魔劍士",
+          "description": "",
+          "image": "images/1777045491369.jpg"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "rank": 4,
+      "name": "龍焰十字禁衛軍",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "格蘭歷112年",
+      "motto": "",
+      "description": "",
+      "badge": "images/1776928200411.png",
+      "members": [
+        {
+          "id": 1,
+          "name": "伊格尼斯",
+          "role": "團長",
+          "class": "劍士",
+          "description": "",
+          "image": "images/1777053004061.png",
+          "relations": [
+            {
+              "target": "穗道忠武",
+              "affinity": 2
+            },
+            {
+              "target": "神之領域騎士團",
+              "affinity": 1
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "蕾奧妮",
+          "role": "副團長",
+          "class": "魔導師",
+          "description": "",
+          "image": "images/1777045535286.jpg"
+        },
+        {
+          "id": 3,
+          "name": "赤牙",
+          "role": "軍長",
+          "class": "狂戰士",
+          "description": "",
+          "image": "images/1777045969919.jpg"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "rank": 5,
+      "name": "霜鐵軍團",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "格蘭歷12年",
+      "motto": "",
+      "description": "",
+      "badge": "images/1776928438813.png",
+      "members": [
+        {
+          "id": 1,
+          "name": "布雷姆",
+          "role": "團長",
+          "class": "守護騎士",
+          "description": "",
+          "image": "images/1777045560612.jpg"
+        },
+        {
+          "id": 2,
+          "name": "卡萊爾",
+          "role": "副團長",
+          "class": "騎士",
+          "description": "",
+          "image": "images/1777045574785.jpg"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "rank": 6,
+      "name": "深淵殘響",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777038417787.png",
+      "members": [
+        {
+          "id": 1,
+          "name": "傳聲史萊姆",
+          "role": "",
+          "class": "",
+          "description": "",
+          "image": "images/1777045598794.jpg"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "rank": 7,
+      "name": "水色幻想",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044719758.jpg",
+      "members": [
+        {
+          "id": 1,
+          "name": "露涅",
+          "role": "團長",
+          "class": "魔導師",
+          "description": "",
+          "image": "images/1777125880743.png",
+          "relations": [
+            {
+              "target": "神之領域騎士團",
+              "affinity": 3
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "艾莉西亞",
+          "role": "副團長",
+          "class": "魔導師",
+          "description": "",
+          "image": "images/1777045644727.jpg"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "rank": 8,
+      "name": "煌金獅心",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044758055.jpg",
+      "members": [
+        {
+          "id": 1,
+          "name": "席爾瓦勒",
+          "role": "團長",
+          "class": "戰士",
+          "description": "",
+          "image": "images/1777045667253.jpg"
+        },
+        {
+          "id": 2,
+          "name": "黎曦",
+          "role": "副團長",
+          "class": "牧師",
+          "description": "",
+          "image": "images/1777045685493.jpg"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "rank": 9,
+      "name": "赤煉血騎",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044785816.jpg",
+      "members": [
+        {
+          "id": 1,
+          "name": "卡洛",
+          "role": "團長",
+          "class": "槍騎士",
+          "description": "",
+          "image": "images/1777045712368.jpg"
+        },
+        {
+          "id": 2,
+          "name": "布拉克",
+          "role": "副團長",
+          "class": "狂戰士",
+          "description": "",
+          "image": "images/1777045726923.jpg"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "rank": 10,
+      "name": "獅鷲之刃",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044814940.jpg",
+      "members": [
+        {
+          "id": 1,
+          "name": "葉隼",
+          "role": "團長",
+          "class": "槍騎士",
+          "description": "",
+          "image": "images/1777125893814.png"
+        },
+        {
+          "id": 2,
+          "name": "拂羽",
+          "role": "副團長",
+          "class": "騎士",
+          "description": "",
+          "image": "images/1777045768324.jpg"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "rank": 11,
+      "name": "鋼翼",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044845491.jpg",
+      "members": [
+        {
+          "id": 1,
+          "name": "艾雷斯",
+          "role": "團長",
+          "class": "戰士",
+          "description": "",
+          "image": "images/1777051802014.png"
+        },
+        {
+          "id": 2,
+          "name": "伊瑟琳",
+          "role": "副團長",
+          "class": "術士",
+          "description": "",
+          "image": "images/1777051911095.png"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "rank": 12,
+      "name": "狼牙紋章團",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044870180.jpg",
+      "members": [
+        {
+          "id": 1,
+          "name": "芬迪克",
+          "role": "團長",
+          "class": "戰士",
+          "description": "",
+          "image": "images/1777046014619.jpg"
+        },
+        {
+          "id": 2,
+          "name": "葛拉托克",
+          "role": "副團長",
+          "class": "戰士",
+          "description": "",
+          "image": "images/1777046027873.jpg"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "rank": 15,
+      "name": "北鋒精靈傭兵團",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044896176.jpg",
+      "members": [
+        {
+          "id": 1,
+          "name": "北鋒",
+          "role": "團長",
+          "class": "遊俠",
+          "description": "",
+          "image": "images/1777045794584.jpg"
+        },
+        {
+          "id": 2,
+          "name": "北嵐",
+          "role": "副團長",
+          "class": "遊俠",
+          "description": "",
+          "image": "images/1777050135849.png"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "rank": 16,
+      "name": "黑石守望",
+      "regionId": 1,
+      "parentId": 5,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777044922918.jpg",
+      "members": [
+        {
+          "id": 1,
+          "name": "艾格瑞",
+          "role": "團長",
+          "class": "奇械師",
+          "description": "",
+          "image": "images/1777046102187.jpg"
+        },
+        {
+          "id": 2,
+          "name": "賽芙莉亞",
+          "role": "副團長",
+          "class": "刺客",
+          "description": "",
+          "image": "images/1777047536303.jpg"
+        },
+        {
+          "id": 3,
+          "name": "烈牙",
+          "role": "",
+          "class": "狂戰士",
+          "description": "",
+          "image": "images/1777050232676.png"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "rank": 1,
+      "name": "影鳴騎士團",
+      "regionId": 1,
+      "parentId": 24,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777052254212.png",
+      "members": [
+        {
+          "id": 1,
+          "name": "薩戈爾",
+          "role": "團長",
+          "class": "戰士",
+          "description": "",
+          "image": "images/1777046302545.jpg",
+          "relations": [
+            {
+              "target": "穗道忠武",
+              "affinity": -2
+            },
+            {
+              "target": "神之領域騎士團",
+              "affinity": -1
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "艾羅",
+          "role": "副團長",
+          "class": "戰士",
+          "description": "",
+          "image": "images/1777046316417.jpg",
+          "relations": [
+            {
+              "target": "黑皮諾",
+              "affinity": -3
+            },
+            {
+              "target": "神之領域騎士團",
+              "affinity": -2
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "梅薩克",
+          "role": "",
+          "class": "煉金術師",
+          "description": "",
+          "image": "images/1777046394163.jpg",
+          "relations": [
+            {
+              "target": "神之領域騎士團",
+              "affinity": -1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "rank": 1,
+      "name": "伏龍破拳騎士團（已流放）",
+      "regionId": 1,
+      "parentId": 25,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777052601765.png",
+      "members": [
+        {
+          "id": 1,
+          "name": "塔古拉",
+          "role": "軍長",
+          "class": "武僧",
+          "description": "",
+          "image": "images/1777046888132.jpg"
+        },
+        {
+          "id": 2,
+          "name": "穗元霸",
+          "role": "團長",
+          "class": "武僧",
+          "description": "",
+          "image": "images/1777052803382.png"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "rank": 1,
+      "name": "深水城監管中",
+      "regionId": 1,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777052452776.jpg",
+      "members": []
+    },
+    {
+      "id": 25,
+      "rank": 1,
+      "name": "歷代騎士團",
+      "regionId": 1,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777052665568.jpg",
+      "members": []
+    },
+    {
+      "id": 26,
+      "rank": 1,
+      "name": "門羅蒼火工坊",
+      "regionId": 5,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
+      "members": [
+        {
+          "id": 1,
+          "name": "門羅業火",
+          "role": "會長",
+          "class": "",
+          "description": "蒼藍之火 即是我血之本源",
+          "image": "images/1777056331992.png"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "rank": 1,
+      "name": "銀玫騎士團",
+      "regionId": 1,
+      "parentId": 28,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "images/1777123964656.jpg",
+      "members": [
+        {
+          "id": 1,
+          "name": "莉婭",
+          "role": "團長",
+          "class": "劍士",
+          "description": "",
+          "image": "images/1777124151755.png",
+          "relations": [
+            {
+              "target": "穗道忠武",
+              "affinity": 5
+            },
+            {
+              "target": "神之領域騎士團",
+              "affinity": 1
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "萊恩哈特",
+          "role": "",
+          "class": "",
+          "description": "",
+          "image": "images/1777116137836.jpg",
+          "relations": [
+            {
+              "target": "黑皮諾",
+              "affinity": 2
+            },
+            {
+              "target": "神之領域騎士團",
+              "affinity": 1
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "菲娜",
+          "role": "",
+          "class": "",
+          "description": "",
+          "image": "images/1777116151676.jpg",
+          "relations": [
+            {
+              "target": "黑皮諾",
+              "affinity": 2
+            },
+            {
+              "target": "神之領域騎士團",
+              "affinity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "rank": 1,
+      "name": "一般騎士團",
+      "regionId": 1,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
+      "members": []
+    },
+    {
+      "id": 29,
+      "rank": 1,
+      "name": "黑網",
+      "regionId": 12,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
+      "members": []
+    },
+    {
+      "id": 30,
+      "rank": 1,
+      "name": "四冥座",
+      "regionId": 12,
+      "parentId": 29,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
+      "members": [
+        {
+          "id": 1,
+          "name": "蒂妲",
+          "role": "葬龍之冰姬",
+          "class": "魔導師",
+          "description": "",
+          "image": "images/1777133488585.png",
+          "relations": [
+            {
+              "target": "穗道忠武",
+              "affinity": 1
+            },
+            {
+              "target": "黑皮諾",
+              "affinity": 1
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "烏爾斯圖爾",
+          "role": "",
+          "class": "劍士",
+          "description": "",
+          "image": "images/1777977411384.png",
+          "relations": []
+        },
+        {
+          "id": 3,
+          "name": "北羽",
+          "role": "墮天之弓",
+          "class": "精靈",
+          "description": "",
+          "image": "images/1777133556785.jpg",
+          "relations": []
+        },
+        {
+          "id": 4,
+          "name": "梅薩克",
+          "role": "魔人族",
+          "class": "煉金術師",
+          "description": "",
+          "image": "images/1777133615587.jpg",
+          "relations": [
+            {
+              "target": "神之領域騎士團",
+              "affinity": -1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "rank": 1,
+      "name": "十二律法",
+      "regionId": 3,
+      "parentId": null,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
+      "members": []
+    },
+    {
+      "id": 32,
+      "rank": 9,
+      "name": "流星追獵",
+      "regionId": 3,
+      "parentId": 31,
+      "founding": "",
+      "motto": "",
+      "description": "",
+      "badge": "",
+      "members": []
     }
   ],
   "clues": [
     {
-      "id": 1,
-      "title": "起源",
-      "description": "在王都以東三十里處發現的神秘裂縫，散發著異常的魔力波動。調查小隊在此發現了疑似古代禁咒的刻文。",
-      "image": ""
-    },
-    {
-      "id": 2,
-      "title": "失落典籍的碎片",
-      "description": "星辰學者公會正在追查的上古典籍殘頁。內容記載著一個被刻意抹去的咒語，有人認為這與深淵之門的開啟有關。",
-      "image": ""
-    },
-    {
       "id": 3,
-      "title": "黑龍族的預言",
-      "description": "莫格蘭在族群遺跡中找到的古老預言石板，上面刻著「當雙月重疊，龍裔之血將解開枷鎖」的文字。",
-      "image": ""
+      "title": "門羅家的殘頁",
+      "description": "這是一個門羅家留下的殘頁，而且是少數由門羅夜火本人親自書寫的內容……",
+      "image": "images/1777295204349.png"
     },
     {
-      "id": 4,
-      "title": "757",
-      "description": "5757",
-      "image": ""
+      "id": 5,
+      "title": "北地醉語",
+      "description": "其中一篇沃洛對於海上－蒼藍禪寺的簡易報導，書寫的位置在布林山德的酒館",
+      "image": "images/1777295007316.png"
     }
   ],
   "regions": [
     {
       "id": 1,
       "name": "深水城",
-      "description": "123",
+      "description": "深水城，是劍灣上最最具包容性的巨大都會。毫無偏見地接納著來自世界各地的無數種族——無論是人類、精靈、矮人，還是罕見的龍裔、魔人與半獸人，都能在熙來攘往的街頭巷尾中比肩而行。這座城市充滿了無限的機遇，任何人只要具備實力與野心，都能在這個奇妙的多元之城中刻劃下屬於自己的傳奇。",
       "image": "images/1776758819468.jpg"
     },
     {
@@ -182,15 +1836,63 @@
       "name": "銀月城",
       "description": "",
       "image": "images/1776779119983.png"
+    },
+    {
+      "id": 4,
+      "name": "鐵影殿（前精鐵城）",
+      "description": "",
+      "image": "images/1777117270403.png"
+    },
+    {
+      "id": 5,
+      "name": "夜隱城",
+      "description": "",
+      "image": "images/1777117280425.png"
+    },
+    {
+      "id": 6,
+      "name": "布林山德",
+      "description": "",
+      "image": "images/1777117370558.png"
+    },
+    {
+      "id": 7,
+      "name": "亨德爾之石",
+      "description": "",
+      "image": "images/1777117381674.png"
+    },
+    {
+      "id": 8,
+      "name": "凡達林",
+      "description": "",
+      "image": "images/1777119417956.jpg"
+    },
+    {
+      "id": 9,
+      "name": "凌風堡",
+      "description": "",
+      "image": "images/1777123810928.png"
+    },
+    {
+      "id": 10,
+      "name": "魔導都市",
+      "description": "",
+      "image": "images/1777123818825.png"
+    },
+    {
+      "id": 11,
+      "name": "靈界",
+      "description": "",
+      "image": ""
+    },
+    {
+      "id": 12,
+      "name": "諾安納之堡",
+      "description": "",
+      "image": ""
     }
   ],
   "worldMaps": [
-    {
-      "id": 1,
-      "name": "格蘭大陸南境",
-      "caption": "",
-      "image": "images/1776755492434.jpg"
-    },
     {
       "id": 2,
       "name": "格蘭大陸北境",
@@ -202,10 +1904,121 @@
       "name": "格蘭大陸 左上角 極北境",
       "caption": "",
       "image": "images/1776755527305.jpg"
+    },
+    {
+      "id": 4,
+      "name": "格蘭大陸南境",
+      "caption": "",
+      "image": "images/1776926369894.jpg"
     }
   ],
-  "compendiumCategories": [],
-  "compendium": [],
+  "compendium": [
+    {
+      "id": 1,
+      "name": "傲慢",
+      "category": "七宗罪",
+      "description": "",
+      "image": ""
+    },
+    {
+      "id": 2,
+      "name": "嫉妒",
+      "category": "七宗罪",
+      "description": "",
+      "image": ""
+    },
+    {
+      "id": 3,
+      "name": "憤怒",
+      "category": "七宗罪",
+      "description": "",
+      "image": "images/1776781177997.png"
+    },
+    {
+      "id": 4,
+      "name": "怠惰",
+      "category": "七宗罪",
+      "description": "",
+      "image": ""
+    },
+    {
+      "id": 5,
+      "name": "貪婪",
+      "category": "七宗罪",
+      "description": "",
+      "image": "images/1776781205784.png"
+    },
+    {
+      "id": 6,
+      "name": "暴食",
+      "category": "七宗罪",
+      "description": "",
+      "image": "images/1776781217797.png"
+    },
+    {
+      "id": 7,
+      "name": "色慾",
+      "category": "七宗罪",
+      "description": "",
+      "image": ""
+    },
+    {
+      "id": 8,
+      "name": "冬之戒",
+      "category": "格蘭大陸．三大神器",
+      "description": "",
+      "image": "images/1777301779027.png"
+    },
+    {
+      "id": 9,
+      "name": "戈洛爾之石",
+      "category": "格蘭大陸．三大神器",
+      "description": "",
+      "image": "images/1777301796067.png"
+    },
+    {
+      "id": 10,
+      "name": "？？？",
+      "category": "格蘭大陸．三大神器",
+      "description": "",
+      "image": ""
+    },
+    {
+      "id": 11,
+      "name": "古靈神之核",
+      "category": "靈界．古靈神遺物",
+      "description": "該遺物的能力為 【吸收和釋放】",
+      "image": "images/1778003608267.png"
+    },
+    {
+      "id": 12,
+      "name": "萬象星織",
+      "category": "靈界．古靈神遺物",
+      "description": "其遺物的能力為 【顯現與凝結】。",
+      "image": "images/1778003625172.png"
+    },
+    {
+      "id": 13,
+      "name": "？？？",
+      "category": "靈界．古靈神遺物",
+      "description": "",
+      "image": ""
+    },
+    {
+      "id": 14,
+      "name": "？？？",
+      "category": "靈界．古靈神遺物",
+      "description": "",
+      "image": ""
+    },
+    {
+      "id": 15,
+      "name": "？？？",
+      "category": "靈界．古靈神遺物",
+      "description": "",
+      "image": ""
+    }
+  ],
   "worldReports": [
     {
       "id": 1,
@@ -228,6 +2041,22 @@
       "title": "神格武器強化表格",
       "content": "",
       "image": "images/1776779416188.jpg"
+    },
+    {
+      "id": 3,
+      "title": "星霜武器強化",
+      "content": "",
+      "image": "images/1776781587064.jpg"
+    }
+  ],
+  "compendiumCategories": [
+    {
+      "id": 1,
+      "name": "格蘭大陸．三大神器"
+    },
+    {
+      "id": 2,
+      "name": "靈界．古靈神遺物"
     }
   ]
 }
