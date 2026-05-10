@@ -891,6 +891,8 @@
     {
       "id": 59,
       "name": "亞白川",
+      "category": "",
+      "featured": true,
       "title": "來自靈界的俠盜",
       "class": "",
       "race": "精靈",
