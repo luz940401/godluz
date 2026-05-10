@@ -45,6 +45,8 @@
     {
       "id": 2,
       "name": "伊利昂",
+      "category": "",
+      "featured": true,
       "title": "魔導帝",
       "class": "魔導師",
       "race": "人類",
