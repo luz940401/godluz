@@ -26,6 +26,8 @@
     {
       "id": 1,
       "name": "賽菲爾",
+      "category": "",
+      "featured": true,
       "title": "狂帝",
       "class": "魔導師",
       "race": "半精靈",
