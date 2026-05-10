@@ -158,16 +158,8 @@ function renderCharacters(list, regions) {
       const charsHtml = rc.length
         ? `<div class="chr-compact-grid">${rc.map(c=>charCompactHtml(c)).join('')}</div>`
         : `<p class="acc-empty">此地區尚無角色</p>`;
-      const orgsHtml = regionOrgs.length ? regionOrgs.map(org=>{
-        const mems = org.members||[];
-        const memCards = mems.map(m=>{
-          const linked = list.find(c=>c.name===m.name);
-          const av = m.image?`<img src="${m.image}" alt="${m.name}">`:`<div class="chr-mini-avatar-ph">${m.name.charAt(0)}</div>`;
-          const oc = linked?`onclick="event.stopPropagation();openDetail('character',${linked.id})"`:`onclick="event.stopPropagation();openMemberOrChar(${m.id},${org.id})"`;
-          return `<div class="chr-mini-card" ${oc}><div class="chr-mini-avatar">${av}</div><div class="chr-mini-name">${m.name}</div>${(m.title||m.role)?`<div class="chr-mini-title">${m.title||m.role}</div>`:''}</div>`;
-        }).join('');
-        return `<div class="region-org-block"><div class="region-org-hd" onclick="event.stopPropagation();openDetail('order',${org.id})">${org.badge?`<img src="${org.badge}" class="region-org-badge" alt="">`:`<span class="region-org-badge-ph">${org.name.charAt(0)}</span>`}<span class="region-org-nm">${org.name}</span><span class="region-org-cnt">${mems.length}</span><span style="margin-left:auto;color:var(--stone);font-size:.8rem">›</span></div>${mems.length?`<div class="chr-compact-grid" style="padding:.6rem 1rem">${memCards}</div>`:''}</div>`;
-      }).join('') : '';
+      const topOrgs = regionOrgs.filter(o=>!o.parentId);
+      const orgsHtml = topOrgs.length ? `<div class="region-orgs-wrap"><div class="org-cat-list">${topOrgs.map(o=>orgCatHtml(o, siteData.knightOrders||[])).join('')}</div></div>` : '';
       const totalCount = rc.length + regionOrgs.reduce((s,o)=>(o.members||[]).length+s,0);
       return `
         <div class="region-accordion-item" id="racc-${r.id}">
@@ -612,19 +604,11 @@ function renderDetail() {
     if (r) {
       const chars = (siteData.characters||[]).filter(c=>c.regionId===id);
       const regionOrgs = (siteData.knightOrders||[]).filter(o=>o.regionId===id);
-      const orgsDetailHtml = regionOrgs.length ? `
+      const topOrgsDetail = regionOrgs.filter(o=>!o.parentId);
+      const orgsDetailHtml = topOrgsDetail.length ? `
         <div class="detail-divider"></div>
-        <h2 class="detail-section-title">此地區組織（${regionOrgs.length}）</h2>
-        ${regionOrgs.map(org=>{
-          const mems = org.members||[];
-          const memCards = mems.map(m=>{
-            const linked=(siteData.characters||[]).find(c=>c.name===m.name);
-            const av=m.image?`<img src="${m.image}" alt="${m.name}">`:`<div class="chr-mini-avatar-ph">${m.name.charAt(0)}</div>`;
-            const oc=linked?`onclick="event.stopPropagation();pushDetail('character',${linked.id})"`:`onclick="event.stopPropagation();pushDetail('member',${m.id},{orderId:${org.id}})"`;
-            return `<div class="chr-mini-card" ${oc}><div class="chr-mini-avatar">${av}</div><div class="chr-mini-name">${m.name}</div>${(m.title||m.role)?`<div class="chr-mini-title">${m.title||m.role}</div>`:''}</div>`;
-          }).join('');
-          return `<div class="region-org-block"><div class="region-org-hd" onclick="pushDetail('order',${org.id})">${org.badge?`<img src="${org.badge}" class="region-org-badge" alt="">`:`<span class="region-org-badge-ph">${org.name.charAt(0)}</span>`}<span class="region-org-nm">${org.name}</span><span class="region-org-cnt">${mems.length}</span><span style="margin-left:auto;color:var(--stone);font-size:.8rem">›</span></div>${mems.length?`<div class="chr-compact-grid" style="padding:.6rem 1rem">${memCards}</div>`:''}</div>`;
-        }).join('')}` : '';
+        <h2 class="detail-section-title">此地區組織（${topOrgsDetail.length}）</h2>
+        <div class="org-cat-list">${topOrgsDetail.map(o=>orgCatHtml(o, siteData.knightOrders||[])).join('')}</div>` : '';
       html = `
         ${r.image?`<img src="${r.image}" class="detail-clue-img" alt="${r.name}">`:''}
         <div class="detail-body">

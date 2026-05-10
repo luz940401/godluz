@@ -622,6 +622,9 @@ body::before {
 }
 .chr-mini-title { font-size: 0.6rem; color: var(--stone); font-style: italic; }
 
+/* Region orgs wrap (inside accordion) */
+.region-orgs-wrap { border-top: 1px solid var(--border); padding-top: 0.25rem; }
+
 /* Region org block (inside accordion & detail panel) */
 .region-org-block { border-top: 1px solid var(--border); }
 .region-org-hd {
