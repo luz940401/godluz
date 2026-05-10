@@ -475,6 +475,8 @@
     {
       "id": 29,
       "name": "阿加莎",
+      "category": "",
+      "featured": true,
       "title": "白色禍端",
       "class": "大魔導師",
       "race": "精靈",
