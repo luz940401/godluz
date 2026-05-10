@@ -87,7 +87,7 @@ function renderWorldMaps(list) {
   }
   el.innerHTML = `<div class="maps-grid">${maps.map(m=>`
     <div class="map-card" onclick="openMapLightbox('${m.image}')">
-      <div class="map-card-wrap"><img src="${m.image}" alt="${m.name}" class="map-card-img"><div class="map-card-dimmer"></div></div>
+      <div class="map-card-wrap"><img src="${m.image}" alt="${m.name}" class="map-card-img" loading="lazy"><div class="map-card-dimmer"></div></div>
       <div class="map-card-foot">
         <span class="map-card-name">${m.name}</span>
         ${m.caption?`<span class="map-card-caption">${m.caption}</span>`:''}
@@ -117,7 +117,7 @@ function renderPatchNotes(list) {
 /* ── Characters ── */
 function charCardHtml(c) {
   const portrait = c.image
-    ? `<img src="${c.image}" alt="${c.name}">`
+    ? `<img src="${c.image}" alt="${c.name}" loading="lazy">`
     : `<div class="character-portrait-placeholder"><span class="char-icon">${c.icon||'⚔️'}</span></div>`;
   return `
     <article class="character-card" onclick="openDetail('character',${c.id})">
@@ -135,7 +135,7 @@ function charCardHtml(c) {
 }
 function charCompactHtml(c) {
   const av = c.image
-    ? `<img src="${c.image}" alt="${c.name}">`
+    ? `<img src="${c.image}" alt="${c.name}" loading="lazy">`
     : `<div class="chr-mini-avatar-ph">${c.name.charAt(0)}</div>`;
   return `
     <div class="chr-mini-card" onclick="openDetail('character',${c.id})">
@@ -164,9 +164,9 @@ function renderCharacters(list, regions) {
       return `
         <div class="region-accordion-item" id="racc-${r.id}">
           <div class="region-acc-header" onclick="toggleRegion(${r.id})">
-            ${r.image?`<div class="region-acc-banner"><img src="${r.image}" alt="${r.name}"><div class="region-acc-dimmer"></div></div>`:''}
+            ${r.image?`<div class="region-acc-banner"><img src="${r.image}" alt="${r.name}" loading="lazy"><div class="region-acc-dimmer"></div></div>`:''}
             <div class="region-acc-info">
-              ${r.image?`<img src="${r.image}" class="reg-acc-circ" alt="${r.name}">`:`<div class="reg-acc-circ ph">${r.name.charAt(0)}</div>`}
+              ${r.image?`<img src="${r.image}" class="reg-acc-circ" alt="${r.name}" loading="lazy">`:`<div class="reg-acc-circ ph">${r.name.charAt(0)}</div>`}
               <div>
                 <div class="region-acc-name">${r.name}</div>
                 ${r.description?`<div class="region-acc-sub">${r.description}</div>`:''}
@@ -208,7 +208,7 @@ function toggleRegion(id) {
 /* ── Knight Orders ── */
 function circ(src, name, cls) {
   return src
-    ? `<img src="${src}" class="${cls}" alt="${name}">`
+    ? `<img src="${src}" class="${cls}" alt="${name}" loading="lazy">`
     : `<div class="${cls} ph">${name.charAt(0)}</div>`;
 }
 function orgCatHtml(o, allOrgs) {
@@ -263,7 +263,7 @@ function renderOrders(list, regions) {
       return `
         <div class="region-accordion-item" id="oacc-${idSuffix}">
           <div class="region-acc-header" onclick="toggleOrgRegion(${idSuffix})">
-            ${r.image?`<div class="region-acc-banner"><img src="${r.image}" alt="${r.name}"><div class="region-acc-dimmer"></div></div>`:''}
+            ${r.image?`<div class="region-acc-banner"><img src="${r.image}" alt="${r.name}" loading="lazy"><div class="region-acc-dimmer"></div></div>`:''}
             <div class="region-acc-info">
               ${rIcon}
               <div>
@@ -305,7 +305,7 @@ function renderWorldReports(list) {
   if (!list.length) { el.innerHTML='<p style="text-align:center;color:var(--stone);font-family:var(--font-heading);letter-spacing:0.15em">暫無世界報導</p>'; return; }
   el.innerHTML = list.map(r=>`
     <div class="report-card" onclick="openDetail('report',${r.id})">
-      ${r.image?`<div class="report-card-img"><img src="${r.image}" alt="${r.title}"></div>`:''}
+      ${r.image?`<div class="report-card-img"><img src="${r.image}" alt="${r.title}" loading="lazy"></div>`:''}
       <div class="report-body">
         <div class="report-title">${r.title}</div>
         ${r.subtitle?`<div class="report-subtitle">${r.subtitle}</div>`:''}
@@ -337,7 +337,7 @@ function renderCompendium(list) {
         <div class="comp-group-body" id="compg-${ci}">
           <div class="comp-grid">${items.map(i=>{
             const tile = i.image
-              ? `<img src="${i.image}" alt="${i.name}" class="comp-tile-img">`
+              ? `<img src="${i.image}" alt="${i.name}" class="comp-tile-img" loading="lazy">`
               : `<div class="comp-tile-blank"></div>`;
             return `<div class="comp-tile" onclick="openDetail('item',${i.id})">
               ${tile}
@@ -364,7 +364,7 @@ function renderNotes(list) {
   if (!list.length) { el.innerHTML='<p style="text-align:center;color:var(--stone);font-family:var(--font-heading);letter-spacing:0.15em">暫無備註</p>'; return; }
   el.innerHTML = list.map(n=>`
     <div class="note-card">
-      ${n.image?`<div class="note-img-wrap note-img-clickable" onclick="openMapLightbox('${n.image}')"><img src="${n.image}" alt="${n.title}" class="note-img"><div class="note-img-zoom">🔍</div></div>`:''}
+      ${n.image?`<div class="note-img-wrap note-img-clickable" onclick="openMapLightbox('${n.image}')"><img src="${n.image}" alt="${n.title}" class="note-img" loading="lazy"><div class="note-img-zoom">🔍</div></div>`:''}
       <div class="note-body">
         <div class="note-title">${n.title}</div>
         ${n.content?`<div class="note-content">${n.content.replace(/\n/g,'<br>')}</div>`:''}
@@ -379,7 +379,7 @@ function renderClues(list) {
   if (!list.length) { el.innerHTML='<p style="text-align:center;color:var(--stone);font-family:var(--font-heading);letter-spacing:0.15em">暫無線索</p>'; return; }
   el.innerHTML = list.map(c=>{
     const img = c.image
-      ? `<img src="${c.image}" alt="${c.title}">`
+      ? `<img src="${c.image}" alt="${c.title}" loading="lazy">`
       : `<div class="clue-img-placeholder">🔍</div>`;
     return `
       <div class="clue-card" onclick="openDetail('clue',${c.id})">
@@ -470,7 +470,7 @@ function renderDetail() {
     const c = siteData.characters.find(x=>x.id===id);
     if (c) {
       const portrait = c.image
-        ? `<div class="detail-hero-img"><img src="${c.image}" alt="${c.name}"></div>`
+        ? `<div class="detail-hero-img"><img src="${c.image}" alt="${c.name}" loading="lazy"></div>`
         : `<div class="detail-portrait-placeholder">${c.icon||'⚔️'}</div>`;
       const relHtml = (c.relations||[]).length ? `
         <div class="detail-divider"></div>
@@ -513,13 +513,13 @@ function renderDetail() {
     const o = siteData.knightOrders.find(x=>x.id===id);
     if (o) {
       const badge = o.badge
-        ? `<img src="${o.badge}" class="detail-badge-img" alt="${o.name}">`
+        ? `<img src="${o.badge}" class="detail-badge-img" alt="${o.name}" loading="lazy">`
         : `<div class="detail-badge-placeholder">${o.icon||'🏰'}</div>`;
       const rankColors = {1:'#c9a84c', 2:'#a8aab5', 3:'#cd7f32'};
       const rc = rankColors[o.rank]||'var(--stone)';
       const mems = (o.members||[]).map(m=>`
         <div class="member-card" onclick="event.stopPropagation();openMemberOrChar(${m.id},${o.id})">
-          ${m.image?`<img src="${m.image}" class="member-avatar" alt="${m.name}">`:`<div class="member-avatar-placeholder">${m.name.charAt(0)}</div>`}
+          ${m.image?`<img src="${m.image}" class="member-avatar" alt="${m.name}" loading="lazy">`:`<div class="member-avatar-placeholder">${m.name.charAt(0)}</div>`}
           <div class="member-name">${m.name}</div>
           <div class="member-role-badge ${roleClass(m.role)}">${m.role||'成員'}</div>
           ${m.class?`<div class="member-class-tag">${m.class}</div>`:''}
@@ -570,7 +570,7 @@ function renderDetail() {
         <button class="member-nav-btn${next?'':' disabled'}" ${next?`onclick="replaceDetail('member',${next.id},{orderId:${o.id}})"`:''}>›</button>
       </div>`;
       const portrait = m.image
-        ? `<div class="detail-hero-img"><img src="${m.image}" alt="${m.name}"></div>`
+        ? `<div class="detail-hero-img"><img src="${m.image}" alt="${m.name}" loading="lazy"></div>`
         : `<div class="detail-portrait-placeholder">${m.name.charAt(0)||'?'}</div>`;
       const memRelHtml = (m.relations||[]).length ? `
         <div class="detail-divider"></div>
@@ -610,7 +610,7 @@ function renderDetail() {
         <h2 class="detail-section-title">此地區組織（${topOrgsDetail.length}）</h2>
         <div class="org-cat-list">${topOrgsDetail.map(o=>orgCatHtml(o, siteData.knightOrders||[])).join('')}</div>` : '';
       html = `
-        ${r.image?`<img src="${r.image}" class="detail-clue-img" alt="${r.name}">`:''}
+        ${r.image?`<img src="${r.image}" class="detail-clue-img" alt="${r.name}" loading="lazy">`:''}
         <div class="detail-body">
           <h1 class="detail-name">${r.name}</h1>
           ${r.description?`<div class="detail-divider"></div><div class="detail-article">${r.description}</div>`:''}
@@ -619,7 +619,7 @@ function renderDetail() {
           ${chars.length
             ? `<div class="chr-compact-grid">${chars.map(c=>`
                 <div class="chr-mini-card" onclick="event.stopPropagation();pushDetail('character',${c.id})">
-                  <div class="chr-mini-avatar">${c.image?`<img src="${c.image}" alt="${c.name}">`:`<div class="chr-mini-avatar-ph">${c.name.charAt(0)}</div>`}</div>
+                  <div class="chr-mini-avatar">${c.image?`<img src="${c.image}" alt="${c.name}" loading="lazy">`:`<div class="chr-mini-avatar-ph">${c.name.charAt(0)}</div>`}</div>
                   <div class="chr-mini-name">${c.name}</div>
                   ${c.title?`<div class="chr-mini-title">${c.title}</div>`:''}
                 </div>`).join('')}</div>`
@@ -630,7 +630,7 @@ function renderDetail() {
   } else if (type === 'item') {
     const item = (siteData.compendium||[]).find(x=>x.id===id);
     if (item) html = `
-      ${item.image?`<img src="${item.image}" class="detail-clue-img" alt="${item.name}">`
+      ${item.image?`<img src="${item.image}" class="detail-clue-img" alt="${item.name}" loading="lazy">`
         :`<div class="comp-detail-blank"></div>`}
       <div class="detail-body">
         ${item.category?`<div class="detail-badges"><span class="character-badge">${item.category}</span></div>`:''}
@@ -640,7 +640,7 @@ function renderDetail() {
   } else if (type === 'report') {
     const r = (siteData.worldReports||[]).find(x=>x.id===id);
     if (r) html = `
-      ${r.image?`<img src="${r.image}" class="detail-clue-img" alt="${r.title}">`:''}
+      ${r.image?`<img src="${r.image}" class="detail-clue-img" alt="${r.title}" loading="lazy">`:''}
       <div class="detail-body">
         ${r.date?`<div class="detail-version-header"><span class="version-date-large">${r.date}</span></div>`:''}
         <h1 class="detail-name">${r.title}</h1>
