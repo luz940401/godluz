@@ -22,8 +22,8 @@
         <li><a href="#worldmap" onclick="closeNav()">世界地圖</a></li>
         <li><a href="#worldreports" onclick="closeNav()">世界報導</a></li>
         <li><a href="#characters" onclick="closeNav()">已解鎖地區</a></li>
-        <li><a href="#orders" onclick="closeNav()">已遭遇組織</a></li>
         <li><a href="#clues" onclick="closeNav()">線索清單</a></li>
+        <li><a href="#featured" onclick="closeNav()">重要人物</a></li>
         <li><a href="#compendium" onclick="closeNav()">圖鑑</a></li>
         <li><a href="#inventory" onclick="closeNav()">道具欄</a></li>
         <li><a href="#notes" onclick="closeNav()">備註板</a></li>
@@ -100,7 +100,7 @@
       <div class="reports-grid" id="reports-grid"></div>
     </section>
 
-    <!-- 已解鎖地區 -->
+    <!-- 已解鎖地區（含組織） -->
     <section id="characters" class="section section-alt">
       <div class="section-header">
         <div class="section-divider"></div>
@@ -108,16 +108,6 @@
         <div class="section-divider right"></div>
       </div>
       <div id="characters-grid"></div>
-    </section>
-
-    <!-- 已遭遇組織 -->
-    <section id="orders" class="section">
-      <div class="section-header">
-        <div class="section-divider"></div>
-        <h2 class="section-title">已遭遇組織</h2>
-        <div class="section-divider right"></div>
-      </div>
-      <div id="orders-list"></div>
     </section>
 
     <!-- 線索清單 -->
@@ -130,8 +120,18 @@
       <div class="clues-grid" id="clues-grid"></div>
     </section>
 
+    <!-- 重要人物 -->
+    <section id="featured" class="section section-alt">
+      <div class="section-header">
+        <div class="section-divider"></div>
+        <h2 class="section-title">重要人物</h2>
+        <div class="section-divider right"></div>
+      </div>
+      <div class="characters-grid" id="featured-grid"></div>
+    </section>
+
     <!-- 圖鑑 -->
-    <section id="compendium" class="section section-alt">
+    <section id="compendium" class="section">
       <div class="section-header">
         <div class="section-divider"></div>
         <h2 class="section-title">圖鑑</h2>

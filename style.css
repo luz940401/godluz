@@ -622,6 +622,26 @@ body::before {
 }
 .chr-mini-title { font-size: 0.6rem; color: var(--stone); font-style: italic; }
 
+/* Region org block (inside accordion & detail panel) */
+.region-org-block { border-top: 1px solid var(--border); }
+.region-org-hd {
+  display: flex; align-items: center; gap: 0.55rem;
+  padding: 0.6rem 1.25rem; cursor: pointer;
+  transition: background 0.15s;
+}
+.region-org-hd:hover { background: rgba(201,168,76,0.05); }
+.region-org-badge { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.region-org-badge-ph {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(201,168,76,0.18); display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-heading); font-size: 0.65rem; font-weight: 700; color: var(--gold);
+}
+.region-org-nm { font-family: var(--font-heading); font-size: 0.82rem; font-weight: 700; color: var(--gold-dim); flex: 1; }
+.region-org-cnt {
+  font-size: 0.68rem; color: var(--stone);
+  background: rgba(255,255,255,0.06); padding: 0.05rem 0.35rem; border-radius: 100px;
+}
+
 /* =============================================
    World Reports
    ============================================= */

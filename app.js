@@ -154,9 +154,21 @@ function renderCharacters(list, regions) {
     list.forEach(c => { if (c.regionId && regionMap[c.regionId]) regionMap[c.regionId].push(c); });
     el.innerHTML = regions.map(r => {
       const rc = regionMap[r.id]||[];
-      const inner = rc.length
+      const regionOrgs = (siteData.knightOrders||[]).filter(o=>o.regionId===r.id);
+      const charsHtml = rc.length
         ? `<div class="chr-compact-grid">${rc.map(c=>charCompactHtml(c)).join('')}</div>`
         : `<p class="acc-empty">此地區尚無角色</p>`;
+      const orgsHtml = regionOrgs.length ? regionOrgs.map(org=>{
+        const mems = org.members||[];
+        const memCards = mems.map(m=>{
+          const linked = list.find(c=>c.name===m.name);
+          const av = m.image?`<img src="${m.image}" alt="${m.name}">`:`<div class="chr-mini-avatar-ph">${m.name.charAt(0)}</div>`;
+          const oc = linked?`onclick="event.stopPropagation();openDetail('character',${linked.id})"`:`onclick="event.stopPropagation();openMemberOrChar(${m.id},${org.id})"`;
+          return `<div class="chr-mini-card" ${oc}><div class="chr-mini-avatar">${av}</div><div class="chr-mini-name">${m.name}</div>${(m.title||m.role)?`<div class="chr-mini-title">${m.title||m.role}</div>`:''}</div>`;
+        }).join('');
+        return `<div class="region-org-block"><div class="region-org-hd" onclick="event.stopPropagation();openDetail('order',${org.id})">${org.badge?`<img src="${org.badge}" class="region-org-badge" alt="">`:`<span class="region-org-badge-ph">${org.name.charAt(0)}</span>`}<span class="region-org-nm">${org.name}</span><span class="region-org-cnt">${mems.length}</span><span style="margin-left:auto;color:var(--stone);font-size:.8rem">›</span></div>${mems.length?`<div class="chr-compact-grid" style="padding:.6rem 1rem">${memCards}</div>`:''}</div>`;
+      }).join('') : '';
+      const totalCount = rc.length + regionOrgs.reduce((s,o)=>(o.members||[]).length+s,0);
       return `
         <div class="region-accordion-item" id="racc-${r.id}">
           <div class="region-acc-header" onclick="toggleRegion(${r.id})">
@@ -167,17 +179,31 @@ function renderCharacters(list, regions) {
                 <div class="region-acc-name">${r.name}</div>
                 ${r.description?`<div class="region-acc-sub">${r.description}</div>`:''}
               </div>
-              <span class="region-acc-count">${rc.length} 名角色</span>
+              <span class="region-acc-count">${rc.length} 人 · ${regionOrgs.length} 組織</span>
             </div>
             <div class="region-acc-arrow">▼</div>
           </div>
-          <div class="region-acc-body"><div>${inner}</div></div>
+          <div class="region-acc-body"><div>
+            ${charsHtml}
+            ${orgsHtml}
+          </div></div>
         </div>`;
     }).join('');
   } else {
     el.className = 'characters-grid';
     el.innerHTML = list.map(c => charCardHtml(c)).join('');
   }
+}
+
+/* ── Featured Characters ── */
+function renderFeatured(chars) {
+  const el = document.getElementById('featured-grid');
+  const sec = document.getElementById('featured');
+  if (!el) return;
+  const feat = chars.filter(c=>c.featured);
+  if (!feat.length) { if(sec) sec.style.display='none'; return; }
+  if(sec) sec.style.display='';
+  el.innerHTML = feat.map(c=>charCardHtml(c)).join('');
 }
 function toggleRegion(id) {
   const item = document.getElementById('racc-'+id);
@@ -572,6 +598,7 @@ function renderDetail() {
         <div class="detail-badges">
           ${o?`<span class="character-badge">${o.name}</span>`:''}
           ${m.role?`<span class="member-role-badge ${roleClass(m.role)}">${m.role}</span>`:''}
+          ${m.title?`<span class="character-badge">${m.title}</span>`:''}
           ${m.class?`<span class="character-badge">${m.class}</span>`:''}
         </div>
         <h1 class="detail-name">${m.name}</h1>
@@ -584,10 +611,23 @@ function renderDetail() {
     const r = siteData.regions.find(x=>x.id===id);
     if (r) {
       const chars = (siteData.characters||[]).filter(c=>c.regionId===id);
+      const regionOrgs = (siteData.knightOrders||[]).filter(o=>o.regionId===id);
+      const orgsDetailHtml = regionOrgs.length ? `
+        <div class="detail-divider"></div>
+        <h2 class="detail-section-title">此地區組織（${regionOrgs.length}）</h2>
+        ${regionOrgs.map(org=>{
+          const mems = org.members||[];
+          const memCards = mems.map(m=>{
+            const linked=(siteData.characters||[]).find(c=>c.name===m.name);
+            const av=m.image?`<img src="${m.image}" alt="${m.name}">`:`<div class="chr-mini-avatar-ph">${m.name.charAt(0)}</div>`;
+            const oc=linked?`onclick="event.stopPropagation();pushDetail('character',${linked.id})"`:`onclick="event.stopPropagation();pushDetail('member',${m.id},{orderId:${org.id}})"`;
+            return `<div class="chr-mini-card" ${oc}><div class="chr-mini-avatar">${av}</div><div class="chr-mini-name">${m.name}</div>${(m.title||m.role)?`<div class="chr-mini-title">${m.title||m.role}</div>`:''}</div>`;
+          }).join('');
+          return `<div class="region-org-block"><div class="region-org-hd" onclick="pushDetail('order',${org.id})">${org.badge?`<img src="${org.badge}" class="region-org-badge" alt="">`:`<span class="region-org-badge-ph">${org.name.charAt(0)}</span>`}<span class="region-org-nm">${org.name}</span><span class="region-org-cnt">${mems.length}</span><span style="margin-left:auto;color:var(--stone);font-size:.8rem">›</span></div>${mems.length?`<div class="chr-compact-grid" style="padding:.6rem 1rem">${memCards}</div>`:''}</div>`;
+        }).join('')}` : '';
       html = `
         ${r.image?`<img src="${r.image}" class="detail-clue-img" alt="${r.name}">`:''}
         <div class="detail-body">
-          <div class="detail-badges"><span style="font-size:2rem">${r.icon||'🏘️'}</span></div>
           <h1 class="detail-name">${r.name}</h1>
           ${r.description?`<div class="detail-divider"></div><div class="detail-article">${r.description}</div>`:''}
           <div class="detail-divider"></div>
@@ -600,6 +640,7 @@ function renderDetail() {
                   ${c.title?`<div class="chr-mini-title">${c.title}</div>`:''}
                 </div>`).join('')}</div>`
             : `<p style="color:var(--stone);font-size:0.9rem">此地區尚無角色</p>`}
+          ${orgsDetailHtml}
         </div>`;
     }
   } else if (type === 'item') {
@@ -885,8 +926,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderPatchNotes(siteData.patchNotes || []);
     renderWorldReports(siteData.worldReports || []);
     renderCharacters(siteData.characters || [], siteData.regions || []);
-    renderOrders(siteData.knightOrders || [], siteData.regions || []);
     renderClues(siteData.clues || []);
+    renderFeatured(siteData.characters || []);
     renderCompendium(siteData.compendium || []);
     renderNotes(siteData.notes || []);
     invInitSync();

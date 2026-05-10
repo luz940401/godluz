@@ -656,6 +656,7 @@ function chrForm(c={}){
   const orgChecks=orgs.length?orgs.map(o=>{const isMem=(o.members||[]).some(m=>m.name===(c.name||'__NONE__'));return`<label style="display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;cursor:pointer;padding:.2rem .5rem;border:1px solid var(--bd);border-radius:4px;background:var(--sf2)"><input type="checkbox" class="f-chr-org-chk" value="${o.id}"${isMem?' checked':''}> ${x(o.name)}</label>`;}).join(''):'<span style="font-size:.8rem;color:var(--muted)">尚無組織</span>';
   return `<div class="field"><label>名字 *</label><input id="f-name" value="${x(c.name||'')}"></div>
   <div class="field"><label>分類</label><select id="f-ccat">${catOpts}</select></div>
+  <div class="field"><label style="display:inline-flex;align-items:center;gap:.5rem;cursor:pointer"><input type="checkbox" id="f-featured"${c.featured?' checked':''}> 標記為重要人物（顯示於重要人物區塊）</label></div>
   <div class="field"><label>稱號</label><input id="f-ctitle" value="${x(c.title||'')}"></div>
   <div class="field"><label>職業</label><input id="f-class" value="${x(c.class||'')}"></div>
   <div class="field"><label>種族</label><input id="f-race" value="${x(c.race||'')}"></div>
@@ -715,7 +716,8 @@ function oChr(id_){
     const relations=[...document.querySelectorAll('#f-relations .rel-edit-row')].map(row=>({target:row.querySelector('.rel-target-in').value.trim(),affinity:parseInt(row.querySelector('.rel-val-in').value)||0})).filter(r=>r.target);
     const category=(id('f-ccat')||{}).value||'';
     const oldName=id_?(D.characters.find(x=>x.id===id_)||{}).name||'':'';
-    const item={id:nid,name,category,title:id('f-ctitle').value.trim(),class:id('f-class').value.trim(),race:id('f-race').value.trim(),regionId,summary:id('f-summary').value.trim(),description:id('f-desc').value.trim(),image,relations};
+    const featured=!!(id('f-featured')&&id('f-featured').checked);
+    const item={id:nid,name,category,featured,title:id('f-ctitle').value.trim(),class:id('f-class').value.trim(),race:id('f-race').value.trim(),regionId,summary:id('f-summary').value.trim(),description:id('f-desc').value.trim(),image,relations};
     if(id_)D.characters=D.characters.map(x=>x.id===id_?item:x);else D.characters=[...(D.characters||[]),item];
     // Sync org membership
     const checkedOrgIds=[...document.querySelectorAll('.f-chr-org-chk:checked')].map(el=>parseInt(el.value));
@@ -865,9 +867,13 @@ function rMembers(ordId){
 }
 function memForm(m={}){
   const rels=(m.relations||[]).map((r,i)=>relRowHtml('m'+i,r.target||'',r.affinity||0)).join('');
+  const regs=D.regions||[];
+  const regOpts=`<option value="">（無）</option>`+regs.map(r=>`<option value="${r.id}"${m.regionId===r.id?' selected':''}>${x(r.name)}</option>`).join('');
   return `<div class="field"><label>姓名 *</label><input id="m-name" value="${x(m.name||'')}"></div>
+  <div class="field"><label>稱號（自定義）</label><input id="m-title" value="${x(m.title||'')}"></div>
   <div class="field"><label>職稱（如：騎士長）</label><input id="m-role" value="${x(m.role||'')}"></div>
   <div class="field"><label>職業</label><input id="m-class" value="${x(m.class||'')}"></div>
+  <div class="field"><label>所屬地區</label><select id="m-region">${regOpts}</select></div>
   <div class="field"><label>介紹</label><textarea id="m-desc">${x(m.description||'')}</textarea></div>
   <div class="field"><label>成員圖片</label>
     <div class="upzone" onclick="document.getElementById('mem-img-file').click()"><p>點此選擇圖片</p><input type="file" id="mem-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'mem-img-preview')"></div>
@@ -907,7 +913,8 @@ async function saveMem(ordId,mid){
   if(imgFile){setS('loading','上傳圖片...');try{image=await upImg(imgFile);}catch(e){toast('上傳失敗','err');setS('error','失敗');return}finally{imgFile=null;}}
   const nid=mid||nextId(o.members);
   const relations=[...document.querySelectorAll('#m-relations .rel-edit-row')].map(row=>({target:row.querySelector('.rel-target-in').value.trim(),affinity:parseInt(row.querySelector('.rel-val-in').value)||0})).filter(r=>r.target);
-  const item={id:nid,name,role:id('m-role').value.trim(),class:id('m-class').value.trim(),description:id('m-desc').value.trim(),image,relations};
+  const mRegVal=(id('m-region')||{}).value;const mRegionId=mRegVal?parseInt(mRegVal):null;
+  const item={id:nid,name,title:id('m-title').value.trim(),role:id('m-role').value.trim(),class:id('m-class').value.trim(),description:id('m-desc').value.trim(),image,regionId:mRegionId,relations};
   if(!o.members) o.members=[];
   if(mid) o.members=o.members.map(x=>x.id===mid?item:x);else o.members=[...o.members,item];
   toast('成員已儲存，記得點「↑ 儲存到 GitHub」');
