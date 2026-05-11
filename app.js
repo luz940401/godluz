@@ -494,7 +494,7 @@ function renderDetail() {
         <h1 class="detail-name">${c.name}</h1>
         <p class="detail-title-tag">${c.title}</p>
         <div class="detail-divider"></div>
-        <div class="detail-article">${(c.description||'').replace(/\n/g,'<br>')}</div>
+        <div class="detail-article">${(c.description||c.summary||'').replace(/\n/g,'<br>')}</div>
         ${relHtml}
       </div>`;
     }
