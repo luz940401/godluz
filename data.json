@@ -1224,18 +1224,24 @@
         {
           "id": 1,
           "name": "布雷姆",
+          "title": "",
           "role": "團長",
           "class": "守護騎士",
           "description": "",
-          "image": "images/1777045560612.jpg"
+          "image": "images/1778521360871.png",
+          "regionId": 1,
+          "relations": []
         },
         {
           "id": 2,
           "name": "卡萊爾",
+          "title": "",
           "role": "副團長",
           "class": "騎士",
           "description": "",
-          "image": "images/1777045574785.jpg"
+          "image": "images/1778521382915.png",
+          "regionId": null,
+          "relations": []
         }
       ]
     },
@@ -1274,10 +1280,12 @@
         {
           "id": 1,
           "name": "露涅",
+          "title": "",
           "role": "團長",
           "class": "魔導師",
           "description": "",
-          "image": "images/1777125880743.png",
+          "image": "images/1778521335991.png",
+          "regionId": null,
           "relations": [
             {
               "target": "神之領域騎士團",
