@@ -346,6 +346,13 @@ function doGet(e){
             </div>
           </details>
         </div>
+        <hr>
+        <div style="margin-top:1.2rem">
+          <div style="font-size:.78rem;font-weight:700;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.6rem">圖片批量壓縮</div>
+          <p style="font-size:.8rem;color:var(--muted);margin-bottom:.9rem">將 data.json 中所有已上傳的圖片縮到最長邊 1600px、JPEG 88% 品質，畫質肉眼無差，載入速度大幅提升。</p>
+          <button class="btn btn-outline" onclick="batchCompress()" id="btn-batch-compress">⚡ 一鍵壓縮所有舊圖片</button>
+          <div id="batch-compress-log" style="margin-top:.8rem;font-size:.8rem;color:var(--muted);line-height:1.8;display:none"></div>
+        </div>
       </div>
     </div>
 
@@ -445,8 +452,101 @@ async function saveData(){
   }catch(e){setS('error','儲存失敗');toast('儲存失敗：'+e.message,'err');}
   finally{id('btn-save').disabled=false;}
 }
+async function compressImg(file){
+  const MAX=1600;
+  return new Promise(res=>{
+    const img=new Image(), url=URL.createObjectURL(file);
+    img.onload=()=>{
+      URL.revokeObjectURL(url);
+      let w=img.naturalWidth, h=img.naturalHeight;
+      if(w<=MAX && h<=MAX && file.size<400*1024){res(file);return;}
+      if(w>MAX||h>MAX){
+        if(w>=h){h=Math.round(h*MAX/w);w=MAX;}
+        else{w=Math.round(w*MAX/h);h=MAX;}
+      }
+      const cv=document.createElement('canvas');
+      cv.width=w; cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      const mime=file.type==='image/png'?'image/png':'image/jpeg';
+      cv.toBlob(blob=>res(blob), mime, mime==='image/jpeg'?0.88:undefined);
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);res(file);};
+    img.src=url;
+  });
+}
+async function batchCompress(){
+  if(!D){toast('請先讀取資料','err');return;}
+  if(!confirm('將壓縮 data.json 中所有圖片並覆蓋原檔，是否繼續？'))return;
+  const btn=id('btn-batch-compress');
+  const log=id('batch-compress-log');
+  btn.disabled=true; log.style.display='block'; log.innerHTML='';
+  const addLog=s=>{log.innerHTML+=s+'<br>';};
+
+  // 收集所有圖片路徑
+  const paths=new Set();
+  const add=p=>{if(p&&typeof p==='string'&&p.startsWith('images/'))paths.add(p);};
+  (D.characters||[]).forEach(c=>add(c.image));
+  (D.knightOrders||[]).forEach(o=>{add(o.badge);(o.members||[]).forEach(m=>add(m.image));});
+  (D.regions||[]).forEach(r=>add(r.image));
+  (D.worldMaps||[]).forEach(m=>add(m.image));
+  (D.compendium||[]).forEach(i=>add(i.image));
+  (D.worldReports||[]).forEach(r=>add(r.image));
+  (D.notes||[]).forEach(n=>add(n.image));
+  (D.clues||[]).forEach(c=>add(c.image));
+
+  const list=[...paths];
+  if(!list.length){toast('沒有找到圖片','err');btn.disabled=false;return;}
+  addLog(`找到 ${list.length} 張圖片，開始壓縮...`);
+
+  let done=0, skipped=0, totalSaved=0;
+  const c=cfg();
+  for(const path of list){
+    try{
+      const apiUrl=`https://api.github.com/repos/${c.owner}/${c.repo}/contents/${path}?ref=${c.branch}`;
+      const resp=await fetch(apiUrl,{headers:{'Authorization':`token ${c.token}`,'Accept':'application/vnd.github.v3+json'}});
+      if(!resp.ok){addLog(`⚠ 略過 ${path}（讀取失敗）`);skipped++;continue;}
+      const info=await resp.json();
+      const originalSize=info.size;
+
+      // base64 → Blob
+      const b64=info.content.replace(/\n/g,'');
+      const bytes=Uint8Array.from(atob(b64),ch=>ch.charCodeAt(0));
+      const mime=path.endsWith('.png')?'image/png':'image/jpeg';
+      const blob=new Blob([bytes],{type:mime});
+
+      // 壓縮
+      const compressed=await compressImg(blob);
+      if(compressed===blob||compressed.size>=originalSize*0.92){
+        addLog(`— 略過 ${path.split('/').pop()}（已夠小）`);skipped++;continue;
+      }
+
+      // 重新上傳
+      const newB64=await new Promise(res=>{
+        const rd=new FileReader();
+        rd.onload=e=>res(e.target.result.split(',')[1]);
+        rd.readAsDataURL(compressed);
+      });
+      const putResp=await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}/contents/${path}`,{
+        method:'PUT',
+        headers:{'Authorization':`token ${c.token}`,'Content-Type':'application/json'},
+        body:JSON.stringify({message:'壓縮圖片',content:newB64,sha:info.sha,branch:c.branch})
+      });
+      if(putResp.ok){
+        const saved=originalSize-compressed.size;
+        totalSaved+=saved;
+        addLog(`✓ ${path.split('/').pop()} ${Math.round(originalSize/1024)}KB → ${Math.round(compressed.size/1024)}KB（省 ${Math.round(saved/1024)}KB）`);
+        done++;
+      } else {addLog(`✗ ${path.split('/').pop()}（上傳失敗）`);skipped++;}
+    }catch(e){addLog(`✗ ${path}（錯誤：${e.message}）`);skipped++;}
+  }
+  addLog(`<strong>完成：${done} 張壓縮，${skipped} 張略過，共節省 ${Math.round(totalSaved/1024)} KB</strong>`);
+  btn.disabled=false;
+  setS('ok','壓縮完成');
+}
+
 async function upImg(file,folder='images'){
-  const c=cfg(), ext=file.name.split('.').pop().toLowerCase();
+  const compressed=await compressImg(file);
+  const ext=file.type==='image/png'?'png':'jpg';
   const path=`${folder}/${Date.now()}.${ext}`;
   return new Promise((res,rej)=>{
     const rd=new FileReader();
@@ -458,7 +558,7 @@ async function upImg(file,folder='images'){
         res(path);
       }catch(err){rej(err);}
     };
-    rd.readAsDataURL(file);
+    rd.readAsDataURL(compressed);
   });
 }
 
