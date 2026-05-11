@@ -171,7 +171,8 @@
     <button class="tab" onclick="sw('world',this)">🌍 總覽</button>
     <button class="tab" onclick="sw('ord',this)">🏰 騎士團</button>
     <button class="tab" onclick="sw('clue',this)">🔍 線索</button>
-    <button class="tab" onclick="sw('comp',this)">📖 圖鑑</button>
+    <button class="tab" onclick="sw('comp',this)">📖 世界知識</button>
+    <button class="tab" onclick="sw('secorder',this)">🔢 區塊排序</button>
     <button class="tab" onclick="sw('report',this)">📰 世界報導</button>
     <button class="tab" onclick="sw('note',this)">📌 備註板</button>
     <button class="tab" onclick="sw('site',this)">⚙️ 網站設定</button>
@@ -235,9 +236,9 @@
       <div id="clue-list" class="ilist"><div class="empty"><div class="empty-icon">🔍</div><p>請先點「↓ 讀取」</p></div></div>
     </div>
 
-    <!-- 圖鑑 -->
+    <!-- 世界知識 -->
     <div id="tab-comp" class="panel">
-      <div class="ph"><h2>圖鑑管理</h2><button class="btn btn-primary" onclick="oComp()">＋ 新增項目</button></div>
+      <div class="ph"><h2>世界知識管理</h2><button class="btn btn-primary" onclick="oComp()">＋ 新增項目</button></div>
       <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1.1rem 1.2rem;margin-bottom:1.2rem">
         <div style="font-size:.78rem;font-weight:700;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.8rem">分類管理</div>
         <div id="comp-cats-list" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem"></div>
@@ -259,6 +260,16 @@
     <div id="tab-note" class="panel">
       <div class="ph"><h2>備註板</h2><button class="btn btn-primary" onclick="oNote()">＋ 新增備註</button></div>
       <div id="note-list" class="ilist"><div class="empty"><div class="empty-icon">📌</div><p>請先點「↓ 讀取」</p></div></div>
+    </div>
+
+    <!-- 區塊排序 -->
+    <div id="tab-secorder" class="panel">
+      <div class="ph"><h2>前台區塊排序</h2></div>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.2rem">用上下箭頭調整前台各區塊的顯示順序，完成後點「儲存排序到 GitHub」。</p>
+      <div id="secorder-list" style="display:flex;flex-direction:column;gap:.5rem;max-width:480px"></div>
+      <div style="margin-top:1.2rem">
+        <button class="btn btn-primary" onclick="saveSecOrder()">↑ 儲存排序到 GitHub</button>
+      </div>
     </div>
 
     <!-- 網站設定 -->
@@ -471,7 +482,7 @@ function prevImg(input,previewId){
   rd.onload=e=>{const b=id(previewId);if(b)b.innerHTML=`<img src="${e.target.result}" style="max-width:100%;max-height:160px;object-fit:contain;border-radius:4px">`};
   rd.readAsDataURL(f);
 }
-function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMaps:[],patchNotes:[],announcements:[],regions:[],characterCategories:[],characters:[],knightOrders:[],clues:[],compendiumCategories:[],compendium:[],worldReports:[],notes:[]};}
+function defD(){return{site:{title:'龍與地下城',subtitle:'官方公告網站',description:'冒險從這裡開始',tagline:'願骰子永遠站在你這邊',year:2026},worldMaps:[],patchNotes:[],announcements:[],regions:[],characterCategories:[],characters:[],knightOrders:[],clues:[],compendiumCategories:[],compendium:[],worldReports:[],notes:[],sectionOrder:['patchnotes','worldmap','worldreports','characters','clues','featured','compendium','inventory','notes']};}
 
 // ── Google Sheet ──
 function sheetUrl(){const c=cfg();return c&&c.sheetUrl||'';}
@@ -506,7 +517,46 @@ function saveLocal(){try{if(D)localStorage.setItem('dnd-local-bk',JSON.stringify
 function loadLocal(){try{const s=localStorage.getItem('dnd-local-bk');return s?JSON.parse(s):null;}catch(e){return null;}}
 
 // ── Render All ──
-function rAll(){if(!D) return; rAnn();rMap();rPatch();rChrCat();rChr();rReg();rWorld();rOrd();rClue();rCompCat();rComp();rReport();rNote();rSite();saveLocal();}
+function rAll(){if(!D) return; rAnn();rMap();rPatch();rChrCat();rChr();rReg();rWorld();rOrd();rClue();rCompCat();rComp();rReport();rNote();rSite();rSecOrder();saveLocal();}
+
+// ── Section Order ──
+const SECTION_DEFS=[
+  {id:'patchnotes', label:'改版資訊',   icon:'📋'},
+  {id:'worldmap',   label:'世界地圖',   icon:'🗺️'},
+  {id:'worldreports',label:'世界報導',  icon:'📰'},
+  {id:'characters', label:'已解鎖地區', icon:'🏘️'},
+  {id:'clues',      label:'線索清單',   icon:'🔍'},
+  {id:'featured',   label:'重要人物',   icon:'⚔️'},
+  {id:'compendium', label:'世界知識',   icon:'📖'},
+  {id:'inventory',  label:'玩家道具欄', icon:'🎒'},
+  {id:'notes',      label:'備註板',     icon:'📌'},
+];
+function rSecOrder(){
+  const el=id('secorder-list');if(!el)return;
+  const raw=D.sectionOrder||SECTION_DEFS.map(s=>s.id);
+  const defs=raw.map(oid=>SECTION_DEFS.find(s=>s.id===oid)).filter(Boolean);
+  SECTION_DEFS.forEach(s=>{if(!defs.find(d=>d.id===s.id))defs.push(s);});
+  el.innerHTML=defs.map((s,i)=>`
+    <div style="display:flex;align-items:center;gap:.75rem;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:.65rem 1rem;">
+      <span style="font-size:1.1rem;width:1.4rem;text-align:center">${s.icon}</span>
+      <span style="flex:1;font-size:.9rem;color:var(--tx)">${s.label}</span>
+      <div style="display:flex;gap:.3rem">
+        <button class="btn btn-outline btn-sm" onclick="soMove('${s.id}',-1)" ${i===0?'disabled':''} style="padding:.25rem .6rem;font-size:.85rem">↑</button>
+        <button class="btn btn-outline btn-sm" onclick="soMove('${s.id}',1)" ${i===defs.length-1?'disabled':''} style="padding:.25rem .6rem;font-size:.85rem">↓</button>
+      </div>
+    </div>`).join('');
+}
+function soMove(secId,dir){
+  const order=[...(D.sectionOrder||SECTION_DEFS.map(s=>s.id))];
+  const idx=order.indexOf(secId);if(idx===-1)return;
+  const ni=idx+dir;if(ni<0||ni>=order.length)return;
+  [order[idx],order[ni]]=[order[ni],order[idx]];
+  D.sectionOrder=order;rSecOrder();
+}
+function saveSecOrder(){
+  if(!D)return;
+  saveData().then(()=>toast('✓ 排序已儲存','ok')).catch(()=>toast('儲存失敗','err'));
+}
 
 // ── Announcements ──
 function rAnn(){
@@ -989,7 +1039,7 @@ function delCompCat(cid){
 // ── Compendium ──
 function rComp(){
   const el=id('comp-list'),items=D.compendium||[];
-  if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">📖</div><p>尚無圖鑑項目</p></div>';return}
+  if(!items.length){el.innerHTML='<div class="empty"><div class="empty-icon">📖</div><p>尚無世界知識項目</p></div>';return}
   const c=cfg();
   el.innerHTML=items.map(i=>{const s=i.image?`https://raw.githubusercontent.com/${c.owner}/${c.repo}/main/${i.image}`:'';const th=s?`<div class="thumb" style="background:#000;border:1px solid var(--bd)"><img src="${s}" onerror="this.parentNode.innerHTML='▪'" style="width:100%;height:100%;object-fit:cover"></div>`:`<div class="thumb" style="background:#000;border:1px solid var(--bd);color:#333;font-size:1.6rem;align-items:center;justify-content:center;display:flex">▪</div>`;return `<div class="icard">${th}<div class="ibody"><div class="ititle">${x(i.name)}</div><div class="imeta">${i.category?x(i.category):'未分類'}</div></div><div class="iact"><button class="btn btn-outline btn-sm" onclick="oComp(${i.id})">編輯</button><button class="btn btn-danger btn-sm" onclick="dComp(${i.id})">刪除</button></div></div>`;}).join('');
 }
@@ -1007,7 +1057,7 @@ function compForm(i={}){
 }
 function oComp(id_){
   imgFile=null;const i=id_?(D.compendium||[]).find(x=>x.id===id_):{};
-  openMo(id_?'編輯圖鑑項目':'新增圖鑑項目',compForm(i||{}),async()=>{
+  openMo(id_?'編輯世界知識':'新增世界知識',compForm(i||{}),async()=>{
     const name=id('f-iname').value.trim();if(!name){toast('請填名稱','err');return false}
     let image=(i||{}).image||'';
     if(imgFile){setS('loading','上傳中...');try{image=await upImg(imgFile,'images');}catch(e){toast('上傳失敗','err');setS('error','失敗');return false}finally{imgFile=null;}}

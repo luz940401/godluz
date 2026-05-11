@@ -324,7 +324,7 @@ function renderCompendium(list) {
     ? [...definedCats, ...[...new Set(list.map(i=>i.category||'未分類'))].filter(c=>!definedCats.includes(c))]
     : [...new Set(list.map(i=>i.category||'未分類'))];
   const usedCats = allCatNames.filter(cat=>list.some(i=>(i.category||'未分類')===cat));
-  if (!usedCats.length) { el.innerHTML='<p style="text-align:center;color:var(--stone);font-family:var(--font-heading);letter-spacing:0.15em">暫無圖鑑項目</p>'; return; }
+  if (!usedCats.length) { el.innerHTML='<p style="text-align:center;color:var(--stone);font-family:var(--font-heading);letter-spacing:0.15em">暫無世界知識項目</p>'; return; }
   el.innerHTML = usedCats.map((cat,ci) => {
     const items = list.filter(i=>(i.category||'未分類')===cat);
     return `
@@ -876,6 +876,32 @@ function invAddPlayer(){
   invSave(d);renderInventory();
 }
 
+/* ── Section Order ── */
+const SECTION_LABELS = {
+  patchnotes:   '改版資訊',
+  worldmap:     '世界地圖',
+  worldreports: '世界報導',
+  characters:   '已解鎖地區',
+  clues:        '線索清單',
+  featured:     '重要人物',
+  compendium:   '世界知識',
+  inventory:    '玩家道具欄',
+  notes:        '備註板',
+};
+function applySectionOrder(order) {
+  if (!order || !order.length) return;
+  const main = document.querySelector('main');
+  const navLinks = document.getElementById('nav-links');
+  order.forEach(secId => {
+    const sec = document.getElementById(secId);
+    if (sec) main.appendChild(sec);
+    if (navLinks) {
+      const li = navLinks.querySelector(`a[href="#${secId}"]`)?.parentElement;
+      if (li) navLinks.appendChild(li);
+    }
+  });
+}
+
 /* ── Map Lightbox ── */
 function openMapLightbox(src) {
   document.getElementById('lightbox-img').src = src;
@@ -914,6 +940,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderFeatured(siteData.characters || []);
     renderCompendium(siteData.compendium || []);
     renderNotes(siteData.notes || []);
+    applySectionOrder(siteData.sectionOrder || null);
     invInitSync();
     setTimeout(initScrollReveal, 120);
   } catch(err) {
