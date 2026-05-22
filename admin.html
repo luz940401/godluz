@@ -81,6 +81,17 @@
     #img-preview{margin-top:.6rem;max-height:160px;overflow:hidden;border-radius:4px;display:flex;justify-content:center}
     #img-preview img{max-height:160px;max-width:100%;object-fit:contain}
     .cur-img{font-size:.75rem;color:var(--muted);margin-top:.4rem}
+    /* Rich Text Editor */
+    .rte-wrap{border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
+    .rte-toolbar{display:flex;gap:.2rem;padding:.4rem .5rem;background:var(--sf2);border-bottom:1px solid var(--bd)}
+    .rte-toolbar button{background:var(--sf);border:1px solid var(--bd);color:var(--tx);border-radius:3px;padding:.2rem .55rem;font-size:.82rem;cursor:pointer;line-height:1.4;font-family:inherit}
+    .rte-toolbar button:hover{border-color:var(--gdim);color:var(--gold)}
+    .rte-body{min-height:200px;max-height:420px;overflow-y:auto;padding:.75rem 1rem;font-size:.88rem;color:var(--tx);outline:none;line-height:1.8;background:var(--sf)}
+    .rte-body:focus{background:var(--sf2)}
+    .rte-body h2{font-size:1.05rem;color:var(--gold);margin:1rem 0 .4rem;font-family:inherit}
+    .rte-body h3{font-size:.95rem;color:var(--gdim);margin:.8rem 0 .3rem;font-family:inherit}
+    .rte-body p{margin:.3rem 0}
+    .rte-body b,.rte-body strong{color:#e8d5a3}
     /* Settings */
     .scard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1.5rem}
     /* Modal */
@@ -619,6 +630,21 @@ function loadLocal(){try{const s=localStorage.getItem('dnd-local-bk');return s?J
 // ── Render All ──
 function rAll(){if(!D) return; rAnn();rMap();rPatch();rChrCat();rChr();rReg();rWorld();rOrd();rClue();rCompCat();rComp();rReport();rNote();rSite();rSecOrder();saveLocal();}
 
+// ── Rich Text Editor ──
+function rteClean(){
+  document.execCommand('removeFormat');
+  const el=id('f-idesc');if(!el)return;
+  el.querySelectorAll('[style],[class],[lang]').forEach(n=>{n.removeAttribute('style');n.removeAttribute('class');n.removeAttribute('lang');});
+  el.querySelectorAll('span').forEach(s=>{if(!s.attributes.length){const p=s.parentNode;while(s.firstChild)p.insertBefore(s.firstChild,s);p.removeChild(s);}});
+}
+document.addEventListener('paste',function(e){
+  const t=e.target;if(!t||t.id!=='f-idesc')return;
+  setTimeout(()=>{
+    t.querySelectorAll('[style],[class],[lang]').forEach(n=>{n.removeAttribute('style');n.removeAttribute('class');n.removeAttribute('lang');});
+    t.querySelectorAll('span').forEach(s=>{if(!s.attributes.length){const p=s.parentNode;while(s.firstChild)p.insertBefore(s.firstChild,s);p.removeChild(s);}});
+  },30);
+});
+
 // ── Section Order ──
 const SECTION_DEFS=[
   {id:'patchnotes', label:'改版資訊',   icon:'📋'},
@@ -1148,7 +1174,20 @@ function compForm(i={}){
   const catOpts=`<option value="">（未分類）</option>`+cats.map(c=>`<option value="${x(c.name||c)}"${(i.category||'')===(c.name||c)?' selected':''}>${x(c.name||c)}</option>`).join('');
   return `<div class="field"><label>名稱 *</label><input id="f-iname" value="${x(i.name||'')}"></div>
   <div class="field"><label>分類</label><select id="f-icat">${catOpts}</select><small>在上方「分類管理」先建立分類，才會出現在此選單</small></div>
-  <div class="field"><label>說明描述（選填）</label><textarea id="f-idesc" style="min-height:100px">${x(i.description||'')}</textarea></div>
+  <div class="field">
+    <label>說明內容（選填）<small style="margin-left:.4rem;color:var(--muted)">可從 Word 直接貼上，保留粗體與標題</small></label>
+    <div class="rte-wrap">
+      <div class="rte-toolbar">
+        <button type="button" onmousedown="event.preventDefault();document.execCommand('bold')" title="粗體"><b>B</b></button>
+        <button type="button" onmousedown="event.preventDefault();document.execCommand('italic')" title="斜體"><i>I</i></button>
+        <button type="button" onmousedown="event.preventDefault();document.execCommand('formatBlock',false,'h2')" title="大標題">H2</button>
+        <button type="button" onmousedown="event.preventDefault();document.execCommand('formatBlock',false,'h3')" title="小標題">H3</button>
+        <button type="button" onmousedown="event.preventDefault();document.execCommand('formatBlock',false,'p')" title="正文段落">¶</button>
+        <button type="button" onmousedown="event.preventDefault();rteClean()" title="清除所有格式">✕</button>
+      </div>
+      <div id="f-idesc" class="rte-body" contenteditable="true">${i.description||''}</div>
+    </div>
+  </div>
   <div class="field"><label>圖片（選填，未上傳則顯示黑格）</label>
     <div class="upzone" onclick="document.getElementById('comp-img-file').click()"><p>點此選擇圖片</p><small>不上傳則顯示純黑格子</small><input type="file" id="comp-img-file" accept="image/*" style="display:none" onchange="prevImg(this,'comp-img-preview')"></div>
     ${i.image?`<p class="cur-img">目前：${i.image}</p>`:''}
@@ -1162,7 +1201,7 @@ function oComp(id_){
     let image=(i||{}).image||'';
     if(imgFile){setS('loading','上傳中...');try{image=await upImg(imgFile,'images');}catch(e){toast('上傳失敗','err');setS('error','失敗');return false}finally{imgFile=null;}}
     const nid=id_||nextId(D.compendium||[]);
-    const item={id:nid,name,category:id('f-icat').value.trim()||'未分類',description:id('f-idesc').value.trim(),image};
+    const item={id:nid,name,category:id('f-icat').value.trim()||'未分類',description:(id('f-idesc').innerHTML||'').trim(),image};
     if(!D.compendium)D.compendium=[];
     if(id_)D.compendium=D.compendium.map(x=>x.id===id_?item:x);else D.compendium=[...D.compendium,item];
     rComp();imgFile=null;

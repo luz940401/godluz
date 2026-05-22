@@ -860,6 +860,13 @@ body::before {
 .detail-divider { width: 100%; height: 1px; background: linear-gradient(to right, transparent, var(--gold-dim) 30%, var(--gold-dim) 70%, transparent); opacity: 0.25; margin: 1.5rem 0; }
 .detail-article { font-family: var(--font-body); font-size: 1.05rem; color: var(--parchment-dim); line-height: 1.9; }
 .detail-article br + br { display: block; content: ''; margin-top: 0.5rem; }
+.detail-article h2 { font-family: var(--font-heading); font-size: 1.15rem; color: var(--gold); margin: 1.4rem 0 .5rem; letter-spacing: .06em; }
+.detail-article h3 { font-family: var(--font-heading); font-size: 1rem; color: var(--gold-dim, #a8893a); margin: 1.1rem 0 .4rem; letter-spacing: .04em; }
+.detail-article p { margin: .5rem 0; }
+.detail-article strong, .detail-article b { color: var(--parchment); font-weight: 600; }
+.detail-article em, .detail-article i { font-style: italic; opacity: .9; }
+.detail-article ul, .detail-article ol { padding-left: 1.4rem; margin: .5rem 0; }
+.detail-article li { margin: .25rem 0; }
 
 /* Patch note detail */
 .detail-version-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }

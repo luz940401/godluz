@@ -635,7 +635,7 @@ function renderDetail() {
       <div class="detail-body">
         ${item.category?`<div class="detail-badges"><span class="character-badge">${item.category}</span></div>`:''}
         <h1 class="detail-name">${item.name}</h1>
-        ${item.description?`<div class="detail-divider"></div><div class="detail-article">${item.description.replace(/\n/g,'<br>')}</div>`:''}
+        ${item.description?`<div class="detail-divider"></div><div class="detail-article">${/<[a-z]/i.test(item.description)?item.description:item.description.replace(/\n/g,'<br>')}</div>`:''}
       </div>`;
   } else if (type === 'report') {
     const r = (siteData.worldReports||[]).find(x=>x.id===id);
