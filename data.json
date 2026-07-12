@@ -539,17 +539,19 @@
     {
       "id": 33,
       "name": "西拉克",
+      "category": "",
+      "featured": false,
       "title": "阿圖斯之子",
       "class": "",
-      "race": "",
+      "race": "人類",
       "regionId": 6,
-      "summary": "",
+      "summary": "阿圖斯唯一的兒子，目前居住在布林山德。\n\n他從小便憧憬著英雄\n已經多年沒有見過自己的父親\n甚至不知道阿圖斯如今究竟身在何處\n\n據說，貝利亞德的老精靈「澤爾」\n可能曾掌握阿圖斯的下落\n但如今澤爾已經死亡，相關線索也因此中斷。",
       "description": "",
-      "image": "images/1777115794306.png",
+      "image": "images/1783864049160.png",
       "relations": [
         {
           "target": "神之領域騎士團",
-          "affinity": 2
+          "affinity": 1
         }
       ]
     },
