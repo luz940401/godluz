@@ -995,6 +995,20 @@
           "affinity": -2
         }
       ]
+    },
+    {
+      "id": 66,
+      "name": "艾德拉西斯",
+      "category": "",
+      "featured": true,
+      "title": "滅龍魔導師",
+      "class": "魔導師",
+      "race": "人類",
+      "regionId": null,
+      "summary": "",
+      "description": "人稱：滅龍魔導師\n\n能以一人之力擊敗遠古龍\n左眼和右眼似乎分別承載著不同的能量",
+      "image": "images/1783864305946.png",
+      "relations": []
     }
   ],
   "knightOrders": [
